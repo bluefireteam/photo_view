@@ -57,6 +57,7 @@ class _PhotoViewState extends State<PhotoView>{
   @override
   Widget build(BuildContext context) {
     return new FutureBuilder(
+        future: _getImage(),
         builder: (BuildContext context, AsyncSnapshot<ImageInfo> info) {
           if(info.hasData){
             return new PhotoViewImageWrapper(

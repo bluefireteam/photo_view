@@ -27,7 +27,7 @@ ios/Runner/GeneratedPluginRegistrant.*
 *.ipr
 *.iws
 .idea
-
+.idea/workspace.xml
 
 # Flutter/Dart/Pub related
 **/doc/api/
