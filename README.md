@@ -29,6 +29,8 @@ Widget build(BuildContext context) {
 }
 ```
 
+![In action](https://github.com/renancaraujo/photo_view/blob/master/screen.gif)
+
 ### Constructor
 
 [PhotoView](/lib/photo_view.dart)({ [ImageProvider](https://docs.flutter.io/flutter/painting/ImageProvider-class.html) imageProvider, [Widget](https://docs.flutter.io/flutter/widgets/Widget-class.html) loadingChild })
