@@ -11,11 +11,13 @@ import 'package:photo_view/photo_view_utils.dart';
 class PhotoView extends StatefulWidget{
   final ImageProvider imageProvider;
   final Widget loadingChild;
+  final Color backgroundColor;
 
   PhotoView({
     Key key,
     @required this.imageProvider,
-    this.loadingChild
+    this.loadingChild,
+    this.backgroundColor,
   }) : super(key: key);
 
   @override
@@ -65,6 +67,7 @@ class _PhotoViewState extends State<PhotoView>{
               onStartPanning: onStartPanning,
               imageInfo: info.data,
               scaleType: _scaleType,
+              backgroundColor: widget.backgroundColor,
             );
           } else {
             return buildLoading();

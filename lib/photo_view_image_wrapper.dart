@@ -11,12 +11,14 @@ class PhotoViewImageWrapper extends StatefulWidget{
     @required this.onStartPanning,
     @required this.imageInfo,
     @required this.scaleType,
+    this.backgroundColor,
   }) : super(key:key);
 
   final Function onDoubleTap;
   final Function onStartPanning;
   final ImageInfo imageInfo;
   final PhotoViewScaleType scaleType;
+  final Color backgroundColor;
 
   @override
   State<StatefulWidget> createState() {
@@ -183,7 +185,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper> with Tick
             )
         ),
         decoration: new BoxDecoration(
-            color: new Color.fromRGBO(0, 0, 0, 1.0)
+            color: widget.backgroundColor ?? new Color.fromRGBO(0, 0, 0, 1.0)
         ),
       ),
       onDoubleTap: widget.onDoubleTap,
