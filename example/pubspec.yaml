@@ -2,7 +2,8 @@ name: example
 description: A new Flutter project.
 
 dependencies:
-  photo_view: ^0.0.2
+  photo_view:
+    path: ../
   flutter:
     sdk: flutter
 
