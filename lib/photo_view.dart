@@ -17,7 +17,7 @@ class PhotoView extends StatefulWidget{
     Key key,
     @required this.imageProvider,
     this.loadingChild,
-    this.backgroundColor,
+    this.backgroundColor = const Color.fromRGBO(0, 0, 0, 1.0),
   }) : super(key: key);
 
   @override

@@ -66,7 +66,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper> with Tick
     }
     setState(() {
       _scale = newScale;
-      _position = clampPosition(delta * (newScale / _scaleBefore));
+      _position = clampPosition(delta * (newScale / _scaleBefore)) / details.scale;
     });
   }
 
@@ -185,7 +185,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper> with Tick
             )
         ),
         decoration: new BoxDecoration(
-            color: widget.backgroundColor ?? new Color.fromRGBO(0, 0, 0, 1.0)
+            color: widget.backgroundColor
         ),
       ),
       onDoubleTap: widget.onDoubleTap,
