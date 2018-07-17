@@ -69,12 +69,29 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper> with Tick
       widget.onStartPanning();
     }
     setState(() {
-      _scale = newScale.clamp(widget.minScale, widget.maxScale);
-      _position = clampPosition(delta * (newScale / _scaleBefore)) / details.scale;
+      _scale = newScale;
+      _position = clampPosition(delta * details.scale);
     });
   }
 
   void onScaleEnd(ScaleEndDetails details) {
+
+    //animate back to maxScale if gesture exceeded the maxscale specified
+    if((widget.maxScale != null) && (this._scale > widget.maxScale)){
+      double scaleComebackRatio =  widget.maxScale / this._scale;
+      print(scaleComebackRatio);
+
+      animateScale(_scale, widget.maxScale);
+      animatePosition(_position, clampPosition(_position * scaleComebackRatio));
+      return;
+    }
+
+    //animate back to minScale if gesture fell smaller than the minScale specified
+    if(widget.minScale != null && this._scale < widget.minScale){
+      double scaleComebackRatio =  widget.minScale / this._scale;
+      animateScale(_scale, widget.minScale);
+      animatePosition(_position, clampPosition(_position * scaleComebackRatio));
+    }
   }
 
   Offset clampPosition(Offset offset) {
@@ -113,6 +130,26 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper> with Tick
     );
   }
 
+  void animateScale(double from, double to){
+    _scaleAnimation = new Tween<double>(
+      begin: from,
+      end: to,
+    ).animate(_scaleAnimationController);
+    _scaleAnimationController
+      ..value = 0.0
+      ..fling(velocity: 0.4);
+  }
+
+  void animatePosition(Offset from, Offset to){
+    _positionAnimation = new Tween<Offset>(
+        begin: from,
+        end: to
+    ).animate(_positionAnimationController);
+    _positionAnimationController
+      ..value = 0.0
+      ..fling(velocity: 0.4);
+  }
+
   @override
   void initState(){
     super.initState();
@@ -138,29 +175,19 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper> with Tick
     oldWidget.scaleType != widget.scaleType
         && widget.scaleType != PhotoViewScaleType.zooming
     ){
-      _scaleAnimation = new Tween<double>(
-        begin: _scale == null ? getScaleForScaleType(
+      animateScale(
+          _scale == null ? getScaleForScaleType(
             imageInfo: widget.imageInfo,
             scaleType: PhotoViewScaleType.contained,
             size: MediaQuery.of(context).size
-        ) : _scale,
-        end: getScaleForScaleType(
-            imageInfo: widget.imageInfo,
-            scaleType: widget.scaleType,
-            size: MediaQuery.of(context).size
-        ),
-      ).animate(_scaleAnimationController);
-      _scaleAnimationController
-        ..value = 0.0
-        ..fling(velocity: 0.4);
-
-      _positionAnimation = new Tween<Offset>(
-          begin: _position,
-          end: Offset.zero
-      ).animate(_positionAnimationController);
-      _positionAnimationController
-        ..value = 0.0
-        ..fling(velocity: 0.4);
+          ) : _scale,
+          getScaleForScaleType(
+              imageInfo: widget.imageInfo,
+              scaleType: widget.scaleType,
+              size: MediaQuery.of(context).size
+          )
+      );
+      animatePosition(_position, Offset.zero);
     }
   }
 
