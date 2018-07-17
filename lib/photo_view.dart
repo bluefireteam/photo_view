@@ -12,12 +12,16 @@ class PhotoView extends StatefulWidget{
   final ImageProvider imageProvider;
   final Widget loadingChild;
   final Color backgroundColor;
+  final double minScale;
+  final double maxScale;
 
   PhotoView({
     Key key,
     @required this.imageProvider,
     this.loadingChild,
     this.backgroundColor = const Color.fromRGBO(0, 0, 0, 1.0),
+    this.minScale = 0.0,
+    this.maxScale,
   }) : super(key: key);
 
   @override
@@ -68,6 +72,8 @@ class _PhotoViewState extends State<PhotoView>{
               imageInfo: info.data,
               scaleType: _scaleType,
               backgroundColor: widget.backgroundColor,
+              minScale: widget.minScale,
+              maxScale: widget.maxScale,
             );
           } else {
             return buildLoading();

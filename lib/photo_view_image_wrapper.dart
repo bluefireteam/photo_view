@@ -12,6 +12,8 @@ class PhotoViewImageWrapper extends StatefulWidget{
     @required this.imageInfo,
     @required this.scaleType,
     this.backgroundColor,
+    this.minScale,
+    this.maxScale
   }) : super(key:key);
 
   final Function onDoubleTap;
@@ -19,6 +21,8 @@ class PhotoViewImageWrapper extends StatefulWidget{
   final ImageInfo imageInfo;
   final PhotoViewScaleType scaleType;
   final Color backgroundColor;
+  final double minScale;
+  final double maxScale;
 
   @override
   State<StatefulWidget> createState() {
@@ -65,7 +69,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper> with Tick
       widget.onStartPanning();
     }
     setState(() {
-      _scale = newScale;
+      _scale = newScale.clamp(widget.minScale, widget.maxScale);
       _position = clampPosition(delta * (newScale / _scaleBefore)) / details.scale;
     });
   }

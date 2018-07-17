@@ -92,6 +92,8 @@ class ImageViewScreen extends StatelessWidget {
           imageProvider: new NetworkImage(imageAddress),
           loadingChild: new LoadingText(),
           backgroundColor: Colors.white,
+          minScale: 0.1,
+          maxScale: 4.0,
         )
     );
   }
