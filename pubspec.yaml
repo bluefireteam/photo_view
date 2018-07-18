@@ -1,11 +1,11 @@
 name: photo_view
 description: A simple zoomable image widget for Flutter.
-version: 0.0.2
+version: 0.0.3
 author: Renan C. Araújo <renan@caraujo.me>
 homepage: https://github.com/renancaraujo/photo_view
 
 environment:
-  sdk: "<2.0.0"
+  sdk: ">=1.19.0 <2.0.0"
 
 dependencies:
   flutter:

@@ -1,7 +1,6 @@
 import 'dart:math' as Math;
 
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 import 'package:photo_view/photo_view_scale_type.dart';
 
 

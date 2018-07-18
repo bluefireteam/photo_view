@@ -1,5 +1,4 @@
 
-import 'package:meta/meta.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view_scale_type.dart';
 import 'package:photo_view/photo_view_utils.dart';
