@@ -40,6 +40,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   double _scaleBefore;
   double _rotation;
   double _rotationBefore;
+  Offset _rotationFocusPoint;
 
   AnimationController _scaleAnimationController;
   Animation<double> _scaleAnimation;
@@ -47,15 +48,24 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   AnimationController _positionAnimationController;
   Animation<Offset> _positionAnimation;
 
+  AnimationController _rotationAnimationController;
+  Animation<double> _rotationAnimation;
+
   void handleScaleAnimation() {
     setState(() {
       _scale = _scaleAnimation.value;
     });
   }
 
-  void handlePositionAnimate() {
+  void handlePositionAnimation() {
     setState(() {
       _position = _positionAnimation.value;
+    });
+  }
+
+  void handleRotationAnimation() {
+    setState(() {
+      _rotation = _rotationAnimation.value;
     });
   }
 
@@ -65,6 +75,8 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     _normalizedPosition = (details.focalPoint - _position);
     _scaleAnimationController.stop();
     _positionAnimationController.stop();
+    _rotationAnimationController.stop();
+    
   }
 
   void onScaleUpdate(rotate.ScaleUpdateDetails details) {
@@ -73,11 +85,11 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     if (details.scale != 1.0) {
       widget.onStartPanning();
     }
-    print(details.rotation);
     setState(() {
       _scale = newScale;
       _position = clampPosition(delta * details.scale);
       _rotation = _rotationBefore + details.rotation;
+      _rotationFocusPoint= details.focalPoint;
     });
   }
 
@@ -151,6 +163,14 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
       ..fling(velocity: 0.4);
   }
 
+  void animateRotation(double from, double to) {
+    _rotationAnimation = new Tween<double>(begin: from, end: to)
+        .animate(_rotationAnimationController);
+    _rotationAnimationController
+      ..value = 0.0
+      ..fling(velocity: 0.4);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -161,13 +181,17 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
       ..addListener(handleScaleAnimation);
 
     _positionAnimationController = new AnimationController(vsync: this)
-      ..addListener(handlePositionAnimate);
+      ..addListener(handlePositionAnimation);
+
+    _rotationAnimationController = new AnimationController(vsync: this)
+      ..addListener(handleRotationAnimation);
   }
 
   @override
   void dispose() {
     _positionAnimationController.dispose();
     _scaleAnimationController.dispose();
+    _rotationAnimationController.dispose();
     super.dispose();
   }
 
@@ -187,6 +211,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
               scaleType: widget.scaleType,
               size: MediaQuery.of(context).size));
       animatePosition(_position, Offset.zero);
+      animateRotation(_rotation, 0.0);
     }
   }
 
@@ -194,25 +219,30 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   Widget build(BuildContext context) {
     var matrix = new Matrix4.identity()
       ..translate(_position.dx, _position.dy)
-      ..rotateZ(_rotation ?? 0.0)
       ..scale(scaleTypeAwareScale());
 
+    var rotationMatrix = new Matrix4.identity()..rotateZ(_rotation);
     return new RotateGestureDetector(
       child: new Container(
         child: new Center(
+          child: new Transform(
             child: new Transform(
-          child: new CustomSingleChildLayout(
-            delegate: new ImagePositionDelegate(
-                widget.imageInfo.image.width / 1,
-                widget.imageInfo.image.height / 1),
-            child: new RawImage(
-              image: widget.imageInfo.image,
-              scale: widget.imageInfo.scale,
+              child: new CustomSingleChildLayout(
+                delegate: new ImagePositionDelegate(
+                    widget.imageInfo.image.width / 1,
+                    widget.imageInfo.image.height / 1),
+                child: new RawImage(
+                  image: widget.imageInfo.image,
+                  scale: widget.imageInfo.scale,
+                ),
+              ),
+              transform: rotationMatrix,
+              origin: _rotationFocusPoint,
             ),
-          ),
-          transform: matrix,
-          alignment: Alignment.center,
-        )),
+            transform: matrix,
+            alignment: Alignment.center,
+          )
+        ),
         decoration: new BoxDecoration(color: widget.backgroundColor),
       ),
       onDoubleTap: widget.onDoubleTap,
