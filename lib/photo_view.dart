@@ -2,7 +2,6 @@ library photo_view;
 
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 import 'package:photo_view/photo_view_image_wrapper.dart';
 import 'package:photo_view/photo_view_scale_type.dart';
 import 'package:photo_view/photo_view_utils.dart';

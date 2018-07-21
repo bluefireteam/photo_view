@@ -1,4 +1,4 @@
-import 'package:meta/meta.dart';
+
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view_scale_type.dart';
 import 'package:photo_view/photo_view_utils.dart';
@@ -60,7 +60,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   }
 
   void onScaleStart(rotate.ScaleStartDetails details) {
-    _rotationBefore = _rotation
+    _rotationBefore = _rotation;
     _scaleBefore = scaleTypeAwareScale();
     _normalizedPosition = (details.focalPoint - _position);
     _scaleAnimationController.stop();
