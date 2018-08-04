@@ -37,9 +37,9 @@ Widget build(BuildContext context) {
 | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen.gif)  | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen_gif.gif)  |
 
 
-### Api
+### API
 
-For more information about how to use poto view, check the [API Docs](/API.md)
+For more information about how to use Photo View, check the [API Docs](/API.md)
 
 
 
