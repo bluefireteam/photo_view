@@ -3,23 +3,25 @@ library photo_view;
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view_image_wrapper.dart';
-import 'package:photo_view/photo_view_scale_type.dart';
+import 'package:photo_view/photo_view_scale_boundaries.dart';
+import 'package:photo_view/photo_view_scale_state.dart';
 import 'package:photo_view/photo_view_utils.dart';
 
+export 'package:photo_view/photo_view_scale_boundary.dart';
 
 class PhotoView extends StatefulWidget{
   final ImageProvider imageProvider;
   final Widget loadingChild;
   final Color backgroundColor;
-  final double minScale;
-  final double maxScale;
+  final minScale;
+  final maxScale;
 
   PhotoView({
     Key key,
     @required this.imageProvider,
     this.loadingChild,
     this.backgroundColor = const Color.fromRGBO(0, 0, 0, 1.0),
-    this.minScale = 0.0,
+    this.minScale,
     this.maxScale,
   }) : super(key: key);
 
@@ -31,7 +33,7 @@ class PhotoView extends StatefulWidget{
 
 
 class _PhotoViewState extends State<PhotoView>{
-  PhotoViewScaleType _scaleType;
+  PhotoViewScaleState _scaleState;
 
   Future<ImageInfo> _getImage(){
     Completer completer = new Completer<ImageInfo>();
@@ -44,20 +46,20 @@ class _PhotoViewState extends State<PhotoView>{
 
   void onDoubleTap () {
     setState(() {
-      _scaleType = nextScaleType(_scaleType);
+      _scaleState = nextScaleState(_scaleState);
     });
   }
 
   void onStartPanning () {
     setState(() {
-      _scaleType = PhotoViewScaleType.zooming;
+      _scaleState = PhotoViewScaleState.zooming;
     });
   }
 
   @override
   void initState(){
     super.initState();
-    _scaleType = PhotoViewScaleType.contained;
+    _scaleState = PhotoViewScaleState.contained;
   }
   @override
   Widget build(BuildContext context) {
@@ -69,10 +71,14 @@ class _PhotoViewState extends State<PhotoView>{
               onDoubleTap: onDoubleTap,
               onStartPanning: onStartPanning,
               imageInfo: info.data,
-              scaleType: _scaleType,
+              scaleState: _scaleState,
               backgroundColor: widget.backgroundColor,
-              minScale: widget.minScale,
-              maxScale: widget.maxScale,
+              scaleBoundaries: new ScaleBoundaries(
+                widget.minScale ?? 0.0,
+                widget.maxScale ?? 100000000000.0,
+                imageInfo: info.data,
+                size: MediaQuery.of(context).size
+              ),
             );
           } else {
             return buildLoading();

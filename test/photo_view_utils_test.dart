@@ -1,5 +1,10 @@
 
-import 'package:photo_view/photo_view_scale_type.dart';
+
+
+
+
+
+import 'package:photo_view/photo_view_scale_state.dart';
 import 'package:photo_view/photo_view_utils.dart';
 import 'package:test/test.dart';
 
@@ -7,31 +12,31 @@ import 'package:test/test.dart';
 void main(){
   test("nextScaleType", (){
     expect(
-      nextScaleType(PhotoViewScaleType.contained),
-      PhotoViewScaleType.covering
+      nextScaleState(PhotoViewScaleState.contained),
+      PhotoViewScaleState.covering
     );
     expect(
-      nextScaleType(PhotoViewScaleType.covering),
-      PhotoViewScaleType.originalSize
+      nextScaleState(PhotoViewScaleState.covering),
+      PhotoViewScaleState.originalSize
     );
     expect(
-      nextScaleType(PhotoViewScaleType.originalSize),
-      PhotoViewScaleType.contained
+      nextScaleState(PhotoViewScaleState.originalSize),
+      PhotoViewScaleState.contained
     );
     expect(
-      nextScaleType(PhotoViewScaleType.zooming),
-      PhotoViewScaleType.contained
+      nextScaleState(PhotoViewScaleState.zooming),
+      PhotoViewScaleState.contained
     );
     expect(
-      nextScaleType(null),
-      PhotoViewScaleType.contained
+      nextScaleState(null),
+      PhotoViewScaleState.contained
     );
   });
   
   test("getScaleForScaleType", (){
-    expect(getScaleForScaleType(
+    expect(getScaleForScaleState(
       size: null, 
-      scaleType: PhotoViewScaleType.originalSize, 
+      scaleState: PhotoViewScaleState.originalSize,
       imageInfo: null
     ), 1.0);
   });

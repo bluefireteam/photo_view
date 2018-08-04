@@ -1,0 +1,1 @@
+enum PhotoViewScaleBoundary{ contained, covered }
