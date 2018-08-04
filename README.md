@@ -1,5 +1,5 @@
-# photo_view [![Build Status - Travis](https://travis-ci.org/renancaraujo/photo_view.svg?branch=master)](https://travis-ci.org/renancaraujo/photo_view)
-A simple zoomable image widget for Flutter projects
+# Flutter Photo View [![Build Status - Travis](https://travis-ci.org/renancaraujo/photo_view.svg?branch=master)](https://travis-ci.org/renancaraujo/photo_view)
+A simple zoomable image widget for Flutter
 
 [PhotoView](/lib/photo_view.dart) is useful in full screen exibition cases.
 
@@ -9,8 +9,11 @@ Resolves a image provider and show the result with useful gestures support, such
 - [x] Scale on doubleTap
 - [x] Zoom when pinched
 - [x] Respect screen and image boundaries
-- [ ] Multiple image support
-- [ ] Rotate gesture rotates image
+- [x] Center image when zooming out
+- [x] Add image zoom limits (`minScale` an `maxScale`)
+- [x] Add GIF support
+- [ ] Multiple image support (Gallery mode)
+- [ ] Rotate gesture rotates image ([Work in progress](https://github.com/renancaraujo/photo_view/pull/4))
 
 Pull requests are welcome 😊.
 
@@ -29,14 +32,14 @@ Widget build(BuildContext context) {
 }
 ```
 
-![In action](https://github.com/renancaraujo/photo_view/blob/master/screen.gif)
-
-### Constructor
-
-[PhotoView](/lib/photo_view.dart)({ [ImageProvider](https://docs.flutter.io/flutter/painting/ImageProvider-class.html) imageProvider, [Widget](https://docs.flutter.io/flutter/widgets/Widget-class.html) loadingChild })
+| Simple Image  | GIF |
+| ------------- | ------------- |
+| ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen.gif)  | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen_gif.gif)  |
 
 
-Creates a widget that resolves and shows a image with zoom and pan gestures support. If provided, the widget shows `loadingChild` while the image is being resolved.
+### Api
+
+For more information about how to use poto view, check the [API Docs](/API.md)
 
 
 
