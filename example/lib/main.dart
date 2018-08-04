@@ -36,37 +36,19 @@ class Home extends StatelessWidget{
           new Expanded(child:  new Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              new Center(
-                  child:  new RaisedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          new MaterialPageRoute(builder: (context) => new ImageViewScreen(imageUrl2)),
-                        );
-                      },
-                      color: Colors.green,
-                      child: new Text("open small image",
-                        style: new TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold
-                        ),)
-                  )
+              buildOption(
+                context,
+                text: "open small image",
+                imageUrl: imageUrl2,
+                minScale: 0.1,
+                maxScale: 1.05
               ),
-              new Center(
-                  child:  new RaisedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          new MaterialPageRoute(builder: (context) => new ImageViewScreen(imageUrl)),
-                        );
-                      },
-                      color: Colors.green,
-                      child: new Text("open large image",
-                        style: new TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold
-                        ),)
-                  )
+              buildOption(
+                  context,
+                  text: "open large image",
+                  imageUrl: imageUrl,
+                  minScale: PhotoViewScaleBoundary.contained,
+                  maxScale: PhotoViewScaleBoundary.covered
               ),
             ],
           ))
@@ -76,14 +58,49 @@ class Home extends StatelessWidget{
       ),
     );
   }
+
+
+  Widget buildOption(BuildContext context, {
+    String text,
+    String imageUrl,
+    minScale,
+    maxScale
+  }) {
+    return new Center(
+      child: new RaisedButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            new MaterialPageRoute(builder: (context) => new ImageViewScreen(
+              imageUrl,
+              minScale: minScale,
+              maxScale: maxScale,
+            )),
+          );
+        },
+        color: Colors.green,
+        child: new Text(text,
+          style: new TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold
+          ),)
+      )
+    );
+  }
 }
+
 
 
 class ImageViewScreen extends StatelessWidget {
   final String imageAddress;
 
-  ImageViewScreen(this.imageAddress);
+  var maxScale;
+  var minScale;
 
+  ImageViewScreen(this.imageAddress,{
+    @required this.minScale,
+    @required this.maxScale
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -92,8 +109,8 @@ class ImageViewScreen extends StatelessWidget {
           imageProvider: new NetworkImage(imageAddress),
           loadingChild: new LoadingText(),
           backgroundColor: Colors.white,
-          minScale: 0.1,
-          maxScale: 4.0,
+          minScale: minScale,
+          maxScale: maxScale,
         )
     );
   }

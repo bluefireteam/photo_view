@@ -1,7 +1,9 @@
 
 import 'package:flutter/material.dart';
-import 'package:photo_view/photo_view_scale_type.dart';
+import 'package:photo_view/photo_view_scale_boundaries.dart';
+import 'package:photo_view/photo_view_scale_state.dart';
 import 'package:photo_view/photo_view_utils.dart';
+
 
 class PhotoViewImageWrapper extends StatefulWidget{
   const PhotoViewImageWrapper({
@@ -9,19 +11,17 @@ class PhotoViewImageWrapper extends StatefulWidget{
     @required this.onDoubleTap,
     @required this.onStartPanning,
     @required this.imageInfo,
-    @required this.scaleType,
+    @required this.scaleState,
+    @required this.scaleBoundaries,
     this.backgroundColor,
-    this.minScale,
-    this.maxScale
   }) : super(key:key);
 
   final Function onDoubleTap;
   final Function onStartPanning;
   final ImageInfo imageInfo;
-  final PhotoViewScaleType scaleType;
+  final PhotoViewScaleState scaleState;
   final Color backgroundColor;
-  final double minScale;
-  final double maxScale;
+  final ScaleBoundaries scaleBoundaries;
 
   @override
   State<StatefulWidget> createState() {
@@ -55,7 +55,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper> with Tick
   }
 
   void onScaleStart(ScaleStartDetails details) {
-    _scaleBefore = scaleTypeAwareScale();
+    _scaleBefore = scaleStateAwareScale();
     _normalizedPosition= (details.focalPoint - _position);
     _scaleAnimationController.stop();
     _positionAnimationController.stop();
@@ -74,30 +74,31 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper> with Tick
   }
 
   void onScaleEnd(ScaleEndDetails details) {
+    double maxScale = widget.scaleBoundaries.computeMaxScale();
+    double minScale = widget.scaleBoundaries.computeMinScale();
 
-    //animate back to maxScale if gesture exceeded the maxscale specified
-    if((widget.maxScale != null) && (this._scale > widget.maxScale)){
-      double scaleComebackRatio =  widget.maxScale / this._scale;
-      print(scaleComebackRatio);
-
-      animateScale(_scale, widget.maxScale);
-      animatePosition(_position, clampPosition(_position * scaleComebackRatio));
+    //animate back to maxScale if gesture exceeded the maxScale specified
+    if(this._scale > maxScale){
+      double scaleComebackRatio = maxScale / this._scale;
+      animateScale(_scale, maxScale);
+      animatePosition(_position, clampPosition(_position * scaleComebackRatio, maxScale));
       return;
     }
 
     //animate back to minScale if gesture fell smaller than the minScale specified
-    if(widget.minScale != null && this._scale < widget.minScale){
-      double scaleComebackRatio =  widget.minScale / this._scale;
-      animateScale(_scale, widget.minScale);
-      animatePosition(_position, clampPosition(_position * scaleComebackRatio));
+    if(this._scale < minScale){
+      double scaleComebackRatio = minScale / this._scale;
+      animateScale(_scale, minScale);
+      animatePosition(_position, clampPosition(_position * scaleComebackRatio, maxScale));
     }
   }
 
-  Offset clampPosition(Offset offset) {
+  Offset clampPosition(Offset offset, [double scale]) {
+    double _scale = scale ?? scaleStateAwareScale();
     final x = offset.dx;
     final y = offset.dy;
-    final computedWidth = widget.imageInfo.image.width * scaleTypeAwareScale();
-    final computedHeight = widget.imageInfo.image.height * scaleTypeAwareScale();
+    final computedWidth = widget.imageInfo.image.width * _scale;
+    final computedHeight = widget.imageInfo.image.height * _scale;
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
     final screenHalfX = screenWidth / 2;
@@ -114,19 +115,22 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper> with Tick
     ) : 0.0;
 
     return new Offset(
-        computedX,
-        computedY
+      computedX,
+      computedY
     );
   }
 
-  double scaleTypeAwareScale(){
-    return _scale != null || widget.scaleType == PhotoViewScaleType.zooming
-        ? _scale
-        : getScaleForScaleType(
+  double scaleStateAwareScale(){
+    return _scale != null || widget.scaleState == PhotoViewScaleState.zooming
+      ? _scale
+      : getScaleForScaleState(
         imageInfo: widget.imageInfo,
-        scaleType: widget.scaleType,
+        scaleState: widget.scaleState,
         size: MediaQuery.of(context).size
-    );
+      ).clamp(
+        widget.scaleBoundaries.computeMinScale(),
+        widget.scaleBoundaries.computeMaxScale()
+      );
   }
 
   void animateScale(double from, double to){
@@ -171,19 +175,24 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper> with Tick
   void didUpdateWidget(PhotoViewImageWrapper oldWidget){
     super.didUpdateWidget(oldWidget);
     if(
-    oldWidget.scaleType != widget.scaleType
-        && widget.scaleType != PhotoViewScaleType.zooming
+      oldWidget.scaleState != widget.scaleState && widget.scaleState != PhotoViewScaleState.zooming
     ){
       animateScale(
-          _scale == null ? getScaleForScaleType(
+          _scale == null ? getScaleForScaleState(
             imageInfo: widget.imageInfo,
-            scaleType: PhotoViewScaleType.contained,
+            scaleState: PhotoViewScaleState.contained,
             size: MediaQuery.of(context).size
+          ).clamp(
+            widget.scaleBoundaries.computeMinScale(),
+            widget.scaleBoundaries.computeMaxScale()
           ) : _scale,
-          getScaleForScaleType(
-              imageInfo: widget.imageInfo,
-              scaleType: widget.scaleType,
-              size: MediaQuery.of(context).size
+          getScaleForScaleState(
+            imageInfo: widget.imageInfo,
+            scaleState: widget.scaleState,
+            size: MediaQuery.of(context).size
+          ).clamp(
+            widget.scaleBoundaries.computeMinScale(),
+            widget.scaleBoundaries.computeMaxScale()
           )
       );
       animatePosition(_position, Offset.zero);
@@ -194,7 +203,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper> with Tick
   Widget build(BuildContext context) {
     var matrix = new Matrix4.identity()
       ..translate(_position.dx, _position.dy)
-      ..scale(scaleTypeAwareScale());
+      ..scale(scaleStateAwareScale());
 
     return new GestureDetector(
       child: new Container(

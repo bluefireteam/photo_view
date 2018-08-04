@@ -1,3 +1,3 @@
-enum PhotoViewScaleType{
+enum PhotoViewScaleState{
   contained, covering, originalSize, zooming
 }
