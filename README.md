@@ -1,9 +1,16 @@
 # Flutter Photo View [![Build Status - Travis](https://travis-ci.org/renancaraujo/photo_view.svg?branch=master)](https://travis-ci.org/renancaraujo/photo_view)
+
+[![Pub](https://img.shields.io/pub/v/photo_view.svg?style=popout)](https://pub.dartlang.org/packages/photo_view)
+
 A simple zoomable image widget for Flutter
 
 [PhotoView](/lib/photo_view.dart) is useful in full screen exibition cases.
 
 Resolves a image provider and show the result with useful gestures support, such as pinch to zoom and pan.
+
+## Installation
+
+Add `photo_view` as a dependency in your pubspec.yaml file.
 
 #### Todo:
 - [x] Scale on doubleTap
@@ -32,14 +39,19 @@ Widget build(BuildContext context) {
 }
 ```
 
+### API
+
+For more information about how to use Photo View, check the [API Docs](/API.md)
+
+### Screenshots
+
+
 | Simple Image  | GIF |
 | ------------- | ------------- |
 | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen.gif)  | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen_gif.gif)  |
 
 
-### API
 
-For more information about how to use Photo View, check the [API Docs](/API.md)
 
 
 
