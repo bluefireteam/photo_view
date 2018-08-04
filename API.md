@@ -23,4 +23,5 @@ new PhotoView(
 dynamic ([double](https://docs.flutter.io/flutter/dart-core/double-class.html) or [PhotoViewScaleBoundary](/lib/photo_view_scale_boundary.dart)) minScale,
 dynamic ([double](https://docs.flutter.io/flutter/dart-core/double-class.html) or [PhotoViewScaleBoundary](/lib/photo_view_scale_boundary.dart)) maxScale,
 })
+
 Given a `imageProvider` it resolves into an zoomable image widget using a [FutureBuilder](https://docs.flutter.io/flutter/widgets/FutureBuilder-class.html). In the meantime, PhotoView can show an intermediate view, something like a "loader", passed via `loadingChild`. The zoom scale can be clamped by `minScale` and `maxScale` params. `backgroundColor`, changes the background behind image, defaults to `Colors.black`. 
