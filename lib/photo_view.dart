@@ -38,9 +38,11 @@ class _PhotoViewState extends State<PhotoView>{
   Future<ImageInfo> _getImage(){
     Completer completer = new Completer<ImageInfo>();
     ImageStream stream = widget.imageProvider.resolve(new ImageConfiguration());
-    stream.addListener((ImageInfo info, bool completed) {
+    var listener = (ImageInfo info, bool completed) {
       completer.complete(info);
-    });
+    };
+    stream.addListener(listener);
+    completer.future.then((_){ stream.removeListener(listener); });
     return completer.future;
   }
 
@@ -70,6 +72,7 @@ class _PhotoViewState extends State<PhotoView>{
             return new PhotoViewImageWrapper(
               onDoubleTap: onDoubleTap,
               onStartPanning: onStartPanning,
+              imageProvider: widget.imageProvider,
               imageInfo: info.data,
               scaleState: _scaleState,
               backgroundColor: widget.backgroundColor,

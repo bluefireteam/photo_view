@@ -23,8 +23,9 @@ class MyApp extends StatelessWidget {
   }
 }
 
-var imageUrl = "https://images.unsplash.com/photo-1495249737766-5aa052764eff?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=7d968dee23958e5a65a99699c1a4ba05&auto=format&fit=crop&w=1500&q=80";
-var imageUrl2 = "https://images.unsplash.com/photo-1522891735718-6a86a483c165?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=300&h=200&fit=crop&ixid=eyJhcHBfaWQiOjF9&s=99553e144acd1557b378071c47042188";
+var imageLarge = "https://images.unsplash.com/photo-1495249737766-5aa052764eff?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=7d968dee23958e5a65a99699c1a4ba05&auto=format&fit=crop&w=1500&q=80";
+var imageSmall = "https://images.unsplash.com/photo-1522891735718-6a86a483c165?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=300&h=200&fit=crop&ixid=eyJhcHBfaWQiOjF9&s=99553e144acd1557b378071c47042188";
+var imageGif = "https://78.media.tumblr.com/db333e9e3de2cab4498263948e37c789/tumblr_pcr1okpIr01svh4goo1_500.gif";
 
 class Home extends StatelessWidget{
   @override
@@ -39,16 +40,21 @@ class Home extends StatelessWidget{
               buildOption(
                 context,
                 text: "open small image",
-                imageUrl: imageUrl2,
+                imageUrl: imageSmall,
                 minScale: 0.1,
                 maxScale: 1.05
               ),
               buildOption(
                   context,
                   text: "open large image",
-                  imageUrl: imageUrl,
+                  imageUrl: imageLarge,
                   minScale: PhotoViewScaleBoundary.contained,
                   maxScale: PhotoViewScaleBoundary.covered
+              ),
+              buildOption(
+                  context,
+                  text: "open gif",
+                  imageUrl: imageGif,
               ),
             ],
           ))

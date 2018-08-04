@@ -13,6 +13,7 @@ class PhotoViewImageWrapper extends StatefulWidget{
     @required this.imageInfo,
     @required this.scaleState,
     @required this.scaleBoundaries,
+    @required this.imageProvider,
     this.backgroundColor,
   }) : super(key:key);
 
@@ -22,6 +23,7 @@ class PhotoViewImageWrapper extends StatefulWidget{
   final PhotoViewScaleState scaleState;
   final Color backgroundColor;
   final ScaleBoundaries scaleBoundaries;
+  final ImageProvider imageProvider;
 
   @override
   State<StatefulWidget> createState() {
@@ -214,9 +216,8 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper> with Tick
                     widget.imageInfo.image.width /1,
                     widget.imageInfo.image.height /1
                 ),
-                child: new RawImage(
-                  image: widget.imageInfo.image,
-                  scale: widget.imageInfo.scale,
+                child: new Image(
+                  image: widget.imageProvider,
                 ),
               ),
               transform: matrix,
