@@ -15,7 +15,7 @@ class PhotoView extends StatefulWidget {
   final Color backgroundColor;
   final minScale;
   final maxScale;
-  final gaplessPlayback;
+  final bool gaplessPlayback;
 
   PhotoView(
       {Key key,
