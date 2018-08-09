@@ -2,7 +2,7 @@
 
 ## PhotoView class
 
-A [StatefulWidget](https://docs.flutter.io/flutter/widgets/StatefulWidget-class.html) that contains all the photo view rendereing elements.
+A [StatefulWidget](https://docs.flutter.io/flutter/widgets/StatefulWidget-class.html) that contains all the photo view rendering elements.
 
 #### Sample code
 
