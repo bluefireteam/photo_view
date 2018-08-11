@@ -8,6 +8,7 @@ environment:
   sdk: ">=1.19.0 <2.0.0"
 
 dependencies:
+  after_layout: ^1.0.4
   flutter:
     sdk: flutter
 

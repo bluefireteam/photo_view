@@ -6,6 +6,7 @@ import 'package:photo_view/photo_view_image_wrapper.dart';
 import 'package:photo_view/photo_view_scale_boundaries.dart';
 import 'package:photo_view/photo_view_scale_state.dart';
 import 'package:photo_view/photo_view_utils.dart';
+import 'package:after_layout/after_layout.dart';
 
 export 'package:photo_view/photo_view_scale_boundary.dart';
 
@@ -15,6 +16,7 @@ class PhotoView extends StatefulWidget{
   final Color backgroundColor;
   final minScale;
   final maxScale;
+  final Size size;
 
   PhotoView({
     Key key,
@@ -23,6 +25,7 @@ class PhotoView extends StatefulWidget{
     this.backgroundColor = const Color.fromRGBO(0, 0, 0, 1.0),
     this.minScale,
     this.maxScale,
+    this.size
   }) : super(key: key);
 
   @override
@@ -34,6 +37,7 @@ class PhotoView extends StatefulWidget{
 
 class _PhotoViewState extends State<PhotoView>{
   PhotoViewScaleState _scaleState;
+  GlobalKey containerKey = new GlobalKey();
 
   Future<ImageInfo> _getImage(){
     Completer completer = new Completer<ImageInfo>();
@@ -65,6 +69,7 @@ class _PhotoViewState extends State<PhotoView>{
   }
   @override
   Widget build(BuildContext context) {
+    BuildContext _context = context;
     return new FutureBuilder(
         future: _getImage(),
         builder: (BuildContext context, AsyncSnapshot<ImageInfo> info) {
@@ -76,11 +81,12 @@ class _PhotoViewState extends State<PhotoView>{
               imageInfo: info.data,
               scaleState: _scaleState,
               backgroundColor: widget.backgroundColor,
+              size: widget.size ?? MediaQuery.of(context).size,
               scaleBoundaries: new ScaleBoundaries(
                 widget.minScale ?? 0.0,
                 widget.maxScale ?? 100000000000.0,
                 imageInfo: info.data,
-                size: MediaQuery.of(context).size
+                size: widget.size ?? MediaQuery.of(context).size,
               ),
             );
           } else {
@@ -103,4 +109,53 @@ class _PhotoViewState extends State<PhotoView>{
         )
       );
   }
+}
+
+
+class PhotoViewInline extends StatefulWidget{
+  final ImageProvider imageProvider;
+  final Widget loadingChild;
+  final Color backgroundColor;
+  final minScale;
+  final maxScale;
+  final Size size;
+
+  PhotoViewInline({
+    Key key,
+    @required this.imageProvider,
+    this.loadingChild,
+    this.backgroundColor = const Color.fromRGBO(0, 0, 0, 1.0),
+    this.minScale,
+    this.maxScale,
+  }) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => new _PhotoViewInlineState();
+}
+
+class _PhotoViewInlineState extends State<PhotoViewInline> with AfterLayoutMixin<PhotoViewInline>{
+
+  Size _size;
+
+  @override
+  void afterFirstLayout(BuildContext context) {
+    setState(() {
+      _size = context.size;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new PhotoView(
+      imageProvider: widget.imageProvider,
+      loadingChild: widget.loadingChild,
+      backgroundColor: widget.backgroundColor,
+      minScale: widget.minScale,
+      maxScale: widget.maxScale,
+      size: _size,
+    );
+  }
+
+
+
 }

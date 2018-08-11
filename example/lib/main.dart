@@ -27,6 +27,7 @@ var imageLarge = "https://images.unsplash.com/photo-1495249737766-5aa052764eff?i
 var imageSmall = "https://images.unsplash.com/photo-1522891735718-6a86a483c165?ixlib=rb-0.3.5&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=300&h=200&fit=crop&ixid=eyJhcHBfaWQiOjF9&s=99553e144acd1557b378071c47042188";
 var imageGif = "https://78.media.tumblr.com/db333e9e3de2cab4498263948e37c789/tumblr_pcr1okpIr01svh4goo1_500.gif";
 
+
 class Home extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
@@ -110,14 +111,22 @@ class ImageViewScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new Container(
-        child: new PhotoView(
-          imageProvider: new NetworkImage(imageAddress),
-          loadingChild: new LoadingText(),
-          backgroundColor: Colors.white,
-          minScale: minScale,
-          maxScale: maxScale,
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text("hello"),
+      ),
+      body: new Container(
+        child: new ConstrainedBox(
+          constraints: new BoxConstraints.expand(),
+          child: new PhotoViewInline(
+            imageProvider: new NetworkImage(imageAddress),
+            loadingChild: new LoadingText(),
+            backgroundColor: Colors.black,
+            minScale: minScale,
+            maxScale: maxScale,
+          ),
         )
+      ),
     );
   }
 
