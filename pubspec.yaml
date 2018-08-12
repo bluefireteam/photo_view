@@ -8,7 +8,7 @@ environment:
   sdk: ">=1.19.0 <2.0.0"
 
 dependencies:
-  after_layout: ^1.0.4
+  after_layout: 1.0.4
   flutter:
     sdk: flutter
 
@@ -22,8 +22,6 @@ dev_dependencies:
 # The following section is specific to Flutter.
 flutter:
 
-  assets:
-  - assets/peanut.gif
   # To add assets to your package, add an assets section, like this:
   # assets:
   #  - images/a_dot_burr.jpeg

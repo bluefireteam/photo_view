@@ -69,7 +69,6 @@ class _PhotoViewState extends State<PhotoView>{
   }
   @override
   Widget build(BuildContext context) {
-    BuildContext _context = context;
     return new FutureBuilder(
         future: _getImage(),
         builder: (BuildContext context, AsyncSnapshot<ImageInfo> info) {
@@ -118,7 +117,6 @@ class PhotoViewInline extends StatefulWidget{
   final Color backgroundColor;
   final minScale;
   final maxScale;
-  final Size size;
 
   PhotoViewInline({
     Key key,
