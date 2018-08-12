@@ -117,7 +117,6 @@ class PhotoViewInline extends StatefulWidget{
   final Color backgroundColor;
   final minScale;
   final maxScale;
-  final Size size;
 
   PhotoViewInline({
     Key key,
