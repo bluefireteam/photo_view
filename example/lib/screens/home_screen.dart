@@ -1,5 +1,6 @@
 import 'package:example/screens/app_bar.dart';
-import 'package:example/screens/full_screen_example.dart';
+import 'package:example/screens/full_screen_examples.dart';
+import 'package:example/screens/inline_examples.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget{
@@ -31,20 +32,24 @@ class HomeScreen extends StatelessWidget{
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => FullScreenExample(),
+                          builder: (context) => FullScreenExamples(),
                         ),
                       );
                     },
                     text: "Full screen"
                 ),
                 this._buildItem(context,
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => InlineExamples(),
+                        ),
+                      );
+                    },
                     text: "Part of the screen"
                 ),
-                this._buildItem(context,
-                    onPressed: () {},
-                    text: "Different Providers"
-                ),
+
 
                 this._buildItem(context,
                     text: "Hero animation (TODO)"
