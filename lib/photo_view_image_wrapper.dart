@@ -13,6 +13,7 @@ class PhotoViewImageWrapper extends StatefulWidget{
     @required this.scaleState,
     @required this.scaleBoundaries,
     @required this.imageProvider,
+    @required this.size,
     this.backgroundColor,
     this.gaplessPlayback = false
   }) : super(key:key);
@@ -25,6 +26,7 @@ class PhotoViewImageWrapper extends StatefulWidget{
   final ScaleBoundaries scaleBoundaries;
   final ImageProvider imageProvider;
   final bool gaplessPlayback;
+  final Size size;
 
   @override
   State<StatefulWidget> createState() {
@@ -102,8 +104,8 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper> with Tick
     final y = offset.dy;
     final computedWidth = widget.imageInfo.image.width * _scale;
     final computedHeight = widget.imageInfo.image.height * _scale;
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = widget.size.width;
+    final screenHeight = widget.size.height;
     final screenHalfX = screenWidth / 2;
     final screenHalfY = screenHeight / 2;
 
@@ -129,7 +131,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper> with Tick
       : getScaleForScaleState(
         imageInfo: widget.imageInfo,
         scaleState: widget.scaleState,
-        size: MediaQuery.of(context).size
+        size: widget.size
       ).clamp(
         widget.scaleBoundaries.computeMinScale(),
         widget.scaleBoundaries.computeMaxScale()
@@ -184,7 +186,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper> with Tick
           _scale == null ? getScaleForScaleState(
             imageInfo: widget.imageInfo,
             scaleState: PhotoViewScaleState.contained,
-            size: MediaQuery.of(context).size
+            size: widget.size
           ).clamp(
             widget.scaleBoundaries.computeMinScale(),
             widget.scaleBoundaries.computeMaxScale()
@@ -192,7 +194,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper> with Tick
           getScaleForScaleState(
             imageInfo: widget.imageInfo,
             scaleState: widget.scaleState,
-            size: MediaQuery.of(context).size
+            size: widget.size
           ).clamp(
             widget.scaleBoundaries.computeMinScale(),
             widget.scaleBoundaries.computeMaxScale()
