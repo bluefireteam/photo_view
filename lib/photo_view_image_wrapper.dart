@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view_scale_boundaries.dart';
 import 'package:photo_view/photo_view_scale_state.dart';
@@ -16,6 +15,7 @@ class PhotoViewImageWrapper extends StatefulWidget{
     @required this.imageProvider,
     @required this.size,
     this.backgroundColor,
+    this.gaplessPlayback = false
   }) : super(key:key);
 
   final Function onDoubleTap;
@@ -25,6 +25,7 @@ class PhotoViewImageWrapper extends StatefulWidget{
   final Color backgroundColor;
   final ScaleBoundaries scaleBoundaries;
   final ImageProvider imageProvider;
+  final bool gaplessPlayback;
   final Size size;
 
   @override
@@ -220,6 +221,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper> with Tick
                 ),
                 child: new Image(
                   image: widget.imageProvider,
+                  gaplessPlayback: widget.gaplessPlayback,
                 ),
               ),
               transform: matrix,

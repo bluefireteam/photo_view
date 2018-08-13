@@ -16,6 +16,7 @@ class PhotoView extends StatefulWidget{
   final Color backgroundColor;
   final minScale;
   final maxScale;
+  final bool gaplessPlayback;
   final Size size;
 
   PhotoView({
@@ -25,7 +26,8 @@ class PhotoView extends StatefulWidget{
     this.backgroundColor = const Color.fromRGBO(0, 0, 0, 1.0),
     this.minScale,
     this.maxScale,
-    this.size
+    this.gaplessPlayback = false,
+    this.size,
   }) : super(key: key);
 
   @override
@@ -80,6 +82,7 @@ class _PhotoViewState extends State<PhotoView>{
               imageInfo: info.data,
               scaleState: _scaleState,
               backgroundColor: widget.backgroundColor,
+              gaplessPlayback: widget.gaplessPlayback,
               size: widget.size ?? MediaQuery.of(context).size,
               scaleBoundaries: new ScaleBoundaries(
                 widget.minScale ?? 0.0,
