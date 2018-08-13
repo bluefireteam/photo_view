@@ -12,17 +12,11 @@ Resolves a image provider and show the result with useful gestures support, such
 
 Add `photo_view` as a dependency in your pubspec.yaml file.
 
-#### Todo:
-- [x] Scale on doubleTap
-- [x] Zoom when pinched
-- [x] Respect screen and image boundaries
-- [x] Center image when zooming out
-- [x] Add image zoom limits (`minScale` an `maxScale`)
-- [x] Add GIF support
-- [ ] Multiple image support (Gallery mode)
-- [ ] Rotate gesture rotates image ([Work in progress](https://github.com/renancaraujo/photo_view/pull/4))
+Import Photo View:
+```dart
+import 'package:photo_view/photo_view.dart';
+```
 
-Pull requests are welcome 😊.
 
 ## Sample code
 
@@ -33,7 +27,9 @@ Given a `ImageProvider imageProvider` (such as [AssetImage](https://docs.flutter
 Widget build(BuildContext context) {
   return new Container(
     child: new PhotoView(
-      imageProvider: imageProvider
+      imageProvider: AssetImage("assets/large-image.jpg"),
+      minScale: PhotoViewScaleBoundary.contained * 0.8,
+      maxScale: 4.0,
     );
   );
 }
@@ -63,14 +59,23 @@ For more information about how to use Photo View, check the [API Docs](/API.md)
 ### Screenshots
 
 
-| Large image  | Small image |
-| ------------- | ------------- |
-| ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen1.gif)  | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen2.gif)  |
+| Large image  | Small image | Animated GIF  | Limited scale | Inline |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen1.gif)  | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen2.gif)  | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen3.gif)  | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen4.gif)  | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen5.gif)  |
 
-| Animated GIF  | Limited scale |
-| ------------- | ------------- |
-| ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen3.gif)  | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen4.gif)  |
 
+## Todo:
+
+- [x] Scale on doubleTap
+- [x] Zoom when pinched
+- [x] Respect screen and image boundaries
+- [x] Center image when zooming out
+- [x] Add image zoom limits (`minScale` an `maxScale`)
+- [x] Add GIF support
+- [ ] Multiple image support (Gallery mode)
+- [ ] Rotate gesture rotates image ([Work in progress](https://github.com/renancaraujo/photo_view/pull/4))
+
+Pull requests are welcome 😊.
 
 
 

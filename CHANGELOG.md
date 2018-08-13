@@ -1,3 +1,3 @@
-## [0.0.1] - TODO: Add release date.
+# CHANGELOG
 
-* TODO: Describe initial release.
+See [REleases page on github](https://github.com/renancaraujo/photo_view/releases)
