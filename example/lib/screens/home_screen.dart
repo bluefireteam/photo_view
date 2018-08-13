@@ -1,6 +1,6 @@
-import 'package:example/screens/app_bar.dart';
-import 'package:example/screens/full_screen_examples.dart';
-import 'package:example/screens/inline_examples.dart';
+import './app_bar.dart';
+import './full_screen_examples.dart';
+import './inline_examples.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget{

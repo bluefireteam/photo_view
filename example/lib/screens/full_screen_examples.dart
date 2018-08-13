@@ -1,4 +1,4 @@
-import 'package:example/screens/app_bar.dart';
+import './app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 
