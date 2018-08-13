@@ -39,6 +39,23 @@ Widget build(BuildContext context) {
 }
 ```
 
+## Inline Usage
+
+If you want `PhotoView` to scale the image in container with size different than the screen, use `PhotoViewInline` instead.
+
+```dart
+@override
+Widget build(BuildContext context) {
+  return new Container(
+    child: new PhotoViewInline(
+      imageProvider: AssetImage("assets/large-image.jpg"),
+      minScale: PhotoViewScaleBoundary.contained * 0.8,
+      maxScale: 4.0,
+    );
+  );
+}
+```
+
 ### API
 
 For more information about how to use Photo View, check the [API Docs](/API.md)
@@ -46,10 +63,13 @@ For more information about how to use Photo View, check the [API Docs](/API.md)
 ### Screenshots
 
 
-| Simple Image  | GIF |
+| Large image  | Small image |
 | ------------- | ------------- |
-| ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen.gif)  | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen_gif.gif)  |
+| ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen1.gif)  | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen2.gif)  |
 
+| Animated GIF  | Limited scale |
+| ------------- | ------------- |
+| ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen3.gif)  | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen4.gif)  |
 
 
 
