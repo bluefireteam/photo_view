@@ -170,7 +170,7 @@ class FullScreenWrapper extends StatelessWidget{
   final dynamic maxScale;
 
 
-  FullScreenWrapper({
+  const FullScreenWrapper({
     this.imageProvider,
     this.loadingChild,
     this.backgroundColor,

@@ -19,7 +19,7 @@ class PhotoView extends StatefulWidget{
   final bool gaplessPlayback;
   final Size size;
 
-  PhotoView({
+  const PhotoView({
     Key key,
     @required this.imageProvider,
     this.loadingChild,
@@ -42,10 +42,12 @@ class _PhotoViewState extends State<PhotoView>{
   GlobalKey containerKey = new GlobalKey();
 
   Future<ImageInfo> _getImage(){
-    Completer completer = new Completer<ImageInfo>();
-    ImageStream stream = widget.imageProvider.resolve(new ImageConfiguration());
-    var listener = (ImageInfo info, bool completed) {
-      completer.complete(info);
+    final Completer completer = new Completer<ImageInfo>();
+    final ImageStream stream = widget.imageProvider.resolve(const ImageConfiguration());
+    final listener = (ImageInfo info, bool synchronousCall) {
+      if(!completer.isCompleted){
+        completer.complete(info);
+      }
     };
     stream.addListener(listener);
     completer.future.then((_){ stream.removeListener(listener); });

@@ -1,10 +1,11 @@
 
 class PhotoViewScaleBoundary {
   final String _value;
-  final multiplier;
+  final double multiplier;
   const PhotoViewScaleBoundary._internal(this._value, [this.multiplier = 1.0]);
 
-  toString() => 'Enum.$_value';
+  @override
+  String toString() => 'Enum.$_value';
 
   static const contained = const PhotoViewScaleBoundary._internal('contained');
   static const covered = const PhotoViewScaleBoundary._internal('covered');

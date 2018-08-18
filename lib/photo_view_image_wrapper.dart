@@ -83,31 +83,31 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper> with Tick
     double minScale = widget.scaleBoundaries.computeMinScale();
 
     //animate back to maxScale if gesture exceeded the maxScale specified
-    if(this._scale > maxScale){
-      double scaleComebackRatio = maxScale / this._scale;
+    if(_scale > maxScale){
+      final double scaleComebackRatio = maxScale / this._scale;
       animateScale(_scale, maxScale);
       animatePosition(_position, clampPosition(_position * scaleComebackRatio, maxScale));
       return;
     }
 
     //animate back to minScale if gesture fell smaller than the minScale specified
-    if(this._scale < minScale){
-      double scaleComebackRatio = minScale / this._scale;
+    if(_scale < minScale){
+      final double scaleComebackRatio = minScale / _scale;
       animateScale(_scale, minScale);
       animatePosition(_position, clampPosition(_position * scaleComebackRatio, maxScale));
     }
   }
 
   Offset clampPosition(Offset offset, [double scale]) {
-    double _scale = scale ?? scaleStateAwareScale();
-    final x = offset.dx;
-    final y = offset.dy;
-    final computedWidth = widget.imageInfo.image.width * _scale;
-    final computedHeight = widget.imageInfo.image.height * _scale;
-    final screenWidth = widget.size.width;
-    final screenHeight = widget.size.height;
-    final screenHalfX = screenWidth / 2;
-    final screenHalfY = screenHeight / 2;
+    final double _scale = scale ?? scaleStateAwareScale();
+    final double x = offset.dx;
+    final double y = offset.dy;
+    final double computedWidth = widget.imageInfo.image.width * _scale;
+    final double computedHeight = widget.imageInfo.image.height * _scale;
+    final double screenWidth = widget.size.width;
+    final double screenHeight = widget.size.height;
+    final double screenHalfX = screenWidth / 2;
+    final double screenHalfY = screenHeight / 2;
 
     final double computedX = screenWidth < computedWidth ? x.clamp(
         0 - (computedWidth / 2) + screenHalfX,
@@ -177,6 +177,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper> with Tick
     super.dispose();
   }
 
+  @override
   void didUpdateWidget(PhotoViewImageWrapper oldWidget){
     super.didUpdateWidget(oldWidget);
     if(
@@ -206,7 +207,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper> with Tick
 
   @override
   Widget build(BuildContext context) {
-    var matrix = new Matrix4.identity()
+    final matrix = new Matrix4.identity()
       ..translate(_position.dx, _position.dy)
       ..scale(scaleStateAwareScale());
 

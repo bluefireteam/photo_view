@@ -14,7 +14,7 @@ class ExampleAppBar extends StatelessWidget{
   Widget build(BuildContext context) {
     return new SafeArea(
       child: new Container(
-        padding: EdgeInsets.fromLTRB(20.0, 5.0, 20.0, 5.0),
+        padding: const EdgeInsets.fromLTRB(20.0, 5.0, 20.0, 5.0),
         decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: const BorderRadius.only(
@@ -33,16 +33,16 @@ class ExampleAppBar extends StatelessWidget{
           children: <Widget>[
             new Container(
               child: showGoBack ? new IconButton(
-                icon: new Icon(Icons.chevron_left),
+                icon: const Icon(Icons.chevron_left),
                 onPressed: () { Navigator.pop(context); },
                 padding: EdgeInsets.zero,
 
               ) : new Container( height: 50.0,),
             ),
             new Expanded(
-              child: new Text(
+              child: Text(
                 title,
-                style: new TextStyle(
+                style: const TextStyle(
                   fontSize: 25.0,
                   fontWeight: FontWeight.w700
                 ),

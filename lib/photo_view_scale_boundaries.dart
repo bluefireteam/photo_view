@@ -18,12 +18,14 @@ class ScaleBoundaries {
       return scaleForContained(
         size: size,
         imageInfo: imageInfo
+      // ignore: avoid_as
       ) * (_minScale as PhotoViewScaleBoundary).multiplier;
     }
     if(_minScale == PhotoViewScaleBoundary.covered){
       return scaleForCovering(
           size: size,
           imageInfo: imageInfo
+      // ignore: avoid_as
       ) * (_minScale as PhotoViewScaleBoundary).multiplier;
     }
     return _minScale;
@@ -34,12 +36,14 @@ class ScaleBoundaries {
       return scaleForContained(
           size: size,
           imageInfo: imageInfo
+      // ignore: avoid_as
       ) * (_maxScale as PhotoViewScaleBoundary).multiplier;
     }
     if(_maxScale == PhotoViewScaleBoundary.covered){
       return scaleForCovering(
           size: size,
           imageInfo: imageInfo
+      // ignore: avoid_as
       ) * (_maxScale as PhotoViewScaleBoundary).multiplier;
     }
     return _maxScale;
