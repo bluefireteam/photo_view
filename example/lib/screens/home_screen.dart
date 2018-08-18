@@ -1,3 +1,5 @@
+import 'package:example/screens/hero_example.dart';
+
 import './app_bar.dart';
 import './full_screen_examples.dart';
 import './inline_examples.dart';
@@ -12,12 +14,12 @@ class HomeScreen extends StatelessWidget{
       body: new Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          new ExampleAppBar(
+          const ExampleAppBar(
             title: "Photo View"
           ),
           new Container(
             padding: EdgeInsets.all(20.0),
-            child: new Text(
+            child: const Text(
               "See bellow examples of some of the most common photo view usage cases",
               style: const TextStyle(
                 fontSize: 18.0
@@ -27,7 +29,7 @@ class HomeScreen extends StatelessWidget{
           new Expanded(
             child: new ListView(
               children: <Widget>[
-                this._buildItem(context,
+                _buildItem(context,
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -38,7 +40,7 @@ class HomeScreen extends StatelessWidget{
                     },
                     text: "Full screen"
                 ),
-                this._buildItem(context,
+                _buildItem(context,
                     onPressed: () {
                       Navigator.push(
                         context,
@@ -51,10 +53,18 @@ class HomeScreen extends StatelessWidget{
                 ),
 
 
-                this._buildItem(context,
-                    text: "Hero animation (TODO)"
+                _buildItem(context,
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => HeroExample(),
+                        ),
+                      );
+                    },
+                    text: "Hero animation"
                 ),
-                this._buildItem(context,
+                _buildItem(context,
                     text: "Gallery (TODO)"
                 ),
               ],

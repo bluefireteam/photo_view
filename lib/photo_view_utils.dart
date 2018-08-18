@@ -1,4 +1,4 @@
-import 'dart:math' as Math;
+import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view_scale_state.dart';
@@ -53,7 +53,7 @@ double scaleForContained({
   final double screenWidth = size.width;
   final double screenHeight = size.height;
 
-  return Math.min(screenWidth/imageWidth, screenHeight/imageHeight);
+  return math.min(screenWidth/imageWidth, screenHeight/imageHeight);
 }
 
 
@@ -67,5 +67,5 @@ double scaleForCovering({
   final double screenWidth = size.width;
   final double screenHeight = size.height;
 
-  return Math.max(screenWidth/imageWidth, screenHeight/imageHeight);
+  return math.max(screenWidth/imageWidth, screenHeight/imageHeight);
 }
