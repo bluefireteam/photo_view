@@ -45,7 +45,8 @@ class _PhotoViewState extends State<PhotoView>{
     Completer completer = new Completer<ImageInfo>();
     ImageStream stream = widget.imageProvider.resolve(new ImageConfiguration());
     var listener = (ImageInfo info, bool completed) {
-      completer.complete(info);
+      if(!completed)
+        completer.complete(info);
     };
     stream.addListener(listener);
     completer.future.then((_){ stream.removeListener(listener); });
