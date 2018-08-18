@@ -1,6 +1,6 @@
-# Flutter Photo View [![Build Status - Travis](https://travis-ci.org/renancaraujo/photo_view.svg?branch=master)](https://travis-ci.org/renancaraujo/photo_view)
+# Flutter Photo View 
 
-[![Pub](https://img.shields.io/pub/v/photo_view.svg?style=popout)](https://pub.dartlang.org/packages/photo_view)
+[![Build Status - Travis](https://travis-ci.org/renancaraujo/photo_view.svg?branch=master)](https://travis-ci.org/renancaraujo/photo_view) [![Pub](https://img.shields.io/pub/v/photo_view.svg?style=popout)](https://pub.dartlang.org/packages/photo_view)
 
 A simple zoomable image widget for Flutter
 
@@ -59,9 +59,13 @@ For more information about how to use Photo View, check the [API Docs](/API.md)
 ### Screenshots
 
 
-| Large image  | Small image | Animated GIF  | Limited scale | Inline |
-| ------------- | ------------- | ------------- | ------------- | ------------- |
-| ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen1.gif)  | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen2.gif)  | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen3.gif)  | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen4.gif)  | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen5.gif)  |
+| Large image  | Small image | Animated GIF  |
+| ------------- | ------------- | ------------- |
+| ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen1.gif)  | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen2.gif)  | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen3.gif)  |
+
+| Limited scale | Inline | Hero animation |
+| ------------- | ------------- | ------------- |
+| ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen4.gif)  | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen5.gif)  | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen6.gif)  |
 
 
 ## Todo:
