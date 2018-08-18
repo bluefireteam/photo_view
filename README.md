@@ -54,7 +54,7 @@ Widget build(BuildContext context) {
 
 ### API
 
-For more information about how to use Photo View, check the [API Docs](/API.md)
+For more information about how to use Photo View, check the [API Docs](https://pub.dartlang.org/documentation/photo_view/latest/photo_view/photo_view-library.html)
 
 ### Screenshots
 

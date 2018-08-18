@@ -1,7 +1,7 @@
-import 'package:example/screens/hero_example.dart';
 import 'package:flutter/material.dart';
 import './app_bar.dart';
 import './full_screen_examples.dart';
+import './hero_example.dart';
 import './inline_examples.dart';
 
 class HomeScreen extends StatelessWidget{
