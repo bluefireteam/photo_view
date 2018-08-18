@@ -23,8 +23,8 @@ class FullScreenExamples extends StatelessWidget{
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => FullScreenWrapper(
-                          imageProvider: AssetImage("assets/large-image.jpg"),
+                        builder: (context) => const FullScreenWrapper(
+                          imageProvider: const AssetImage("assets/large-image.jpg"),
                         ),
                       )
                     );
@@ -37,8 +37,8 @@ class FullScreenExamples extends StatelessWidget{
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => FullScreenWrapper(
-                            imageProvider: AssetImage("assets/small-image.jpg"),
+                          builder: (context) => const FullScreenWrapper(
+                            imageProvider: const AssetImage("assets/small-image.jpg"),
                             backgroundColor: Colors.pinkAccent,
                           ),
                         ),
@@ -54,8 +54,8 @@ class FullScreenExamples extends StatelessWidget{
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => FullScreenWrapper(
-                          imageProvider: NetworkImage("https://source.unsplash.com/900x1600/?camera,paper"),
+                        builder: (context) => const FullScreenWrapper(
+                          imageProvider: const NetworkImage("https://source.unsplash.com/900x1600/?camera,paper"),
                         ),
                       ),
                     );
@@ -69,8 +69,8 @@ class FullScreenExamples extends StatelessWidget{
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => FullScreenWrapper(
-                          imageProvider: AssetImage("assets/peanut.gif"),
+                        builder: (context) => const FullScreenWrapper(
+                          imageProvider: const AssetImage("assets/peanut.gif"),
                           backgroundColor: Colors.white,
                           maxScale: 2.0,
                         ),
@@ -100,7 +100,7 @@ class FullScreenExamples extends StatelessWidget{
                         context,
                         MaterialPageRoute(
                           builder: (context) => FullScreenWrapper(
-                            imageProvider: AssetImage("assets/large-image.jpg"),
+                            imageProvider: const AssetImage("assets/large-image.jpg"),
                             minScale: PhotoViewScaleBoundary.contained * 0.8,
                             maxScale: PhotoViewScaleBoundary.covered * 1.1,
                           ),
@@ -123,7 +123,7 @@ class ExampleButtonNode extends StatelessWidget{
   final String title;
   final Function onPressed;
 
-  ExampleButtonNode({
+  const ExampleButtonNode({
     this.title,
     this.onPressed,
   });
@@ -131,25 +131,25 @@ class ExampleButtonNode extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     return new Container(
-      margin: EdgeInsets.symmetric(
+      margin: const EdgeInsets.symmetric(
         vertical: 20.0,
       ),
       child: new Column(
         children: <Widget>[
-          new Text(this.title,
-            style: new TextStyle(
+          new Text(title,
+            style: const  TextStyle(
               color: Colors.black,
               fontSize: 21.0,
               fontWeight: FontWeight.w600
             ),
           ),
           new Container(
-            margin: EdgeInsets.only(
+            margin: const EdgeInsets.only(
               top: 10.0,
             ),
             child: new RaisedButton(
               onPressed: onPressed,
-              child: new Text("Open example"),
+              child: const  Text("Open example"),
               color: Colors.amber,
             )
           )

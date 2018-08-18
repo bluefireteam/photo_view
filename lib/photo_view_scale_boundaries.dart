@@ -3,8 +3,8 @@ import 'package:photo_view/photo_view_scale_boundary.dart';
 import 'package:photo_view/photo_view_utils.dart';
 
 class ScaleBoundaries {
-  final _minScale;
-  final _maxScale;
+  final dynamic _minScale;
+  final dynamic _maxScale;
   Size size;
   ImageInfo imageInfo;
 

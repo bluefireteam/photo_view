@@ -11,7 +11,7 @@ class PhotoViewScaleBoundary {
   static const covered = const PhotoViewScaleBoundary._internal('covered');
 
   PhotoViewScaleBoundary operator * (double multiplier){
-    return new PhotoViewScaleBoundary._internal(this._value, multiplier);
+    return new PhotoViewScaleBoundary._internal(_value, multiplier);
   }
 
   @override
