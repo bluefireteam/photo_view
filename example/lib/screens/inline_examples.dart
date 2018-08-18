@@ -1,6 +1,6 @@
-import './app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
+import './app_bar.dart';
 
 class InlineExamples extends StatelessWidget{
   @override
@@ -17,8 +17,8 @@ class InlineExamples extends StatelessWidget{
               child: new ListView(
                 children: <Widget>[
                   new Container(
-                    padding: EdgeInsets.all(20.0),
-                    child: new Text(
+                    padding: const EdgeInsets.all(20.0),
+                    child: const Text(
                       "In order to use photoview in a box with the size different than the screen, use the class PhotoViewInline",
                       style: const TextStyle(
                           fontSize: 18.0
@@ -26,12 +26,12 @@ class InlineExamples extends StatelessWidget{
                     ),
                   ),
                   new Container(
-                    margin: EdgeInsets.symmetric(
+                    margin: const EdgeInsets.symmetric(
                       vertical: 20.0
                     ),
                     height: 300.0,
-                    child: new PhotoViewInline(
-                      imageProvider: AssetImage("assets/large-image.jpg"),
+                    child: const PhotoViewInline(
+                      imageProvider: const AssetImage("assets/large-image.jpg"),
                       maxScale: PhotoViewScaleBoundary.covered,
                     ),
                   ),

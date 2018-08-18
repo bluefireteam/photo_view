@@ -1,10 +1,8 @@
 analyzer:
-  strong-mode: true
   errors:
     mixin_inherits_from_not_object: ignore
 linter:
   rules:
-    - unnecessary_new
     - always_declare_return_types
     - always_put_control_body_on_new_line
     - always_require_non_null_named_parameters

@@ -63,14 +63,14 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper> with Tick
 
   void onScaleStart(ScaleStartDetails details) {
     _scaleBefore = scaleStateAwareScale();
-    _normalizedPosition= (details.focalPoint - _position);
+    _normalizedPosition= details.focalPoint - _position;
     _scaleAnimationController.stop();
     _positionAnimationController.stop();
   }
 
   void onScaleUpdate(ScaleUpdateDetails details) {
-    final double newScale = (_scaleBefore * details.scale);
-    final Offset delta = (details.focalPoint - _normalizedPosition);
+    final double newScale = _scaleBefore * details.scale;
+    final Offset delta = details.focalPoint - _normalizedPosition;
     if(details.scale != 1.0){
       widget.onStartPanning();
     }
@@ -81,12 +81,12 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper> with Tick
   }
 
   void onScaleEnd(ScaleEndDetails details) {
-    double maxScale = widget.scaleBoundaries.computeMaxScale();
-    double minScale = widget.scaleBoundaries.computeMinScale();
+    final double maxScale = widget.scaleBoundaries.computeMaxScale();
+    final double minScale = widget.scaleBoundaries.computeMinScale();
 
     //animate back to maxScale if gesture exceeded the maxScale specified
     if(_scale > maxScale){
-      final double scaleComebackRatio = maxScale / this._scale;
+      final double scaleComebackRatio = maxScale / _scale;
       animateScale(_scale, maxScale);
       animatePosition(_position, clampPosition(_position * scaleComebackRatio, maxScale));
       return;
@@ -254,8 +254,8 @@ class ImagePositionDelegate extends SingleChildLayoutDelegate{
 
   @override
   Offset getPositionForChild(Size size, Size childSize) {
-    double offsetX = ((size.width - imageWidth) / 2);
-    double offsetY = ((size.height - imageHeight) / 2);
+    final double offsetX = (size.width - imageWidth) / 2;
+    final double offsetY = (size.height - imageHeight) / 2;
     return new Offset(offsetX, offsetY);
   }
 

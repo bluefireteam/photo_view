@@ -14,8 +14,8 @@ class PhotoView extends StatefulWidget{
   final ImageProvider imageProvider;
   final Widget loadingChild;
   final Color backgroundColor;
-  final minScale;
-  final maxScale;
+  final dynamic minScale;
+  final dynamic maxScale;
   final bool gaplessPlayback;
   final Size size;
   final Object heroTag;
@@ -141,10 +141,10 @@ class PhotoViewInline extends StatefulWidget{
   final ImageProvider imageProvider;
   final Widget loadingChild;
   final Color backgroundColor;
-  final minScale;
-  final maxScale;
+  final dynamic minScale;
+  final dynamic maxScale;
 
-  PhotoViewInline({
+  const PhotoViewInline({
     Key key,
     @required this.imageProvider,
     this.loadingChild,
