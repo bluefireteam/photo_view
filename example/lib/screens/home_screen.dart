@@ -51,8 +51,6 @@ class HomeScreen extends StatelessWidget{
                     },
                     text: "Part of the screen"
                 ),
-
-
                 _buildItem(context,
                     onPressed: () {
                       Navigator.push(

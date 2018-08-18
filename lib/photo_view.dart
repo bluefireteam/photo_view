@@ -18,7 +18,7 @@ class PhotoView extends StatefulWidget{
   final maxScale;
   final bool gaplessPlayback;
   final Size size;
-  final String heroTag;
+  final Object heroTag;
 
   const PhotoView({
     Key key,
@@ -45,7 +45,7 @@ class _PhotoViewState extends State<PhotoView>{
   ImageInfo _imageInfo;
 
   Future<ImageInfo> _getImage(){
-    final Completer completer = new Completer<ImageInfo>();
+    final Completer completer = Completer<ImageInfo>();
     final ImageStream stream = widget.imageProvider.resolve(const ImageConfiguration());
     final listener = (ImageInfo info, bool synchronousCall) {
       if(!completer.isCompleted){
@@ -126,7 +126,6 @@ class _PhotoViewState extends State<PhotoView>{
   Widget buildLoading() {
     return widget.loadingChild != null
       ? widget.loadingChild
-      // ignore: prefer_const_constructors
       : Center(
       child: Container(
         width: 20.0,
