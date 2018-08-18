@@ -14,7 +14,8 @@ new PhotoView(
   minScale: PhotoViewScaleBoundary.contained,
   maxScale: 2.0,
   gaplessPlayback: false,
-  size: MediaQuery.of(context).size
+  size: MediaQuery.of(context).size,
+  heroTag: "someTag"
 );
 ```
 
@@ -27,7 +28,8 @@ new PhotoView(
 dynamic ([double](https://docs.flutter.io/flutter/dart-core/double-class.html) or [PhotoViewScaleBoundary](/lib/photo_view_scale_boundary.dart)) minScale,
 dynamic ([double](https://docs.flutter.io/flutter/dart-core/double-class.html) or [PhotoViewScaleBoundary](/lib/photo_view_scale_boundary.dart)) maxScale, 
 bool gaplessPlayback,
-[Size](https://docs.flutter.io/flutter/dart-ui/Size-class.html) size})
+[Size](https://docs.flutter.io/flutter/dart-ui/Size-class.html) size,
+Object herotag})
 
 Given a `imageProvider` it resolves into an zoomable image widget using a [FutureBuilder](https://docs.flutter.io/flutter/widgets/FutureBuilder-class.html).
 
@@ -70,7 +72,9 @@ new PhotoViewInline(
 [Color](https://docs.flutter.io/flutter/dart-ui/Color-class.html) backgroundColor,
 dynamic ([double](https://docs.flutter.io/flutter/dart-core/double-class.html) or [PhotoViewScaleBoundary](/lib/photo_view_scale_boundary.dart)) minScale,
 dynamic ([double](https://docs.flutter.io/flutter/dart-core/double-class.html) or [PhotoViewScaleBoundary](/lib/photo_view_scale_boundary.dart)) maxScale, 
-bool gaplessPlayback
+bool gaplessPlayback,
+[Size](https://docs.flutter.io/flutter/dart-ui/Size-class.html) size,
+Object herotag
 })
 
 

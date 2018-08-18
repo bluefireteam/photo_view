@@ -5,7 +5,7 @@ author: Renan C. Araújo <renan@caraujo.me>
 homepage: https://github.com/renancaraujo/photo_view
 
 environment:
-  sdk: ">=2.0.0 <3.0.0"
+  sdk: ">=1.19.0 <3.0.0"
 
 dependencies:
   after_layout: ^1.0.4

@@ -15,7 +15,8 @@ class PhotoViewImageWrapper extends StatefulWidget{
     @required this.imageProvider,
     @required this.size,
     this.backgroundColor,
-    this.gaplessPlayback = false
+    this.gaplessPlayback = false,
+    this.heroTag,
   }) : super(key:key);
 
   final Function onDoubleTap;
@@ -27,6 +28,7 @@ class PhotoViewImageWrapper extends StatefulWidget{
   final ImageProvider imageProvider;
   final bool gaplessPlayback;
   final Size size;
+  final String heroTag;
 
   @override
   State<StatefulWidget> createState() {
@@ -119,7 +121,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper> with Tick
         computedHeight / 2 - screenHalfY
     ) : 0.0;
 
-    return new Offset(
+    return Offset(
       computedX,
       computedY
     );
@@ -220,9 +222,12 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper> with Tick
                     widget.imageInfo.image.width /1,
                     widget.imageInfo.image.height /1
                 ),
-                child: new Image(
-                  image: widget.imageProvider,
-                  gaplessPlayback: widget.gaplessPlayback,
+                child: new Hero(
+                  tag: widget.heroTag ?? "nohero",
+                  child: new Image(
+                    image: widget.imageProvider,
+                    gaplessPlayback: widget.gaplessPlayback,
+                  )
                 ),
               ),
               transform: matrix,
