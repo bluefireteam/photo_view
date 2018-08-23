@@ -32,20 +32,20 @@ class ScaleBoundaries {
 
   double computeMaxScale(){
     if(_maxScale == PhotoViewScaleBoundary.contained){
-      return scaleForContained(
+      return (scaleForContained(
           size: size,
           imageInfo: imageInfo
       // ignore: avoid_as
-      ) * (_maxScale as PhotoViewScaleBoundary).multiplier;
+      ) * (_maxScale as PhotoViewScaleBoundary).multiplier).clamp(computeMinScale(), double.infinity);
     }
     if(_maxScale == PhotoViewScaleBoundary.covered){
-      return scaleForCovering(
+      return (scaleForCovering(
           size: size,
           imageInfo: imageInfo
       // ignore: avoid_as
-      ) * (_maxScale as PhotoViewScaleBoundary).multiplier;
+      ) * (_maxScale as PhotoViewScaleBoundary).multiplier).clamp(computeMinScale(), double.infinity);
     }
-    return _maxScale;
+    return _maxScale.clamp(computeMinScale(), double.infinity);
   }
 
 }
