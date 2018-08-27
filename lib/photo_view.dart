@@ -239,6 +239,7 @@ class PhotoViewInline extends StatefulWidget{
   final Color backgroundColor;
   final dynamic minScale;
   final dynamic maxScale;
+  final Object heroTag;
 
   const PhotoViewInline({
     Key key,
@@ -247,6 +248,7 @@ class PhotoViewInline extends StatefulWidget{
     this.backgroundColor = const Color.fromRGBO(0, 0, 0, 1.0),
     this.minScale,
     this.maxScale,
+    this.heroTag,
   }) : super(key: key);
 
   @override
@@ -267,6 +269,7 @@ class _PhotoViewInlineState extends State<PhotoViewInline> with AfterLayoutMixin
   @override
   Widget build(BuildContext context) {
     return new PhotoView(
+      heroTag: widget.heroTag,
       imageProvider: widget.imageProvider,
       loadingChild: widget.loadingChild,
       backgroundColor: widget.backgroundColor,
