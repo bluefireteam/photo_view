@@ -7,7 +7,7 @@ import 'package:photo_view/photo_view_utils.dart';
 class PhotoViewImageWrapper extends StatefulWidget{
   const PhotoViewImageWrapper({
     Key key,
-    @required this.onDoubleTap,
+    @required this.setNextScaleState,
     @required this.onStartPanning,
     @required this.imageInfo,
     @required this.scaleState,
@@ -19,7 +19,7 @@ class PhotoViewImageWrapper extends StatefulWidget{
     this.heroTag,
   }) : super(key:key);
 
-  final Function onDoubleTap;
+  final Function setNextScaleState;
   final Function onStartPanning;
   final ImageInfo imageInfo;
   final PhotoViewScaleState scaleState;
@@ -48,6 +48,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper> with Tick
 
   AnimationController _positionAnimationController;
   Animation<Offset> _positionAnimation;
+
 
   void handleScaleAnimation() {
     setState(() {
@@ -185,26 +186,70 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper> with Tick
     if(
       oldWidget.scaleState != widget.scaleState && widget.scaleState != PhotoViewScaleState.zooming
     ){
+      final double prevScale = _scale == null ? getScaleForScaleState(
+          imageInfo: widget.imageInfo,
+          scaleState: PhotoViewScaleState.contained,
+          size: widget.size
+      ).clamp(
+          widget.scaleBoundaries.computeMinScale(),
+          widget.scaleBoundaries.computeMaxScale()
+      ) : _scale;
+
+      final double nextScale = getScaleForScaleState(
+          imageInfo: widget.imageInfo,
+          scaleState: widget.scaleState,
+          size: widget.size
+      ).clamp(
+          widget.scaleBoundaries.computeMinScale(),
+          widget.scaleBoundaries.computeMaxScale()
+      );
+
       animateScale(
-          _scale == null ? getScaleForScaleState(
-            imageInfo: widget.imageInfo,
-            scaleState: PhotoViewScaleState.contained,
-            size: widget.size
-          ).clamp(
-            widget.scaleBoundaries.computeMinScale(),
-            widget.scaleBoundaries.computeMaxScale()
-          ) : _scale,
-          getScaleForScaleState(
-            imageInfo: widget.imageInfo,
-            scaleState: widget.scaleState,
-            size: widget.size
-          ).clamp(
-            widget.scaleBoundaries.computeMinScale(),
-            widget.scaleBoundaries.computeMaxScale()
-          )
+          prevScale,
+          nextScale
       );
       animatePosition(_position, Offset.zero);
     }
+  }
+
+
+  void computeNextScaleState(){
+
+    final PhotoViewScaleState _originalScaleState = widget.scaleState;
+
+    final double originalScale = getScaleForScaleState(
+        imageInfo: widget.imageInfo,
+        scaleState: _originalScaleState,
+        size: widget.size
+    ).clamp(
+        widget.scaleBoundaries.computeMinScale(),
+        widget.scaleBoundaries.computeMaxScale()
+    );
+
+    double prevScale = originalScale;
+    PhotoViewScaleState _prevScaleState = _originalScaleState;
+    double nextScale = originalScale;
+    PhotoViewScaleState _nextScaleState = _originalScaleState;
+    do {
+      prevScale = nextScale;
+      _prevScaleState = _nextScaleState;
+      _nextScaleState = nextScaleState(_prevScaleState);
+      nextScale = getScaleForScaleState(
+          imageInfo: widget.imageInfo,
+          scaleState: _nextScaleState,
+          size: widget.size
+      ).clamp(
+          widget.scaleBoundaries.computeMinScale(),
+          widget.scaleBoundaries.computeMaxScale()
+      );
+
+    } while (prevScale == nextScale && _originalScaleState != _nextScaleState);
+
+    if(originalScale == nextScale){
+      return;
+    }
+
+    widget.setNextScaleState(_nextScaleState);
   }
 
   @override
@@ -238,7 +283,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper> with Tick
             color: widget.backgroundColor
         ),
       ),
-      onDoubleTap: widget.onDoubleTap,
+      onDoubleTap: computeNextScaleState,
       onScaleStart: onScaleStart,
       onScaleUpdate: onScaleUpdate,
       onScaleEnd: onScaleEnd,

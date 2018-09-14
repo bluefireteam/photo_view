@@ -32,7 +32,7 @@ class InlineExamples extends StatelessWidget{
                     height: 300.0,
                     child: const PhotoViewInline(
                       imageProvider: const AssetImage("assets/large-image.jpg"),
-                      maxScale: PhotoViewScaleBoundary.covered,
+                      maxScale: PhotoViewComputedScale.covered,
                     ),
                   ),
                 ],
