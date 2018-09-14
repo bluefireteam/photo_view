@@ -1,4 +1,3 @@
-
 class PhotoViewComputedScale {
   final String _value;
   final double multiplier;
@@ -10,20 +9,17 @@ class PhotoViewComputedScale {
   static const contained = const PhotoViewComputedScale._internal('contained');
   static const covered = const PhotoViewComputedScale._internal('covered');
 
-  PhotoViewComputedScale operator * (double multiplier){
+  PhotoViewComputedScale operator *(double multiplier) {
     return new PhotoViewComputedScale._internal(_value, multiplier);
   }
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is PhotoViewComputedScale &&
-              runtimeType == other.runtimeType &&
-              _value == other._value;
+      other is PhotoViewComputedScale &&
+          runtimeType == other.runtimeType &&
+          _value == other._value;
 
   @override
   int get hashCode => _value.hashCode;
-
-
-
 }

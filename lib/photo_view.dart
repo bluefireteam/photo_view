@@ -9,7 +9,6 @@ import 'package:after_layout/after_layout.dart';
 
 export 'package:photo_view/photo_view_computed_scale.dart';
 
-
 /// A [StatefulWidget] that contains all the photo view rendering elements.
 ///
 /// Internally, the image is rendered within an [Image] widget.
@@ -32,8 +31,7 @@ export 'package:photo_view/photo_view_computed_scale.dart';
 /// ```
 ///
 
-class PhotoView extends StatefulWidget{
-
+class PhotoView extends StatefulWidget {
   /// Creates a widget that displays an zoomable image.
   ///
   /// To show an image from the network or from an asset bundle, use their respective
@@ -132,17 +130,17 @@ class PhotoView extends StatefulWidget{
   }
 }
 
-
-class _PhotoViewState extends State<PhotoView>{
+class _PhotoViewState extends State<PhotoView> {
   PhotoViewScaleState _scaleState;
   GlobalKey containerKey = GlobalKey();
   ImageInfo _imageInfo;
 
-  Future<ImageInfo> _getImage(){
+  Future<ImageInfo> _getImage() {
     final Completer completer = Completer<ImageInfo>();
-    final ImageStream stream = widget.imageProvider.resolve(const ImageConfiguration());
+    final ImageStream stream =
+        widget.imageProvider.resolve(const ImageConfiguration());
     final listener = (ImageInfo info, bool synchronousCall) {
-      if(!completer.isCompleted){
+      if (!completer.isCompleted) {
         completer.complete(info);
         setState(() {
           _imageInfo = info;
@@ -150,54 +148,58 @@ class _PhotoViewState extends State<PhotoView>{
       }
     };
     stream.addListener(listener);
-    completer.future.then((_){ stream.removeListener(listener); });
+    completer.future.then((_) {
+      stream.removeListener(listener);
+    });
     return completer.future;
   }
 
-  void setNextScaleState (PhotoViewScaleState newScaleState) {
+  void setNextScaleState(PhotoViewScaleState newScaleState) {
     setState(() {
       _scaleState = newScaleState;
     });
   }
 
-  void onStartPanning () {
+  void onStartPanning() {
     setState(() {
       _scaleState = PhotoViewScaleState.zooming;
     });
   }
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     _getImage();
     _scaleState = PhotoViewScaleState.contained;
   }
+
   @override
   Widget build(BuildContext context) {
-    return widget.heroTag == null ? buildWithFuture(context) : buildSync(context);
+    return widget.heroTag == null
+        ? buildWithFuture(context)
+        : buildSync(context);
   }
 
-  Widget buildWithFuture(BuildContext context){
+  Widget buildWithFuture(BuildContext context) {
     return FutureBuilder(
         future: _getImage(),
         builder: (BuildContext context, AsyncSnapshot<ImageInfo> info) {
-          if(info.hasData){
+          if (info.hasData) {
             return buildWrapper(context, info.data);
           } else {
             return buildLoading();
           }
-        }
-    );
+        });
   }
 
-  Widget buildSync(BuildContext context){
+  Widget buildSync(BuildContext context) {
     if (_imageInfo == null) {
       return buildLoading();
     }
     return buildWrapper(context, _imageInfo);
   }
 
-  Widget buildWrapper(BuildContext context, ImageInfo info){
+  Widget buildWrapper(BuildContext context, ImageInfo info) {
     return PhotoViewImageWrapper(
       setNextScaleState: setNextScaleState,
       onStartPanning: onStartPanning,
@@ -219,20 +221,20 @@ class _PhotoViewState extends State<PhotoView>{
 
   Widget buildLoading() {
     return widget.loadingChild != null
-      ? widget.loadingChild
-      : Center(
-      child: Container(
-        width: 20.0,
-        height: 20.0,
-        child: const CircularProgressIndicator(),
-      ),
-    );
+        ? widget.loadingChild
+        : Center(
+            child: Container(
+              width: 20.0,
+              height: 20.0,
+              child: const CircularProgressIndicator(),
+            ),
+          );
   }
 }
 
 /// A [StatelessWidget] which the only child is a [PhotoView] with an automacally
 /// calculated [size]. All but [size] arguments are the same as [PhotoView].
-class PhotoViewInline extends StatefulWidget{
+class PhotoViewInline extends StatefulWidget {
   final ImageProvider imageProvider;
   final Widget loadingChild;
   final Color backgroundColor;
@@ -254,8 +256,8 @@ class PhotoViewInline extends StatefulWidget{
   State<StatefulWidget> createState() => new _PhotoViewInlineState();
 }
 
-class _PhotoViewInlineState extends State<PhotoViewInline> with AfterLayoutMixin<PhotoViewInline>{
-
+class _PhotoViewInlineState extends State<PhotoViewInline>
+    with AfterLayoutMixin<PhotoViewInline> {
   Size _size;
 
   @override
@@ -277,7 +279,4 @@ class _PhotoViewInlineState extends State<PhotoViewInline> with AfterLayoutMixin
       size: _size,
     );
   }
-
-
-
 }

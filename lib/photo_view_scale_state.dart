@@ -1,3 +1,1 @@
-enum PhotoViewScaleState{
-  contained, covering, originalSize, zooming
-}
+enum PhotoViewScaleState { contained, covering, originalSize, zooming }

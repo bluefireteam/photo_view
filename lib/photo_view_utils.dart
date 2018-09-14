@@ -3,8 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view_scale_state.dart';
 
-
-PhotoViewScaleState nextScaleState(PhotoViewScaleState actual){
+PhotoViewScaleState nextScaleState(PhotoViewScaleState actual) {
   switch (actual) {
     case PhotoViewScaleState.contained:
       return PhotoViewScaleState.covering;
@@ -19,23 +18,15 @@ PhotoViewScaleState nextScaleState(PhotoViewScaleState actual){
   }
 }
 
-
-double getScaleForScaleState({
-  @required Size size,
-  @required PhotoViewScaleState scaleState,
-  @required ImageInfo imageInfo
-}){
-  switch (scaleState){
+double getScaleForScaleState(
+    {@required Size size,
+    @required PhotoViewScaleState scaleState,
+    @required ImageInfo imageInfo}) {
+  switch (scaleState) {
     case PhotoViewScaleState.contained:
-      return scaleForContained(
-        size: size,
-        imageInfo: imageInfo
-      );
+      return scaleForContained(size: size, imageInfo: imageInfo);
     case PhotoViewScaleState.covering:
-      return scaleForCovering(
-        size: size,
-        imageInfo: imageInfo
-      );
+      return scaleForCovering(size: size, imageInfo: imageInfo);
     case PhotoViewScaleState.originalSize:
       return 1.0;
     default:
@@ -43,29 +34,22 @@ double getScaleForScaleState({
   }
 }
 
-double scaleForContained({
-  @required Size size,
-  @required ImageInfo imageInfo
-}){
+double scaleForContained({@required Size size, @required ImageInfo imageInfo}) {
   final int imageWidth = imageInfo.image.width;
   final int imageHeight = imageInfo.image.height;
 
   final double screenWidth = size.width;
   final double screenHeight = size.height;
 
-  return math.min(screenWidth/imageWidth, screenHeight/imageHeight);
+  return math.min(screenWidth / imageWidth, screenHeight / imageHeight);
 }
 
-
-double scaleForCovering({
-  @required Size size,
-  @required ImageInfo imageInfo
-}){
+double scaleForCovering({@required Size size, @required ImageInfo imageInfo}) {
   final int imageWidth = imageInfo.image.width;
   final int imageHeight = imageInfo.image.height;
 
   final double screenWidth = size.width;
   final double screenHeight = size.height;
 
-  return math.max(screenWidth/imageWidth, screenHeight/imageHeight);
+  return math.max(screenWidth / imageWidth, screenHeight / imageHeight);
 }
