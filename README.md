@@ -28,7 +28,7 @@ Widget build(BuildContext context) {
   return new Container(
     child: new PhotoView(
       imageProvider: AssetImage("assets/large-image.jpg"),
-      minScale: PhotoViewScaleBoundary.contained * 0.8,
+      minScale: PhotoViewComputedScale.contained * 0.8,
       maxScale: 4.0,
     );
   );
@@ -45,7 +45,7 @@ Widget build(BuildContext context) {
   return new Container(
     child: new PhotoViewInline(
       imageProvider: AssetImage("assets/large-image.jpg"),
-      minScale: PhotoViewScaleBoundary.contained * 0.8,
+      minScale: PhotoViewComputedScale.contained * 0.8,
       maxScale: 4.0,
     );
   );
