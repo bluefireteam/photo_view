@@ -5,10 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view_image_wrapper.dart';
 import 'package:photo_view/photo_view_scale_boundaries.dart';
 import 'package:photo_view/photo_view_scale_state.dart';
-import 'package:photo_view/photo_view_utils.dart';
 import 'package:after_layout/after_layout.dart';
 
-export 'package:photo_view/photo_view_scale_boundary.dart';
+export 'package:photo_view/photo_view_computed_scale.dart';
 
 
 /// A [StatefulWidget] that contains all the photo view rendering elements.
@@ -24,7 +23,7 @@ export 'package:photo_view/photo_view_scale_boundary.dart';
 ///  imageProvider: imageProvider,
 ///  loadingChild: new LoadingText(),
 ///  backgroundColor: Colors.white,
-///  minScale: PhotoViewScaleBoundary.contained,
+///  minScale: PhotoViewComputedScale.contained,
 ///  maxScale: 2.0,
 ///  gaplessPlayback: false,
 ///  size:MediaQuery.of(context).size,
@@ -40,15 +39,15 @@ class PhotoView extends StatefulWidget{
   /// To show an image from the network or from an asset bundle, use their respective
   /// image providers, ie: [AssetImage] or [NetworkImage]
   ///
-  /// The [maxScale] and [minScale] arguments may be [double] or a [PhotoViewScaleBoundary] constant
+  /// The [maxScale] and [minScale] arguments may be [double] or a [PhotoViewComputedScale] constant
   ///
   /// Sample using [maxScale] and [minScale]
   ///
   /// ```
   /// PhotoView(
   ///  imageProvider: imageProvider,
-  ///  minScale: PhotoViewScaleBoundary.contained * 1.8,
-  ///  maxScale: PhotoViewScaleBoundary.covered * 1.1
+  ///  minScale: PhotoViewComputedScale.contained * 1.8,
+  ///  maxScale: PhotoViewComputedScale.covered * 1.1
   /// );
   /// ```
   /// [size] is used to define the viewPort size in which the image will be
@@ -106,12 +105,12 @@ class PhotoView extends StatefulWidget{
 
   /// Defines the minimal size in which the image will be allowed to assume, it
   /// is proportional to the original image size. Can be either a double or a
-  /// [PhotoViewScaleBoundary]
+  /// [PhotoViewComputedScale]
   final dynamic minScale;
 
   /// Defines the maximal size in which the image will be allowed to assume, it
   /// is proportional to the original image size. Can be either a double or a
-  /// [PhotoViewScaleBoundary]
+  /// [PhotoViewComputedScale]
   final dynamic maxScale;
 
   /// This is used to continue showing the old image (`true`), or briefly show
@@ -155,9 +154,9 @@ class _PhotoViewState extends State<PhotoView>{
     return completer.future;
   }
 
-  void onDoubleTap () {
+  void setNextScaleState (PhotoViewScaleState newScaleState) {
     setState(() {
-      _scaleState = nextScaleState(_scaleState);
+      _scaleState = newScaleState;
     });
   }
 
@@ -200,7 +199,7 @@ class _PhotoViewState extends State<PhotoView>{
 
   Widget buildWrapper(BuildContext context, ImageInfo info){
     return PhotoViewImageWrapper(
-      onDoubleTap: onDoubleTap,
+      setNextScaleState: setNextScaleState,
       onStartPanning: onStartPanning,
       imageProvider: widget.imageProvider,
       imageInfo: info,
