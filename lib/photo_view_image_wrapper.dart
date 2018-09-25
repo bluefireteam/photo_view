@@ -31,7 +31,7 @@ class PhotoViewImageWrapper extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return new _PhotoViewImageWrapperState();
+    return _PhotoViewImageWrapperState();
   }
 }
 
@@ -137,7 +137,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   }
 
   void animateScale(double from, double to) {
-    _scaleAnimation = new Tween<double>(
+    _scaleAnimation = Tween<double>(
       begin: from,
       end: to,
     ).animate(_scaleAnimationController);
@@ -147,7 +147,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   }
 
   void animatePosition(Offset from, Offset to) {
-    _positionAnimation = new Tween<Offset>(begin: from, end: to)
+    _positionAnimation = Tween<Offset>(begin: from, end: to)
         .animate(_positionAnimationController);
     _positionAnimationController
       ..value = 0.0
@@ -159,10 +159,10 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     super.initState();
     _position = Offset.zero;
     _scale = null;
-    _scaleAnimationController = new AnimationController(vsync: this)
+    _scaleAnimationController = AnimationController(vsync: this)
       ..addListener(handleScaleAnimation);
 
-    _positionAnimationController = new AnimationController(vsync: this)
+    _positionAnimationController = AnimationController(vsync: this)
       ..addListener(handlePositionAnimate);
   }
 
@@ -234,34 +234,42 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
 
   @override
   Widget build(BuildContext context) {
-    final matrix = new Matrix4.identity()
+    final matrix = Matrix4.identity()
       ..translate(_position.dx, _position.dy)
       ..scale(scaleStateAwareScale());
 
-    return new GestureDetector(
-      child: new Container(
-        child: new Center(
-            child: new Transform(
-          child: new CustomSingleChildLayout(
-            delegate: new ImagePositionDelegate(
+    return GestureDetector(
+      child: Container(
+        child: Center(
+            child: Transform(
+          child: CustomSingleChildLayout(
+            delegate: ImagePositionDelegate(
                 widget.imageInfo.image.width / 1,
                 widget.imageInfo.image.height / 1),
-            child: new Hero(
-                tag: widget.heroTag ?? "nohero",
-                child: new Image(
-                  image: widget.imageProvider,
-                  gaplessPlayback: widget.gaplessPlayback,
-                )),
+            child: _buildHero(),
           ),
           transform: matrix,
           alignment: Alignment.center,
         )),
-        decoration: new BoxDecoration(color: widget.backgroundColor),
+        decoration: BoxDecoration(color: widget.backgroundColor),
       ),
       onDoubleTap: computeNextScaleState,
       onScaleStart: onScaleStart,
       onScaleUpdate: onScaleUpdate,
       onScaleEnd: onScaleEnd,
+    );
+  }
+
+  Widget _buildHero() {
+    return widget.heroTag != null ? Hero(
+        tag: widget.heroTag,
+        child: _buildImage()) : _buildImage();
+  }
+
+  Widget _buildImage() {
+    return Image(
+      image: widget.imageProvider,
+      gaplessPlayback: widget.gaplessPlayback,
     );
   }
 }
@@ -275,12 +283,12 @@ class ImagePositionDelegate extends SingleChildLayoutDelegate {
   Offset getPositionForChild(Size size, Size childSize) {
     final double offsetX = (size.width - imageWidth) / 2;
     final double offsetY = (size.height - imageHeight) / 2;
-    return new Offset(offsetX, offsetY);
+    return Offset(offsetX, offsetY);
   }
 
   @override
   BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
-    return new BoxConstraints(
+    return BoxConstraints(
       maxWidth: imageWidth,
       maxHeight: imageHeight,
       minHeight: imageHeight,

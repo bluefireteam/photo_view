@@ -10,7 +10,7 @@ class PhotoViewComputedScale {
   static const covered = const PhotoViewComputedScale._internal('covered');
 
   PhotoViewComputedScale operator *(double multiplier) {
-    return new PhotoViewComputedScale._internal(_value, multiplier);
+    return PhotoViewComputedScale._internal(_value, multiplier);
   }
 
   @override

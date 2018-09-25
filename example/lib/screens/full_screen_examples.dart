@@ -5,18 +5,18 @@ import './app_bar.dart';
 class FullScreenExamples extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      body: new Column(
+    return Scaffold(
+      body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           const ExampleAppBar(
             title: "Full Screen Examples",
             showGoBack: true,
           ),
-          new Expanded(
-              child: new ListView(
+          Expanded(
+              child: ListView(
             children: <Widget>[
-              new ExampleButtonNode(
+              ExampleButtonNode(
                   title: "Large Image",
                   onPressed: () {
                     Navigator.push(
@@ -28,7 +28,7 @@ class FullScreenExamples extends StatelessWidget {
                               ),
                         ));
                   }),
-              new ExampleButtonNode(
+              ExampleButtonNode(
                   title: "Small Image (custom background)",
                   onPressed: () {
                     Navigator.push(
@@ -42,7 +42,7 @@ class FullScreenExamples extends StatelessWidget {
                       ),
                     );
                   }),
-              new ExampleButtonNode(
+              ExampleButtonNode(
                   title: "Image from the internet",
                   onPressed: () {
                     Navigator.push(
@@ -55,7 +55,7 @@ class FullScreenExamples extends StatelessWidget {
                       ),
                     );
                   }),
-              new ExampleButtonNode(
+              ExampleButtonNode(
                   title: "Animated GIF",
                   onPressed: () {
                     Navigator.push(
@@ -71,21 +71,7 @@ class FullScreenExamples extends StatelessWidget {
                     );
                   }),
 
-              /* TODO: https://github.com/renancaraujo/photo_view/issues/12
-                new ExampleButtonNode(
-                  title: "Image in memory",
-                  onPressed: (){
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => FullScreenWrapper(),
-                      ),
-                    );
-                  }
-                ),
-*/
-
-              new ExampleButtonNode(
+              ExampleButtonNode(
                   title: "Limited scale",
                   onPressed: () {
                     Navigator.push(
@@ -119,24 +105,24 @@ class ExampleButtonNode extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new Container(
+    return Container(
         margin: const EdgeInsets.symmetric(
           vertical: 20.0,
         ),
-        child: new Column(
+        child: Column(
           children: <Widget>[
-            new Text(
+            Text(
               title,
               style: const TextStyle(
                   color: Colors.black,
                   fontSize: 21.0,
                   fontWeight: FontWeight.w600),
             ),
-            new Container(
+            Container(
                 margin: const EdgeInsets.only(
                   top: 10.0,
                 ),
-                child: new RaisedButton(
+                child: RaisedButton(
                   onPressed: onPressed,
                   child: const Text("Open example"),
                   color: Colors.amber,
@@ -162,11 +148,11 @@ class FullScreenWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new Container(
+    return Container(
         constraints: BoxConstraints.expand(
           height: MediaQuery.of(context).size.height,
         ),
-        child: new PhotoView(
+        child: PhotoView(
           imageProvider: imageProvider,
           loadingChild: loadingChild,
           backgroundColor: backgroundColor,

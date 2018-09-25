@@ -7,21 +7,21 @@ import './inline_examples.dart';
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
+    return Scaffold(
       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
-      body: new Column(
+      body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           const ExampleAppBar(title: "Photo View"),
-          new Container(
+          Container(
             padding: const EdgeInsets.all(20.0),
             child: const Text(
               "See bellow examples of some of the most common photo view usage cases",
               style: const TextStyle(fontSize: 18.0),
             ),
           ),
-          new Expanded(
-              child: new ListView(
+          Expanded(
+              child: ListView(
             children: <Widget>[
               _buildItem(context, onPressed: () {
                 Navigator.push(
@@ -56,9 +56,9 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _buildItem(context, {String text, Function onPressed}) {
-    return new FlatButton(
+    return FlatButton(
       padding: const EdgeInsets.symmetric(vertical: 25.0, horizontal: 20.0),
-      child: new Text(
+      child: Text(
         text,
         style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.w700),
       ),

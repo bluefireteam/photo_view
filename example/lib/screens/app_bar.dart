@@ -8,8 +8,8 @@ class ExampleAppBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new SafeArea(
-        child: new Container(
+    return SafeArea(
+        child: Container(
             padding: const EdgeInsets.fromLTRB(20.0, 5.0, 20.0, 5.0),
             decoration: const BoxDecoration(
                 color: Colors.white,
@@ -22,22 +22,22 @@ class ExampleAppBar extends StatelessWidget {
                       spreadRadius: 10.0,
                       blurRadius: 20.0)
                 ]),
-            child: new Row(
+            child: Row(
               children: <Widget>[
-                new Container(
+                Container(
                   child: showGoBack
-                      ? new IconButton(
+                      ? IconButton(
                           icon: const Icon(Icons.chevron_left),
                           onPressed: () {
                             Navigator.pop(context);
                           },
                           padding: EdgeInsets.zero,
                         )
-                      : new Container(
+                      : Container(
                           height: 50.0,
                         ),
                 ),
-                new Expanded(
+                Expanded(
                   child: Text(
                     title,
                     style: const TextStyle(

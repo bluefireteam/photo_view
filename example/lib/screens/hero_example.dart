@@ -6,15 +6,15 @@ import './app_bar.dart';
 class HeroExample extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      body: new Column(
+    return Scaffold(
+      body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           const ExampleAppBar(
             title: "Hero Examples",
             showGoBack: true,
           ),
-          new Expanded(
+          Expanded(
               child: Center(
             child: GestureDetector(
               onTap: () {
@@ -55,11 +55,11 @@ class HeroPhotoViewWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new Container(
+    return Container(
         constraints: BoxConstraints.expand(
           height: MediaQuery.of(context).size.height,
         ),
-        child: new PhotoView(
+        child: PhotoView(
           imageProvider: imageProvider,
           loadingChild: loadingChild,
           backgroundColor: backgroundColor,

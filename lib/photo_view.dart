@@ -126,7 +126,7 @@ class PhotoView extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return new _PhotoViewState();
+    return _PhotoViewState();
   }
 }
 
@@ -253,7 +253,7 @@ class PhotoViewInline extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => new _PhotoViewInlineState();
+  State<StatefulWidget> createState() => _PhotoViewInlineState();
 }
 
 class _PhotoViewInlineState extends State<PhotoViewInline>
@@ -269,7 +269,7 @@ class _PhotoViewInlineState extends State<PhotoViewInline>
 
   @override
   Widget build(BuildContext context) {
-    return new PhotoView(
+    return PhotoView(
       heroTag: widget.heroTag,
       imageProvider: widget.imageProvider,
       loadingChild: widget.loadingChild,

@@ -15,34 +15,26 @@ class ScaleBoundaries {
 
   double computeMinScale() {
     if (_minScale == PhotoViewComputedScale.contained) {
-      return scaleForContained(size: size, imageInfo: imageInfo
-              // ignore: avoid_as
-              ) *
-          (_minScale as PhotoViewComputedScale).multiplier;
+      return scaleForContained(size: size, imageInfo: imageInfo) *
+        (_minScale as PhotoViewComputedScale).multiplier; // ignore: avoid_as
     }
     if (_minScale == PhotoViewComputedScale.covered) {
-      return scaleForCovering(size: size, imageInfo: imageInfo
-              // ignore: avoid_as
-              ) *
-          (_minScale as PhotoViewComputedScale).multiplier;
+      return scaleForCovering(size: size, imageInfo: imageInfo) *
+        (_minScale as PhotoViewComputedScale).multiplier; // ignore: avoid_as
     }
     return _minScale;
   }
 
   double computeMaxScale() {
     if (_maxScale == PhotoViewComputedScale.contained) {
-      return (scaleForContained(size: size, imageInfo: imageInfo
-                  // ignore: avoid_as
-                  ) *
-              (_maxScale as PhotoViewComputedScale).multiplier)
-          .clamp(computeMinScale(), double.infinity);
+      return (scaleForContained(size: size, imageInfo: imageInfo) *
+        (_maxScale as PhotoViewComputedScale).multiplier) // ignore: avoid_as
+        .clamp(computeMinScale(), double.infinity);
     }
     if (_maxScale == PhotoViewComputedScale.covered) {
-      return (scaleForCovering(size: size, imageInfo: imageInfo
-                  // ignore: avoid_as
-                  ) *
-              (_maxScale as PhotoViewComputedScale).multiplier)
-          .clamp(computeMinScale(), double.infinity);
+      return (scaleForCovering(size: size, imageInfo: imageInfo) *
+        (_maxScale as PhotoViewComputedScale).multiplier) // ignore: avoid_as
+        .clamp(computeMinScale(), double.infinity);
     }
     return _maxScale.clamp(computeMinScale(), double.infinity);
   }
