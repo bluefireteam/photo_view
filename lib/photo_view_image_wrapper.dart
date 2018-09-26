@@ -201,6 +201,12 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
 
   void computeNextScaleState() {
     final PhotoViewScaleState _originalScaleState = widget.scaleState;
+
+    if(_originalScaleState == PhotoViewScaleState.zooming) {
+      widget.setNextScaleState(nextScaleState(_originalScaleState));
+      return;
+    }
+
     final double originalScale = getScaleForScaleState(
       imageInfo: widget.imageInfo,
       scaleState: _originalScaleState,
