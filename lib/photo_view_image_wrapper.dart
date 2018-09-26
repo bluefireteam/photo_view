@@ -201,13 +201,14 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
 
   void computeNextScaleState() {
     final PhotoViewScaleState _originalScaleState = widget.scaleState;
-
     final double originalScale = getScaleForScaleState(
-            imageInfo: widget.imageInfo,
-            scaleState: _originalScaleState,
-            size: widget.size)
-        .clamp(widget.scaleBoundaries.computeMinScale(),
-            widget.scaleBoundaries.computeMaxScale());
+      imageInfo: widget.imageInfo,
+      scaleState: _originalScaleState,
+      size: widget.size
+    ).clamp(
+      widget.scaleBoundaries.computeMinScale(),
+      widget.scaleBoundaries.computeMaxScale()
+    );
 
     double prevScale = originalScale;
     PhotoViewScaleState _prevScaleState = _originalScaleState;
@@ -218,11 +219,13 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
       _prevScaleState = _nextScaleState;
       _nextScaleState = nextScaleState(_prevScaleState);
       nextScale = getScaleForScaleState(
-              imageInfo: widget.imageInfo,
-              scaleState: _nextScaleState,
-              size: widget.size)
-          .clamp(widget.scaleBoundaries.computeMinScale(),
-              widget.scaleBoundaries.computeMaxScale());
+        imageInfo: widget.imageInfo,
+        scaleState: _nextScaleState,
+        size: widget.size
+      ).clamp(
+        widget.scaleBoundaries.computeMinScale(),
+        widget.scaleBoundaries.computeMaxScale()
+      );
     } while (prevScale == nextScale && _originalScaleState != _nextScaleState);
 
     if (originalScale == nextScale) {
@@ -244,8 +247,9 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
             child: Transform(
           child: CustomSingleChildLayout(
             delegate: ImagePositionDelegate(
-                widget.imageInfo.image.width / 1,
-                widget.imageInfo.image.height / 1),
+              widget.imageInfo.image.width / 1,
+              widget.imageInfo.image.height / 1
+            ),
             child: _buildHero(),
           ),
           transform: matrix,
@@ -262,8 +266,8 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
 
   Widget _buildHero() {
     return widget.heroTag != null ? Hero(
-        tag: widget.heroTag,
-        child: _buildImage()) : _buildImage();
+      tag: widget.heroTag,
+      child: _buildImage()) : _buildImage();
   }
 
   Widget _buildImage() {
