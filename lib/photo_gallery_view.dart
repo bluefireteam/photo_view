@@ -12,10 +12,12 @@ class PhotoGalleryView extends StatefulWidget {
   const PhotoGalleryView({
     Key key,
     @required this.imageProviders,
+    this.spinnerColor = Colors.black,
   }) : super(key: key);
 
 
   final List<ImageProvider> imageProviders;
+  final Color spinnerColor;
 
   @override
   State<StatefulWidget> createState() {
@@ -44,12 +46,18 @@ class _PhotoGalleryViewState extends State<PhotoGalleryView> {
   }
 
   Widget _buildImagePage(int index){
-    return new Container(
-      child: new PhotoViewInline(
-        imageProvider: widget.imageProviders[index],
-        minScale: PhotoViewComputedScale.contained * 0.8,
-        maxScale: 4.0,
-      ),
+    return new Stack(
+      children: <Widget>[
+        new Center(
+          child: CircularProgressIndicator(valueColor: new AlwaysStoppedAnimation<Color>(widget.spinnerColor),),
+        ),
+        new PhotoViewInline(
+          imageProvider: widget.imageProviders[index],
+          backgroundColor: Colors.transparent,
+          minScale: PhotoViewComputedScale.contained * 0.8,
+          maxScale: 4.0,
+        ),
+      ],
     );
   }
 

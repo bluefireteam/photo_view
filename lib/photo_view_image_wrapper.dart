@@ -241,21 +241,24 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     return new GestureDetector(
       child: new Container(
         child: new Center(
-            child: new Transform(
-          child: new CustomSingleChildLayout(
-            delegate: new ImagePositionDelegate(
+          child: new Transform(
+            child: new CustomSingleChildLayout(
+              delegate: new ImagePositionDelegate(
                 widget.imageInfo.image.width / 1,
-                widget.imageInfo.image.height / 1),
-            child: new Hero(
+                widget.imageInfo.image.height / 1,
+              ),
+              child: new Hero(
                 tag: widget.heroTag ?? "nohero",
                 child: new Image(
                   image: widget.imageProvider,
                   gaplessPlayback: widget.gaplessPlayback,
-                )),
+                ),
+              ),
+            ),
+            transform: matrix,
+            alignment: Alignment.center,
           ),
-          transform: matrix,
-          alignment: Alignment.center,
-        )),
+        ),
         decoration: new BoxDecoration(color: widget.backgroundColor),
       ),
       onDoubleTap: computeNextScaleState,
