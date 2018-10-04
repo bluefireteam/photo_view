@@ -3,6 +3,7 @@ import './app_bar.dart';
 import './full_screen_examples.dart';
 import './hero_example.dart';
 import './inline_examples.dart';
+import './gallery_example.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -47,7 +48,14 @@ class HomeScreen extends StatelessWidget {
                   ),
                 );
               }, text: "Hero animation"),
-              _buildItem(context, text: "Gallery (TODO)"),
+              _buildItem(context, onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => GalleryExample(),
+                  ),
+                );
+              }, text: "Gallery"),
             ],
           ))
         ],

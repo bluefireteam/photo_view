@@ -8,6 +8,7 @@ import 'package:photo_view/photo_view_scale_state.dart';
 import 'package:after_layout/after_layout.dart';
 
 export 'package:photo_view/photo_view_computed_scale.dart';
+export 'package:photo_view/photo_view_gallery.dart';
 
 /// A [StatefulWidget] that contains all the photo view rendering elements.
 ///
@@ -132,7 +133,6 @@ class PhotoView extends StatefulWidget {
 
 class _PhotoViewState extends State<PhotoView> {
   PhotoViewScaleState _scaleState;
-  GlobalKey containerKey = GlobalKey();
   ImageInfo _imageInfo;
 
   Future<ImageInfo> _getImage() {
@@ -176,20 +176,20 @@ class _PhotoViewState extends State<PhotoView> {
   @override
   Widget build(BuildContext context) {
     return widget.heroTag == null
-        ? buildWithFuture(context)
-        : buildSync(context);
+      ? buildWithFuture(context)
+      : buildSync(context);
   }
 
   Widget buildWithFuture(BuildContext context) {
     return FutureBuilder(
-        future: _getImage(),
-        builder: (BuildContext context, AsyncSnapshot<ImageInfo> info) {
-          if (info.hasData) {
-            return buildWrapper(context, info.data);
-          } else {
-            return buildLoading();
-          }
-        });
+      future: _getImage(),
+      builder: (BuildContext context, AsyncSnapshot<ImageInfo> info) {
+        if (info.hasData) {
+          return buildWrapper(context, info.data);
+        } else {
+          return buildLoading();
+        }
+      });
   }
 
   Widget buildSync(BuildContext context) {
@@ -221,14 +221,14 @@ class _PhotoViewState extends State<PhotoView> {
 
   Widget buildLoading() {
     return widget.loadingChild != null
-        ? widget.loadingChild
-        : Center(
-            child: Container(
-              width: 20.0,
-              height: 20.0,
-              child: const CircularProgressIndicator(),
-            ),
-          );
+      ? widget.loadingChild
+      : Center(
+        child: Container(
+          width: 20.0,
+          height: 20.0,
+          child: const CircularProgressIndicator(),
+        ),
+      );
   }
 }
 
@@ -240,6 +240,7 @@ class PhotoViewInline extends StatefulWidget {
   final Color backgroundColor;
   final dynamic minScale;
   final dynamic maxScale;
+  final bool gaplessPlayback;
   final Object heroTag;
 
   const PhotoViewInline({
@@ -249,6 +250,7 @@ class PhotoViewInline extends StatefulWidget {
     this.backgroundColor = const Color.fromRGBO(0, 0, 0, 1.0),
     this.minScale,
     this.maxScale,
+    this.gaplessPlayback,
     this.heroTag,
   }) : super(key: key);
 
@@ -270,13 +272,14 @@ class _PhotoViewInlineState extends State<PhotoViewInline>
   @override
   Widget build(BuildContext context) {
     return PhotoView(
-      heroTag: widget.heroTag,
       imageProvider: widget.imageProvider,
       loadingChild: widget.loadingChild,
       backgroundColor: widget.backgroundColor,
       minScale: widget.minScale,
       maxScale: widget.maxScale,
+      gaplessPlayback: widget.gaplessPlayback,
       size: _size,
+      heroTag: widget.heroTag,
     );
   }
 }
