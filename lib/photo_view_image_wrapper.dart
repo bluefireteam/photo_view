@@ -41,12 +41,19 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   Offset _normalizedPosition;
   double _scale;
   double _scaleBefore;
+  double _rotation;
+  double _rotationBefore;
+  Offset _rotationFocusPoint;
+
 
   AnimationController _scaleAnimationController;
   Animation<double> _scaleAnimation;
 
   AnimationController _positionAnimationController;
   Animation<Offset> _positionAnimation;
+
+  AnimationController _rotationAnimationController;
+  Animation<double> _rotationAnimation;
 
   void handleScaleAnimation() {
     setState(() {
@@ -60,11 +67,19 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     });
   }
 
+  void handleRotationAnimation() {
+    setState(() {
+      _rotation = _rotationAnimation.value;
+    });
+  }
+
   void onScaleStart(ScaleStartDetails details) {
+    _rotationBefore = _rotation;
     _scaleBefore = scaleStateAwareScale();
     _normalizedPosition = details.focalPoint - _position;
     _scaleAnimationController.stop();
     _positionAnimationController.stop();
+    _rotationAnimationController.stop();
   }
 
   void onScaleUpdate(ScaleUpdateDetails details) {
@@ -76,6 +91,8 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     setState(() {
       _scale = newScale;
       _position = clampPosition(delta * details.scale);
+      _rotation = _rotationBefore + details.rotation;
+      _rotationFocusPoint= details.focalPoint;
     });
   }
 
@@ -147,6 +164,8 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     _scaleAnimationController
       ..value = 0.0
       ..fling(velocity: 0.4);
+
+    animateRotation(_rotation, 0.0);
   }
 
   void animatePosition(Offset from, Offset to) {
@@ -157,22 +176,35 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
       ..fling(velocity: 0.4);
   }
 
+  void animateRotation(double from, double to) {
+    _rotationAnimation = Tween<double>(begin: from, end: to)
+        .animate(_rotationAnimationController);
+    _rotationAnimationController
+      ..value = 0.0
+      ..fling(velocity: 0.4);
+  }
+
   @override
   void initState() {
     super.initState();
     _position = Offset.zero;
+    _rotation = 0.0;
     _scale = null;
     _scaleAnimationController = AnimationController(vsync: this)
       ..addListener(handleScaleAnimation);
 
     _positionAnimationController = AnimationController(vsync: this)
       ..addListener(handlePositionAnimate);
+
+    _rotationAnimationController = AnimationController(vsync: this)
+      ..addListener(handleRotationAnimation);
   }
 
   @override
   void dispose() {
     _positionAnimationController.dispose();
     _scaleAnimationController.dispose();
+    _rotationAnimationController.dispose();
     super.dispose();
   }
 
@@ -246,18 +278,26 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
       ..translate(_position.dx, _position.dy)
       ..scale(scaleStateAwareScale());
 
+    final rotationMatrix = Matrix4.identity()
+      ..rotateZ(_rotation);
+
     return GestureDetector(
       child: Container(
         child: Center(
+          child: Transform(
             child: Transform(
-          child: CustomSingleChildLayout(
-            delegate: ImagePositionDelegate(widget.imageInfo.image.width / 1,
-                widget.imageInfo.image.height / 1),
-            child: _buildHero(),
-          ),
-          transform: matrix,
-          alignment: Alignment.center,
-        )),
+              child: CustomSingleChildLayout(
+                delegate: ImagePositionDelegate(widget.imageInfo.image.width / 1,
+                    widget.imageInfo.image.height / 1),
+                child: _buildHero(),
+              ),
+              transform: rotationMatrix,
+              alignment: Alignment.center,	              origin: _rotationFocusPoint,
+            ),
+            transform: matrix,
+            alignment: Alignment.center,
+          )
+        ),
         decoration: BoxDecoration(color: widget.backgroundColor),
       ),
       onDoubleTap: computeNextScaleState,
