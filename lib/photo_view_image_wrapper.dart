@@ -89,6 +89,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
       animateScale(_scale, maxScale);
       animatePosition(
           _position, clampPosition(_position * scaleComebackRatio, maxScale));
+      computeNextScaleState();
       return;
     }
 
@@ -98,6 +99,8 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
       animateScale(_scale, minScale);
       animatePosition(
           _position, clampPosition(_position * scaleComebackRatio, maxScale));
+      computeNextScaleState();
+      return;
     }
   }
 

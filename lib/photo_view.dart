@@ -10,6 +10,9 @@ import 'package:after_layout/after_layout.dart';
 export 'package:photo_view/photo_view_computed_scale.dart';
 export 'package:photo_view/photo_view_gallery.dart';
 
+typedef PhotoViewScaleStateChangedCallback = void Function(PhotoViewScaleState scaleState);
+
+
 /// A [StatefulWidget] that contains all the photo view rendering elements.
 ///
 /// Internally, the image is rendered within an [Image] widget.
@@ -89,6 +92,7 @@ class PhotoView extends StatefulWidget {
     this.gaplessPlayback = false,
     this.size,
     this.heroTag,
+    this.scaleStateChangedCallback,
   }) : super(key: key);
 
   /// Given a [imageProvider] it resolves into an zoomable image widget using. It
@@ -125,6 +129,8 @@ class PhotoView extends StatefulWidget {
   /// Assists the activation of a hero animation within [PhotoView]
   final Object heroTag;
 
+  final PhotoViewScaleStateChangedCallback scaleStateChangedCallback;
+
   @override
   State<StatefulWidget> createState() {
     return _PhotoViewState();
@@ -158,12 +164,16 @@ class _PhotoViewState extends State<PhotoView> {
     setState(() {
       _scaleState = newScaleState;
     });
+    widget.scaleStateChangedCallback != null ?
+      widget.scaleStateChangedCallback(newScaleState): null;
   }
 
   void onStartPanning() {
     setState(() {
       _scaleState = PhotoViewScaleState.zooming;
     });
+    widget.scaleStateChangedCallback != null ?
+    widget.scaleStateChangedCallback( PhotoViewScaleState.zooming ) : null;
   }
 
   @override
@@ -242,6 +252,7 @@ class PhotoViewInline extends StatefulWidget {
   final dynamic maxScale;
   final bool gaplessPlayback;
   final Object heroTag;
+  final PhotoViewScaleStateChangedCallback scaleStateChangedCallback;
 
   const PhotoViewInline({
     Key key,
@@ -252,6 +263,7 @@ class PhotoViewInline extends StatefulWidget {
     this.maxScale,
     this.gaplessPlayback,
     this.heroTag,
+    this.scaleStateChangedCallback,
   }) : super(key: key);
 
   @override
@@ -280,6 +292,7 @@ class _PhotoViewInlineState extends State<PhotoViewInline>
       gaplessPlayback: widget.gaplessPlayback,
       size: _size,
       heroTag: widget.heroTag,
+      scaleStateChangedCallback: widget.scaleStateChangedCallback,
     );
   }
 }

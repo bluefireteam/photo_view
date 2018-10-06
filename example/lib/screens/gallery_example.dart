@@ -10,6 +10,7 @@ class GalleryExample extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (context) => GalleryPhotoViewWrapper(
+          backgroundColor: Colors.black87,
           imageProvider: AssetImage("assets/gallery1.jpeg"),
           imageProvider2: AssetImage("assets/gallery2.jpeg"),
           imageProvider3: AssetImage("assets/gallery3.jpeg"),
@@ -108,22 +109,21 @@ class GalleryPhotoViewWrapper extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
+    return _GalleryPhotoViewWrapperState();
   }
 
 }
 
-class __GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
+class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
 
   int currentIndex;
   @override
   void initState() {
     currentIndex = widget.index;
-    // TODO: implement initState
     super.initState();
   }
 
-  void onPageChange (int index) {
+  void onPageChanged (int index) {
     setState(() {
       currentIndex = index;
     });
@@ -131,12 +131,14 @@ class __GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Scaffold(
+      body: Container(
         constraints: BoxConstraints.expand(
           height: MediaQuery.of(context).size.height,
         ),
         child: Stack(
-          alignment: Alignment.center,
+          alignment: Alignment.bottomRight,
+
           children: <Widget>[
             PhotoViewGallery(
               pageOptions: <PhotoViewGalleryPageOptions>[
@@ -145,32 +147,36 @@ class __GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
                   heroTag: "tag1",
                 ),
                 PhotoViewGalleryPageOptions(
-                  imageProvider: widget.imageProvider2,
-                  heroTag: "tag2",
+                    imageProvider: widget.imageProvider2,
+                    heroTag: "tag2",
+                    maxScale: PhotoViewComputedScale.contained * 0.3
                 ),
                 PhotoViewGalleryPageOptions(
                   imageProvider: widget.imageProvider3,
+                  minScale: PhotoViewComputedScale.contained * 0.8,
+                  maxScale: PhotoViewComputedScale.covered * 1.1,
                   heroTag: "tag3",
                 ),
               ],
               loadingChild: widget.loadingChild,
               backgroundColor: widget.backgroundColor,
               pageController: widget.pageController,
+              onPageChanged: onPageChanged,
             ),
             Container(
-              padding: const EdgeInsets.only(
-                  top: 20.0
-              ),
+              padding: const EdgeInsets.all(20.0),
               child: Text(
-                "Image  $currentIndex",
+                "Image ${currentIndex + 1}",
                 style: const TextStyle(
-                    color: Colors.white,
-                    decoration: null
+                  color: Colors.white,
+                  fontSize: 17.0,
+                  decoration: null
                 ),
               ),
             )
           ],
         )
+      ),
     );
   }
 
