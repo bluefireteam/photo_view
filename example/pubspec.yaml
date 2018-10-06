@@ -26,6 +26,9 @@ flutter:
     - assets/peanut.gif
     - assets/large-image.jpg
     - assets/small-image.jpg
+    - assets/gallery1.jpeg
+    - assets/gallery2.jpeg
+    - assets/gallery3.jpeg
 
   fonts: 
     - family: PTSans 

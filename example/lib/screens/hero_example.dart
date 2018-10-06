@@ -11,7 +11,7 @@ class HeroExample extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           const ExampleAppBar(
-            title: "Hero Examples",
+            title: "Hero Example",
             showGoBack: true,
           ),
           Expanded(
@@ -19,12 +19,12 @@ class HeroExample extends StatelessWidget {
             child: GestureDetector(
               onTap: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const HeroPhotoViewWrapper(
-                            imageProvider: AssetImage("assets/large-image.jpg"),
-                          ),
-                    ));
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const HeroPhotoViewWrapper(
+                          imageProvider: AssetImage("assets/large-image.jpg"),
+                        ),
+                  ));
               },
               child: Container(
                   child: Hero(
@@ -46,12 +46,13 @@ class HeroPhotoViewWrapper extends StatelessWidget {
   final dynamic minScale;
   final dynamic maxScale;
 
-  const HeroPhotoViewWrapper(
-      {this.imageProvider,
-      this.loadingChild,
-      this.backgroundColor,
-      this.minScale,
-      this.maxScale});
+  const HeroPhotoViewWrapper({
+    this.imageProvider,
+    this.loadingChild,
+    this.backgroundColor,
+    this.minScale,
+    this.maxScale
+  });
 
   @override
   Widget build(BuildContext context) {

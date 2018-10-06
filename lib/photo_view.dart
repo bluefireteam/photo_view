@@ -8,6 +8,10 @@ import 'package:photo_view/photo_view_scale_state.dart';
 import 'package:after_layout/after_layout.dart';
 
 export 'package:photo_view/photo_view_computed_scale.dart';
+export 'package:photo_view/photo_view_gallery.dart';
+
+typedef PhotoViewScaleStateChangedCallback = void Function(
+    PhotoViewScaleState scaleState);
 
 /// A [StatefulWidget] that contains all the photo view rendering elements.
 ///
@@ -88,6 +92,7 @@ class PhotoView extends StatefulWidget {
     this.gaplessPlayback = false,
     this.size,
     this.heroTag,
+    this.scaleStateChangedCallback,
   }) : super(key: key);
 
   /// Given a [imageProvider] it resolves into an zoomable image widget using. It
@@ -124,6 +129,8 @@ class PhotoView extends StatefulWidget {
   /// Assists the activation of a hero animation within [PhotoView]
   final Object heroTag;
 
+  final PhotoViewScaleStateChangedCallback scaleStateChangedCallback;
+
   @override
   State<StatefulWidget> createState() {
     return _PhotoViewState();
@@ -132,7 +139,6 @@ class PhotoView extends StatefulWidget {
 
 class _PhotoViewState extends State<PhotoView> {
   PhotoViewScaleState _scaleState;
-  GlobalKey containerKey = GlobalKey();
   ImageInfo _imageInfo;
 
   Future<ImageInfo> _getImage() {
@@ -158,12 +164,18 @@ class _PhotoViewState extends State<PhotoView> {
     setState(() {
       _scaleState = newScaleState;
     });
+    widget.scaleStateChangedCallback != null
+        ? widget.scaleStateChangedCallback(newScaleState)
+        : null;
   }
 
   void onStartPanning() {
     setState(() {
       _scaleState = PhotoViewScaleState.zooming;
     });
+    widget.scaleStateChangedCallback != null
+        ? widget.scaleStateChangedCallback(PhotoViewScaleState.zooming)
+        : null;
   }
 
   @override
@@ -240,7 +252,9 @@ class PhotoViewInline extends StatefulWidget {
   final Color backgroundColor;
   final dynamic minScale;
   final dynamic maxScale;
+  final bool gaplessPlayback;
   final Object heroTag;
+  final PhotoViewScaleStateChangedCallback scaleStateChangedCallback;
 
   const PhotoViewInline({
     Key key,
@@ -249,7 +263,9 @@ class PhotoViewInline extends StatefulWidget {
     this.backgroundColor = const Color.fromRGBO(0, 0, 0, 1.0),
     this.minScale,
     this.maxScale,
+    this.gaplessPlayback,
     this.heroTag,
+    this.scaleStateChangedCallback,
   }) : super(key: key);
 
   @override
@@ -270,13 +286,15 @@ class _PhotoViewInlineState extends State<PhotoViewInline>
   @override
   Widget build(BuildContext context) {
     return PhotoView(
-      heroTag: widget.heroTag,
       imageProvider: widget.imageProvider,
       loadingChild: widget.loadingChild,
       backgroundColor: widget.backgroundColor,
       minScale: widget.minScale,
       maxScale: widget.maxScale,
+      gaplessPlayback: widget.gaplessPlayback,
       size: _size,
+      heroTag: widget.heroTag,
+      scaleStateChangedCallback: widget.scaleStateChangedCallback,
     );
   }
 }
