@@ -26,7 +26,6 @@ class PhotoViewGallery extends StatefulWidget {
   State<StatefulWidget> createState() {
     return _PhotoViewGalleryState();
   }
-
 }
 
 class _PhotoViewGalleryState extends State<PhotoViewGallery> {
@@ -40,14 +39,14 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
     super.initState();
   }
 
-  void scaleStateChangedCallback (PhotoViewScaleState scaleState) {
+  void scaleStateChangedCallback(PhotoViewScaleState scaleState) {
     setState(() {
       _locked = scaleState != PhotoViewScaleState.contained;
     });
   }
 
   int get actualPage {
-    return _controller.hasClients ?  _controller.page.floor() : 0;
+    return _controller.hasClients ? _controller.page.floor() : 0;
   }
 
   @override
@@ -55,27 +54,25 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
     return PageView.builder(
       controller: _controller,
       onPageChanged: widget.onPageChanged,
-      itemCount:  widget.pageOptions.length,
+      itemCount: widget.pageOptions.length,
       itemBuilder: _buildItem,
-      physics: _locked ? const NeverScrollableScrollPhysics() : null ,
+      physics: _locked ? const NeverScrollableScrollPhysics() : null,
     );
   }
 
-  Widget _buildItem (context, int index){
+  Widget _buildItem(context, int index) {
     final pageOption = widget.pageOptions[index];
     return PhotoViewInline(
-      key: ObjectKey(index),
-      imageProvider: pageOption.imageProvider,
-      loadingChild: widget.loadingChild,
-      backgroundColor: widget.backgroundColor,
-      minScale: pageOption.minScale,
-      maxScale: pageOption.maxScale,
-      gaplessPlayback: widget.gaplessPlayback,
-      heroTag: pageOption.heroTag,
-        scaleStateChangedCallback: scaleStateChangedCallback
-    );
+        key: ObjectKey(index),
+        imageProvider: pageOption.imageProvider,
+        loadingChild: widget.loadingChild,
+        backgroundColor: widget.backgroundColor,
+        minScale: pageOption.minScale,
+        maxScale: pageOption.maxScale,
+        gaplessPlayback: widget.gaplessPlayback,
+        heroTag: pageOption.heroTag,
+        scaleStateChangedCallback: scaleStateChangedCallback);
   }
-
 }
 
 class PhotoViewGalleryPageOptions {
@@ -92,4 +89,3 @@ class PhotoViewGalleryPageOptions {
   final dynamic minScale;
   final dynamic maxScale;
 }
-

@@ -10,8 +10,8 @@ import 'package:after_layout/after_layout.dart';
 export 'package:photo_view/photo_view_computed_scale.dart';
 export 'package:photo_view/photo_view_gallery.dart';
 
-typedef PhotoViewScaleStateChangedCallback = void Function(PhotoViewScaleState scaleState);
-
+typedef PhotoViewScaleStateChangedCallback = void Function(
+    PhotoViewScaleState scaleState);
 
 /// A [StatefulWidget] that contains all the photo view rendering elements.
 ///
@@ -164,16 +164,18 @@ class _PhotoViewState extends State<PhotoView> {
     setState(() {
       _scaleState = newScaleState;
     });
-    widget.scaleStateChangedCallback != null ?
-      widget.scaleStateChangedCallback(newScaleState): null;
+    widget.scaleStateChangedCallback != null
+        ? widget.scaleStateChangedCallback(newScaleState)
+        : null;
   }
 
   void onStartPanning() {
     setState(() {
       _scaleState = PhotoViewScaleState.zooming;
     });
-    widget.scaleStateChangedCallback != null ?
-    widget.scaleStateChangedCallback( PhotoViewScaleState.zooming ) : null;
+    widget.scaleStateChangedCallback != null
+        ? widget.scaleStateChangedCallback(PhotoViewScaleState.zooming)
+        : null;
   }
 
   @override
@@ -186,20 +188,20 @@ class _PhotoViewState extends State<PhotoView> {
   @override
   Widget build(BuildContext context) {
     return widget.heroTag == null
-      ? buildWithFuture(context)
-      : buildSync(context);
+        ? buildWithFuture(context)
+        : buildSync(context);
   }
 
   Widget buildWithFuture(BuildContext context) {
     return FutureBuilder(
-      future: _getImage(),
-      builder: (BuildContext context, AsyncSnapshot<ImageInfo> info) {
-        if (info.hasData) {
-          return buildWrapper(context, info.data);
-        } else {
-          return buildLoading();
-        }
-      });
+        future: _getImage(),
+        builder: (BuildContext context, AsyncSnapshot<ImageInfo> info) {
+          if (info.hasData) {
+            return buildWrapper(context, info.data);
+          } else {
+            return buildLoading();
+          }
+        });
   }
 
   Widget buildSync(BuildContext context) {
@@ -231,14 +233,14 @@ class _PhotoViewState extends State<PhotoView> {
 
   Widget buildLoading() {
     return widget.loadingChild != null
-      ? widget.loadingChild
-      : Center(
-        child: Container(
-          width: 20.0,
-          height: 20.0,
-          child: const CircularProgressIndicator(),
-        ),
-      );
+        ? widget.loadingChild
+        : Center(
+            child: Container(
+              width: 20.0,
+              height: 20.0,
+              child: const CircularProgressIndicator(),
+            ),
+          );
   }
 }
 
