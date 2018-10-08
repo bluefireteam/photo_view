@@ -263,7 +263,7 @@ class PhotoViewInline extends StatefulWidget {
     this.backgroundColor = const Color.fromRGBO(0, 0, 0, 1.0),
     this.minScale,
     this.maxScale,
-    this.gaplessPlayback,
+    this.gaplessPlayback = false,
     this.heroTag,
     this.scaleStateChangedCallback,
   }) : super(key: key);
