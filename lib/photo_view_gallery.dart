@@ -13,6 +13,7 @@ class PhotoViewGallery extends StatefulWidget {
     this.gaplessPlayback = false,
     this.pageController,
     this.onPageChanged,
+    this.scaleStateChangedCallback,
   }) : super(key: key);
 
   final List<PhotoViewGalleryPageOptions> pageOptions;
@@ -21,6 +22,7 @@ class PhotoViewGallery extends StatefulWidget {
   final bool gaplessPlayback;
   final PageController pageController;
   final PhotoViewGalleryPageChangedCallback onPageChanged;
+  final PhotoViewScaleStateChangedCallback scaleStateChangedCallback;
 
   @override
   State<StatefulWidget> createState() {
@@ -43,6 +45,9 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
     setState(() {
       _locked = scaleState != PhotoViewScaleState.contained;
     });
+    widget.scaleStateChangedCallback != null
+        ? widget.scaleStateChangedCallback(scaleState)
+        : null;
   }
 
   int get actualPage {
