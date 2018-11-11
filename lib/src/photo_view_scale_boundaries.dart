@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:photo_view/photo_view_computed_scale.dart';
-import 'package:photo_view/photo_view_utils.dart';
+import 'package:photo_view/src/photo_view_computed_scale.dart';
+import 'package:photo_view/src/photo_view_utils.dart';
 
 class ScaleBoundaries {
   final dynamic _minScale;
@@ -28,14 +28,14 @@ class ScaleBoundaries {
   double computeMaxScale() {
     if (_maxScale == PhotoViewComputedScale.contained) {
       return (scaleForContained(size: size, imageInfo: imageInfo) *
-              (_maxScale as PhotoViewComputedScale)
-                  .multiplier) // ignore: avoid_as
+              (_maxScale as PhotoViewComputedScale) // ignore: avoid_as
+                  .multiplier)
           .clamp(computeMinScale(), double.infinity);
     }
     if (_maxScale == PhotoViewComputedScale.covered) {
       return (scaleForCovering(size: size, imageInfo: imageInfo) *
-              (_maxScale as PhotoViewComputedScale)
-                  .multiplier) // ignore: avoid_as
+              (_maxScale as PhotoViewComputedScale) // ignore: avoid_as
+                  .multiplier)
           .clamp(computeMinScale(), double.infinity);
     }
     return _maxScale.clamp(computeMinScale(), double.infinity);

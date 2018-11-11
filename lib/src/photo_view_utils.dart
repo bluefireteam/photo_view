@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:photo_view/photo_view_scale_state.dart';
+import 'package:photo_view/src/photo_view_scale_state.dart';
 
 PhotoViewScaleState nextScaleState(PhotoViewScaleState actual) {
   switch (actual) {

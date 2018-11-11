@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:photo_view/photo_view_scale_boundaries.dart';
-import 'package:photo_view/photo_view_scale_state.dart';
-import 'package:photo_view/photo_view_utils.dart';
+import 'package:photo_view/src/photo_view_scale_boundaries.dart';
+import 'package:photo_view/src/photo_view_scale_state.dart';
+import 'package:photo_view/src/photo_view_utils.dart';
 
 class PhotoViewImageWrapper extends StatefulWidget {
   const PhotoViewImageWrapper({

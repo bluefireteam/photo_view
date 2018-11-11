@@ -2,12 +2,12 @@ library photo_view;
 
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:photo_view/photo_view_image_wrapper.dart';
-import 'package:photo_view/photo_view_scale_boundaries.dart';
-import 'package:photo_view/photo_view_scale_state.dart';
+import 'package:photo_view/src/photo_view_image_wrapper.dart';
+import 'package:photo_view/src/photo_view_scale_boundaries.dart';
+import 'package:photo_view/src/photo_view_scale_state.dart';
 import 'package:after_layout/after_layout.dart';
 
-export 'package:photo_view/photo_view_computed_scale.dart';
+export 'package:photo_view/src/photo_view_computed_scale.dart';
 export 'package:photo_view/photo_view_gallery.dart';
 
 typedef PhotoViewScaleStateChangedCallback = void Function(

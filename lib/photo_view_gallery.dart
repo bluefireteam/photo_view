@@ -1,6 +1,8 @@
+library photo_view_gallery;
+
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:photo_view/photo_view_scale_state.dart';
+import 'package:photo_view/src/photo_view_scale_state.dart';
 
 typedef PhotoViewGalleryPageChangedCallback = void Function(int index);
 
