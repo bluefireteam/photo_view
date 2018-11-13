@@ -38,7 +38,6 @@ class PhotoViewImageWrapper extends StatefulWidget {
 class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     with TickerProviderStateMixin {
   Offset _position;
-  Offset _positionBefore;
   Offset _normalizedPosition;
   double _scale;
   double _scaleBefore;
@@ -63,7 +62,6 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
 
   void onScaleStart(ScaleStartDetails details) {
     _scaleBefore = scaleStateAwareScale();
-    _positionBefore = _position;
     _normalizedPosition = details.focalPoint - _position;
     _scaleAnimationController.stop();
     _positionAnimationController.stop();
@@ -112,7 +110,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     // animate velocity only if there is no scale change and a significant magnitude
     if(_scaleBefore / _scale == 1.0 && magnitude >= 400.0 ){
       final Offset direction = details.velocity.pixelsPerSecond / magnitude;
-      animatePosition( _position, clampPosition(_position + direction * 100.0), magnitude);
+      animatePosition( _position, clampPosition(_position + direction * 100.0));
     }
 
   }
@@ -162,12 +160,12 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
       ..fling(velocity: 0.4);
   }
 
-  TickerFuture animatePosition(Offset from, Offset to, [double magnitude = 1.0]) {
+   void animatePosition(Offset from, Offset to) {
     _positionAnimation = Tween<Offset>(begin: from, end: to)
         .animate(_positionAnimationController);
     _positionAnimationController
-      ..value = 0.0;
-    return _positionAnimationController.fling(velocity: 0.4);
+      ..value = 0.0
+      ..fling(velocity: 0.4);
   }
 
   @override
