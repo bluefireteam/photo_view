@@ -87,8 +87,9 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     if (_scale > maxScale) {
       final double scaleComebackRatio = maxScale / _scale;
       animateScale(_scale, maxScale);
-      animatePosition(
-          _position, clampPosition(_position * scaleComebackRatio, maxScale));
+      final Offset clampedPosition =
+          clampPosition(_position * scaleComebackRatio, maxScale);
+      animatePosition(_position, clampedPosition);
       computeNextScaleState();
       return;
     }
@@ -101,6 +102,14 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
           _position, clampPosition(_position * scaleComebackRatio, maxScale));
       computeNextScaleState();
       return;
+    }
+    // get magnitude from gesture velocity
+    final double magnitude = details.velocity.pixelsPerSecond.distance;
+
+    // animate velocity only if there is no scale change and a significant magnitude
+    if (_scaleBefore / _scale == 1.0 && magnitude >= 400.0) {
+      final Offset direction = details.velocity.pixelsPerSecond / magnitude;
+      animatePosition(_position, clampPosition(_position + direction * 100.0));
     }
   }
 
