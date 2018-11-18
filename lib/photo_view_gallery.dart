@@ -45,7 +45,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
 
   void scaleStateChangedCallback(PhotoViewScaleState scaleState) {
     setState(() {
-      _locked = scaleState != PhotoViewScaleState.contained;
+      _locked = scaleState != PhotoViewScaleState.initial;
     });
     widget.scaleStateChangedCallback != null
         ? widget.scaleStateChangedCallback(scaleState)
