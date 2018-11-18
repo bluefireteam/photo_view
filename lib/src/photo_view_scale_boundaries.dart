@@ -7,7 +7,8 @@ class ScaleBoundaries {
       {@required this.size, @required this.imageInfo})
       : assert(_minScale is double || _minScale is PhotoViewComputedScale),
         assert(_maxScale is double || _maxScale is PhotoViewComputedScale),
-        assert(_initialScale is double || _initialScale is PhotoViewComputedScale);
+        assert(
+            _initialScale is double || _initialScale is PhotoViewComputedScale);
 
   final dynamic _minScale;
   final dynamic _maxScale;
@@ -45,13 +46,15 @@ class ScaleBoundaries {
   }
 
   double computeInitialScale() {
-    if (_initialScale == PhotoViewComputedScale.contained){
+    if (_initialScale == PhotoViewComputedScale.contained) {
       return scaleForContained(size: size, imageInfo: imageInfo) *
-          (_initialScale as PhotoViewComputedScale).multiplier; // ignore: avoid_as
+          (_initialScale as PhotoViewComputedScale)
+              .multiplier; // ignore: avoid_as
     }
     if (_initialScale == PhotoViewComputedScale.covered) {
       return scaleForCovering(size: size, imageInfo: imageInfo) *
-          (_initialScale as PhotoViewComputedScale).multiplier; // ignore: avoid_as
+          (_initialScale as PhotoViewComputedScale)
+              .multiplier; // ignore: avoid_as
     }
     return _maxScale.clamp(computeMinScale(), computeMaxScale());
   }

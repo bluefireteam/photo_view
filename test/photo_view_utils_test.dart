@@ -18,10 +18,8 @@ void main() {
 
   test("getScaleForScaleType", () {
     expect(
-        getScaleForScaleState(
-          null,
-            PhotoViewScaleState.originalSize,
-            null, ScaleBoundaries(0.0, double.infinity, 1.0)),
+        getScaleForScaleState(null, PhotoViewScaleState.originalSize, null,
+            ScaleBoundaries(0.0, double.infinity, 1.0)),
         1.0);
   });
 }

@@ -138,7 +138,8 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   double scaleStateAwareScale() {
     return _scale != null || widget.scaleState == PhotoViewScaleState.zooming
         ? _scale
-        : getScaleForScaleState(widget.size,  widget.scaleState, widget.imageInfo, widget.scaleBoundaries)
+        : getScaleForScaleState(widget.size, widget.scaleState,
+                widget.imageInfo, widget.scaleBoundaries)
             .clamp(widget.scaleBoundaries.computeMinScale(),
                 widget.scaleBoundaries.computeMaxScale());
   }
@@ -186,12 +187,14 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     if (oldWidget.scaleState != widget.scaleState &&
         widget.scaleState != PhotoViewScaleState.zooming) {
       final double prevScale = _scale == null
-          ? getScaleForScaleState(widget.size, PhotoViewScaleState.initial,widget.imageInfo, widget.scaleBoundaries)
+          ? getScaleForScaleState(widget.size, PhotoViewScaleState.initial,
+                  widget.imageInfo, widget.scaleBoundaries)
               .clamp(widget.scaleBoundaries.computeMinScale(),
                   widget.scaleBoundaries.computeMaxScale())
           : _scale;
 
-      final double nextScale = getScaleForScaleState(widget.size, widget.scaleState,widget.imageInfo,widget.scaleBoundaries)
+      final double nextScale = getScaleForScaleState(widget.size,
+              widget.scaleState, widget.imageInfo, widget.scaleBoundaries)
           .clamp(widget.scaleBoundaries.computeMinScale(),
               widget.scaleBoundaries.computeMaxScale());
 
@@ -208,7 +211,8 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
       return;
     }
 
-    final double originalScale = getScaleForScaleState(widget.size, _originalScaleState, widget.imageInfo, widget.scaleBoundaries)
+    final double originalScale = getScaleForScaleState(widget.size,
+            _originalScaleState, widget.imageInfo, widget.scaleBoundaries)
         .clamp(widget.scaleBoundaries.computeMinScale(),
             widget.scaleBoundaries.computeMaxScale());
 
@@ -220,7 +224,8 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
       prevScale = nextScale;
       _prevScaleState = _nextScaleState;
       _nextScaleState = nextScaleState(_prevScaleState);
-      nextScale = getScaleForScaleState( widget.size, _nextScaleState, widget.imageInfo,widget.scaleBoundaries)
+      nextScale = getScaleForScaleState(widget.size, _nextScaleState,
+              widget.imageInfo, widget.scaleBoundaries)
           .clamp(widget.scaleBoundaries.computeMinScale(),
               widget.scaleBoundaries.computeMaxScale());
     } while (prevScale == nextScale && _originalScaleState != _nextScaleState);

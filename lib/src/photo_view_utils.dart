@@ -19,7 +19,8 @@ PhotoViewScaleState nextScaleState(PhotoViewScaleState actual) {
   }
 }
 
-double getScaleForScaleState(Size size, PhotoViewScaleState scaleState, ImageInfo imageInfo, ScaleBoundaries scaleBoundaries) {
+double getScaleForScaleState(Size size, PhotoViewScaleState scaleState,
+    ImageInfo imageInfo, ScaleBoundaries scaleBoundaries) {
   switch (scaleState) {
     case PhotoViewScaleState.initial:
       return scaleBoundaries.computeInitialScale();

@@ -92,9 +92,11 @@ class FullScreenExamples extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => FullScreenWrapper(
-                          imageProvider: const AssetImage("assets/large-image.jpg"),
-                          initialScale: PhotoViewComputedScale.contained * 0.9,
-                        ),
+                              imageProvider:
+                                  const AssetImage("assets/large-image.jpg"),
+                              initialScale:
+                                  PhotoViewComputedScale.contained * 0.9,
+                            ),
                       ),
                     );
                   }),
