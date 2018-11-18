@@ -1,3 +1,3 @@
 # CHANGELOG
 
-See [REleases page on github](https://github.com/renancaraujo/photo_view/releases)
+See the [releases page on github](https://github.com/renancaraujo/photo_view/releases)

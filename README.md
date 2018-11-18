@@ -22,7 +22,8 @@ import 'package:photo_view/photo_view.dart';
 For more information about how to use Photo View, check the [API Docs](https://pub.dartlang.org/documentation/photo_view/latest/photo_view/photo_view-library.html)
 
 
-If you want to see it in practice, check the [example app](/example/lib) that explores most of Photo View's use cases.
+If you want to see it in practice, check the [example app](/example/lib) that explores most of Photo View's use cases or download the latest version apk on the [releases page](https://github.com/renancaraujo/photo_view/releases)
+
 
 ## Full screen usage
 
