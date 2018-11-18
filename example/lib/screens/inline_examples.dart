@@ -26,7 +26,7 @@ class InlineExamples extends StatelessWidget {
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 20.0),
                 height: 300.0,
-                child: const PhotoViewInline(
+                child: const PhotoView(
                   imageProvider: const AssetImage("assets/large-image.jpg"),
                   maxScale: PhotoViewComputedScale.covered,
                 ),

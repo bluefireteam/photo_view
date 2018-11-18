@@ -53,9 +53,8 @@ class PhotoView extends StatefulWidget {
   ///  maxScale: PhotoViewComputedScale.covered * 1.1
   /// );
   /// ```
-  /// [size] is used to define the viewPort size in which the image will be
-  /// scaled to. This argument is rarely used. By befault is the size of the
-  /// screen. [PhotoViewInline] defines is as the size of the widget.
+  /// [customSize] is used to define the viewPort size in which the image will be
+  /// scaled to. This argument is rarely used. By befault is the size that this widget assumes.
   ///
   /// The argument [gaplessPlayback] is used to continue showing the old image
   /// (`true`), or briefly show nothing (`false`), when the [imageProvider]
@@ -92,7 +91,7 @@ class PhotoView extends StatefulWidget {
     this.maxScale,
     this.initialScale,
     this.gaplessPlayback = false,
-    this.size,
+    this.customSize,
     this.heroTag,
     this.scaleStateChangedCallback,
   }) : super(key: key);
@@ -129,9 +128,8 @@ class PhotoView extends StatefulWidget {
   final bool gaplessPlayback;
 
   /// Defines the size of the scaling base of the image inside [PhotoView],
-  /// by default it is `MediaQuery.of(context).size`. This argument is used by
-  /// [PhotoViewInline] class.
-  final Size size;
+  /// by default it is `MediaQuery.of(context).size`.
+  final Size customSize;
 
   /// Assists the activation of a hero animation within [PhotoView]
   final Object heroTag;
@@ -236,13 +234,13 @@ class _PhotoViewState extends State<PhotoView>
       scaleState: _scaleState,
       backgroundColor: widget.backgroundColor,
       gaplessPlayback: widget.gaplessPlayback,
-      size: widget.size ?? _size ?? MediaQuery.of(context).size,
+      size: widget.customSize ?? _size ?? MediaQuery.of(context).size,
       scaleBoundaries: ScaleBoundaries(
         widget.minScale ?? 0.0,
         widget.maxScale ?? double.infinity,
         widget.initialScale ?? PhotoViewComputedScale.contained,
         imageInfo: info,
-        size: widget.size ?? MediaQuery.of(context).size,
+        size: widget.customSize ?? MediaQuery.of(context).size,
       ),
       heroTag: widget.heroTag,
     );
@@ -284,7 +282,7 @@ class PhotoViewInline extends PhotoView {
             maxScale: maxScale,
             initialScale: initialScale,
             gaplessPlayback: gaplessPlayback,
-            size: size,
+            customSize: size,
             heroTag: heroTag,
             scaleStateChangedCallback: scaleStateChangedCallback);
 }
