@@ -2,6 +2,7 @@ library photo_view;
 
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:photo_view/src/photo_view_computed_scale.dart';
 import 'package:photo_view/src/photo_view_image_wrapper.dart';
 import 'package:photo_view/src/photo_view_scale_boundaries.dart';
 import 'package:photo_view/src/photo_view_scale_state.dart';
@@ -89,6 +90,7 @@ class PhotoView extends StatefulWidget {
     this.backgroundColor = const Color.fromRGBO(0, 0, 0, 1.0),
     this.minScale,
     this.maxScale,
+    this.initialScale,
     this.gaplessPlayback = false,
     this.size,
     this.heroTag,
@@ -107,14 +109,19 @@ class PhotoView extends StatefulWidget {
   final Color backgroundColor;
 
   /// Defines the minimal size in which the image will be allowed to assume, it
-  /// is proportional to the original image size. Can be either a double or a
-  /// [PhotoViewComputedScale]
+  /// is proportional to the original image size. Can be either a double (absolute value) or a
+  /// [PhotoViewComputedScale], that can be multiplied by a double
   final dynamic minScale;
 
   /// Defines the maximal size in which the image will be allowed to assume, it
-  /// is proportional to the original image size. Can be either a double or a
-  /// [PhotoViewComputedScale]
+  /// is proportional to the original image size. Can be either a double (absolute value) or a
+  /// [PhotoViewComputedScale], that can be multiplied by a double
   final dynamic maxScale;
+
+  /// Defines the inial size in which the image will be assume in the mounting of the component, it
+  /// is proportional to the original image size. Can be either a double (absolute value) or a
+  /// [PhotoViewComputedScale], that can be multiplied by a double
+  final dynamic initialScale;
 
   /// This is used to continue showing the old image (`true`), or briefly show
   /// nothing (`false`), when the `imageProvider` changes. By default it's set
@@ -182,7 +189,7 @@ class _PhotoViewState extends State<PhotoView> {
   void initState() {
     super.initState();
     _getImage();
-    _scaleState = PhotoViewScaleState.contained;
+    _scaleState = PhotoViewScaleState.initial;
   }
 
   @override
@@ -223,7 +230,8 @@ class _PhotoViewState extends State<PhotoView> {
       size: widget.size ?? MediaQuery.of(context).size,
       scaleBoundaries: ScaleBoundaries(
         widget.minScale ?? 0.0,
-        widget.maxScale ?? 100000000000.0,
+        widget.maxScale ?? double.infinity,
+        widget.initialScale ?? PhotoViewComputedScale.contained,
         imageInfo: info,
         size: widget.size ?? MediaQuery.of(context).size,
       ),
@@ -247,15 +255,6 @@ class _PhotoViewState extends State<PhotoView> {
 /// A [StatelessWidget] which the only child is a [PhotoView] with an automacally
 /// calculated [size]. All but [size] arguments are the same as [PhotoView].
 class PhotoViewInline extends StatefulWidget {
-  final ImageProvider imageProvider;
-  final Widget loadingChild;
-  final Color backgroundColor;
-  final dynamic minScale;
-  final dynamic maxScale;
-  final bool gaplessPlayback;
-  final Object heroTag;
-  final PhotoViewScaleStateChangedCallback scaleStateChangedCallback;
-
   const PhotoViewInline({
     Key key,
     @required this.imageProvider,
@@ -263,10 +262,22 @@ class PhotoViewInline extends StatefulWidget {
     this.backgroundColor = const Color.fromRGBO(0, 0, 0, 1.0),
     this.minScale,
     this.maxScale,
+    this.initialScale,
     this.gaplessPlayback = false,
     this.heroTag,
     this.scaleStateChangedCallback,
+
   }) : super(key: key);
+
+  final ImageProvider imageProvider;
+  final Widget loadingChild;
+  final Color backgroundColor;
+  final dynamic minScale;
+  final dynamic maxScale;
+  final dynamic initialScale;
+  final bool gaplessPlayback;
+  final Object heroTag;
+  final PhotoViewScaleStateChangedCallback scaleStateChangedCallback;
 
   @override
   State<StatefulWidget> createState() => _PhotoViewInlineState();
@@ -291,6 +302,7 @@ class _PhotoViewInlineState extends State<PhotoViewInline>
       backgroundColor: widget.backgroundColor,
       minScale: widget.minScale,
       maxScale: widget.maxScale,
+      initialScale: widget.initialScale,
       gaplessPlayback: widget.gaplessPlayback,
       size: _size,
       heroTag: widget.heroTag,

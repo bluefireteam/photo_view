@@ -3,15 +3,18 @@ import 'package:photo_view/src/photo_view_computed_scale.dart';
 import 'package:photo_view/src/photo_view_utils.dart';
 
 class ScaleBoundaries {
-  final dynamic _minScale;
-  final dynamic _maxScale;
-  Size size;
-  ImageInfo imageInfo;
-
-  ScaleBoundaries(this._minScale, this._maxScale,
+  ScaleBoundaries(this._minScale, this._maxScale, this._initialScale,
       {@required this.size, @required this.imageInfo})
       : assert(_minScale is double || _minScale is PhotoViewComputedScale),
-        assert(_maxScale is double || _maxScale is PhotoViewComputedScale);
+        assert(_maxScale is double || _maxScale is PhotoViewComputedScale),
+        assert(
+            _initialScale is double || _initialScale is PhotoViewComputedScale);
+
+  final dynamic _minScale;
+  final dynamic _maxScale;
+  final dynamic _initialScale;
+  Size size;
+  ImageInfo imageInfo;
 
   double computeMinScale() {
     if (_minScale == PhotoViewComputedScale.contained) {
@@ -22,6 +25,7 @@ class ScaleBoundaries {
       return scaleForCovering(size: size, imageInfo: imageInfo) *
           (_minScale as PhotoViewComputedScale).multiplier; // ignore: avoid_as
     }
+    assert(_minScale >= 0.0);
     return _minScale;
   }
 
@@ -39,5 +43,19 @@ class ScaleBoundaries {
           .clamp(computeMinScale(), double.infinity);
     }
     return _maxScale.clamp(computeMinScale(), double.infinity);
+  }
+
+  double computeInitialScale() {
+    if (_initialScale == PhotoViewComputedScale.contained) {
+      return scaleForContained(size: size, imageInfo: imageInfo) *
+          (_initialScale as PhotoViewComputedScale)  // ignore: avoid_as
+              .multiplier;
+    }
+    if (_initialScale == PhotoViewComputedScale.covered) {
+      return scaleForCovering(size: size, imageInfo: imageInfo) *
+          (_initialScale as PhotoViewComputedScale) // ignore: avoid_as
+              .multiplier;
+    }
+    return _maxScale.clamp(computeMinScale(), computeMaxScale());
   }
 }

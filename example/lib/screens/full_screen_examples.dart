@@ -85,6 +85,21 @@ class FullScreenExamples extends StatelessWidget {
                       ),
                     );
                   }),
+              ExampleButtonNode(
+                  title: "Custom Initial scale",
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FullScreenWrapper(
+                              imageProvider:
+                                  const AssetImage("assets/large-image.jpg"),
+                              initialScale:
+                                  PhotoViewComputedScale.contained * 0.9,
+                            ),
+                      ),
+                    );
+                  }),
             ],
           ))
         ],
@@ -137,13 +152,15 @@ class FullScreenWrapper extends StatelessWidget {
   final Color backgroundColor;
   final dynamic minScale;
   final dynamic maxScale;
+  final dynamic initialScale;
 
   const FullScreenWrapper(
       {this.imageProvider,
       this.loadingChild,
       this.backgroundColor,
       this.minScale,
-      this.maxScale});
+      this.maxScale,
+      this.initialScale});
 
   @override
   Widget build(BuildContext context) {
@@ -157,6 +174,7 @@ class FullScreenWrapper extends StatelessWidget {
           backgroundColor: backgroundColor,
           minScale: minScale,
           maxScale: maxScale,
+          initialScale: initialScale,
         ));
   }
 }

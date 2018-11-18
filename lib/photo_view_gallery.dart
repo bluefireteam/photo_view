@@ -45,7 +45,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
 
   void scaleStateChangedCallback(PhotoViewScaleState scaleState) {
     setState(() {
-      _locked = scaleState != PhotoViewScaleState.contained;
+      _locked = scaleState != PhotoViewScaleState.initial;
     });
     widget.scaleStateChangedCallback != null
         ? widget.scaleStateChangedCallback(scaleState)
@@ -76,6 +76,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
         backgroundColor: widget.backgroundColor,
         minScale: pageOption.minScale,
         maxScale: pageOption.maxScale,
+        initialScale: pageOption.initialScale,
         gaplessPlayback: widget.gaplessPlayback,
         heroTag: pageOption.heroTag,
         scaleStateChangedCallback: scaleStateChangedCallback);
@@ -89,10 +90,12 @@ class PhotoViewGalleryPageOptions {
     this.heroTag,
     this.minScale,
     this.maxScale,
+    this.initialScale,
   });
 
   final ImageProvider imageProvider;
   final Object heroTag;
   final dynamic minScale;
   final dynamic maxScale;
+  final dynamic initialScale;
 }
