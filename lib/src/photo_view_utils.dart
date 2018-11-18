@@ -19,15 +19,20 @@ PhotoViewScaleState nextScaleState(PhotoViewScaleState actual) {
   }
 }
 
+double _clampIt(double size, ScaleBoundaries scaleBoundaries) {
+  return size.clamp(scaleBoundaries.computeMinScale(),
+      scaleBoundaries.computeMaxScale());
+}
+
 double getScaleForScaleState(Size size, PhotoViewScaleState scaleState,
     ImageInfo imageInfo, ScaleBoundaries scaleBoundaries) {
   switch (scaleState) {
     case PhotoViewScaleState.initial:
-      return scaleBoundaries.computeInitialScale();
+      return _clampIt(scaleBoundaries.computeInitialScale(), scaleBoundaries);
     case PhotoViewScaleState.covering:
-      return scaleForCovering(size: size, imageInfo: imageInfo);
+      return _clampIt(scaleForCovering(size: size, imageInfo: imageInfo), scaleBoundaries);
     case PhotoViewScaleState.originalSize:
-      return 1.0;
+      return _clampIt(1.0, scaleBoundaries);
     default:
       return null;
   }

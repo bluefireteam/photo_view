@@ -139,9 +139,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     return _scale != null || widget.scaleState == PhotoViewScaleState.zooming
         ? _scale
         : getScaleForScaleState(widget.size, widget.scaleState,
-                widget.imageInfo, widget.scaleBoundaries)
-            .clamp(widget.scaleBoundaries.computeMinScale(),
-                widget.scaleBoundaries.computeMaxScale());
+                widget.imageInfo, widget.scaleBoundaries);
   }
 
   void animateScale(double from, double to) {
@@ -189,14 +187,10 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
       final double prevScale = _scale == null
           ? getScaleForScaleState(widget.size, PhotoViewScaleState.initial,
                   widget.imageInfo, widget.scaleBoundaries)
-              .clamp(widget.scaleBoundaries.computeMinScale(),
-                  widget.scaleBoundaries.computeMaxScale())
           : _scale;
 
       final double nextScale = getScaleForScaleState(widget.size,
-              widget.scaleState, widget.imageInfo, widget.scaleBoundaries)
-          .clamp(widget.scaleBoundaries.computeMinScale(),
-              widget.scaleBoundaries.computeMaxScale());
+              widget.scaleState, widget.imageInfo, widget.scaleBoundaries);
 
       animateScale(prevScale, nextScale);
       animatePosition(_position, Offset.zero);
@@ -212,9 +206,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     }
 
     final double originalScale = getScaleForScaleState(widget.size,
-            _originalScaleState, widget.imageInfo, widget.scaleBoundaries)
-        .clamp(widget.scaleBoundaries.computeMinScale(),
-            widget.scaleBoundaries.computeMaxScale());
+            _originalScaleState, widget.imageInfo, widget.scaleBoundaries);
 
     double prevScale = originalScale;
     PhotoViewScaleState _prevScaleState = _originalScaleState;
@@ -225,9 +217,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
       _prevScaleState = _nextScaleState;
       _nextScaleState = nextScaleState(_prevScaleState);
       nextScale = getScaleForScaleState(widget.size, _nextScaleState,
-              widget.imageInfo, widget.scaleBoundaries)
-          .clamp(widget.scaleBoundaries.computeMinScale(),
-              widget.scaleBoundaries.computeMaxScale());
+              widget.imageInfo, widget.scaleBoundaries);
     } while (prevScale == nextScale && _originalScaleState != _nextScaleState);
 
     if (originalScale == nextScale) {
