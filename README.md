@@ -48,6 +48,8 @@ Result:
 
 `PhotoView` can be used inside a container with size different than the screen.
 
+**The previous class `PhotoViewInline` has been deprecated and will be removed in future releases**
+
 ```dart
 @override
 Widget build(BuildContext context) {
