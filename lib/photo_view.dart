@@ -266,7 +266,6 @@ class PhotoViewInline extends StatefulWidget {
     this.gaplessPlayback = false,
     this.heroTag,
     this.scaleStateChangedCallback,
-
   }) : super(key: key);
 
   final ImageProvider imageProvider;
