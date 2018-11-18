@@ -10,9 +10,9 @@ class GalleryExample extends StatelessWidget {
         MaterialPageRoute(
           builder: (context) => GalleryPhotoViewWrapper(
                 backgroundColor: Colors.black87,
-                imageProvider: AssetImage("assets/gallery1.jpeg"),
-                imageProvider2: AssetImage("assets/gallery2.jpeg"),
-                imageProvider3: AssetImage("assets/gallery3.jpeg"),
+                imageProvider: const AssetImage("assets/gallery1.jpeg"),
+                imageProvider2: const AssetImage("assets/gallery2.jpeg"),
+                imageProvider3: const AssetImage("assets/gallery3.jpeg"),
                 index: index,
               ),
         ));

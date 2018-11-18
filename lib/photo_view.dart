@@ -262,9 +262,11 @@ class PhotoViewInline extends StatefulWidget {
     this.backgroundColor = const Color.fromRGBO(0, 0, 0, 1.0),
     this.minScale,
     this.maxScale,
+    this.initialScale,
     this.gaplessPlayback = false,
     this.heroTag,
     this.scaleStateChangedCallback,
+
   }) : super(key: key);
 
   final ImageProvider imageProvider;
@@ -272,6 +274,7 @@ class PhotoViewInline extends StatefulWidget {
   final Color backgroundColor;
   final dynamic minScale;
   final dynamic maxScale;
+  final dynamic initialScale;
   final bool gaplessPlayback;
   final Object heroTag;
   final PhotoViewScaleStateChangedCallback scaleStateChangedCallback;
@@ -299,6 +302,7 @@ class _PhotoViewInlineState extends State<PhotoViewInline>
       backgroundColor: widget.backgroundColor,
       minScale: widget.minScale,
       maxScale: widget.maxScale,
+      initialScale: widget.initialScale,
       gaplessPlayback: widget.gaplessPlayback,
       size: _size,
       heroTag: widget.heroTag,

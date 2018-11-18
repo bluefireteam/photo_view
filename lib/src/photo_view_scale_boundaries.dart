@@ -48,13 +48,13 @@ class ScaleBoundaries {
   double computeInitialScale() {
     if (_initialScale == PhotoViewComputedScale.contained) {
       return scaleForContained(size: size, imageInfo: imageInfo) *
-          (_initialScale as PhotoViewComputedScale)
-              .multiplier; // ignore: avoid_as
+          (_initialScale as PhotoViewComputedScale)  // ignore: avoid_as
+              .multiplier;
     }
     if (_initialScale == PhotoViewComputedScale.covered) {
       return scaleForCovering(size: size, imageInfo: imageInfo) *
-          (_initialScale as PhotoViewComputedScale)
-              .multiplier; // ignore: avoid_as
+          (_initialScale as PhotoViewComputedScale) // ignore: avoid_as
+              .multiplier;
     }
     return _maxScale.clamp(computeMinScale(), computeMaxScale());
   }
