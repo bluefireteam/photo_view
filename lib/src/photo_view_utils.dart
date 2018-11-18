@@ -1,34 +1,39 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:photo_view/photo_view_scale_state.dart';
+import 'package:photo_view/src/photo_view_scale_boundaries.dart';
+import 'package:photo_view/src/photo_view_scale_state.dart';
 
 PhotoViewScaleState nextScaleState(PhotoViewScaleState actual) {
   switch (actual) {
-    case PhotoViewScaleState.contained:
+    case PhotoViewScaleState.initial:
       return PhotoViewScaleState.covering;
     case PhotoViewScaleState.covering:
       return PhotoViewScaleState.originalSize;
     case PhotoViewScaleState.originalSize:
-      return PhotoViewScaleState.contained;
+      return PhotoViewScaleState.initial;
     case PhotoViewScaleState.zooming:
-      return PhotoViewScaleState.contained;
+      return PhotoViewScaleState.initial;
     default:
-      return PhotoViewScaleState.contained;
+      return PhotoViewScaleState.initial;
   }
 }
 
-double getScaleForScaleState(
-    {@required Size size,
-    @required PhotoViewScaleState scaleState,
-    @required ImageInfo imageInfo}) {
+double _clampIt(double size, ScaleBoundaries scaleBoundaries) {
+  return size.clamp(
+      scaleBoundaries.computeMinScale(), scaleBoundaries.computeMaxScale());
+}
+
+double getScaleForScaleState(Size size, PhotoViewScaleState scaleState,
+    ImageInfo imageInfo, ScaleBoundaries scaleBoundaries) {
   switch (scaleState) {
-    case PhotoViewScaleState.contained:
-      return scaleForContained(size: size, imageInfo: imageInfo);
+    case PhotoViewScaleState.initial:
+      return _clampIt(scaleBoundaries.computeInitialScale(), scaleBoundaries);
     case PhotoViewScaleState.covering:
-      return scaleForCovering(size: size, imageInfo: imageInfo);
+      return _clampIt(
+          scaleForCovering(size: size, imageInfo: imageInfo), scaleBoundaries);
     case PhotoViewScaleState.originalSize:
-      return 1.0;
+      return _clampIt(1.0, scaleBoundaries);
     default:
       return null;
   }

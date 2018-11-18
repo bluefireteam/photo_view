@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:photo_view/photo_view_scale_boundaries.dart';
-import 'package:photo_view/photo_view_scale_state.dart';
-import 'package:photo_view/photo_view_utils.dart';
+import 'package:photo_view/src/photo_view_scale_boundaries.dart';
+import 'package:photo_view/src/photo_view_scale_state.dart';
+import 'package:photo_view/src/photo_view_utils.dart';
 
 class PhotoViewImageWrapper extends StatefulWidget {
   const PhotoViewImageWrapper({
@@ -104,9 +104,9 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     if (_scale > maxScale) {
       final double scaleComebackRatio = maxScale / _scale;
       animateScale(_scale, maxScale);
-      animatePosition(
-          _position, clampPosition(_position * scaleComebackRatio, maxScale));
-      computeNextScaleState();
+      final Offset clampedPosition =
+          clampPosition(_position * scaleComebackRatio, maxScale);
+      animatePosition(_position, clampedPosition);
       return;
     }
 
@@ -115,9 +115,16 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
       final double scaleComebackRatio = minScale / _scale;
       animateScale(_scale, minScale);
       animatePosition(
-          _position, clampPosition(_position * scaleComebackRatio, maxScale));
-      computeNextScaleState();
+          _position, clampPosition(_position * scaleComebackRatio, minScale));
       return;
+    }
+    // get magnitude from gesture velocity
+    final double magnitude = details.velocity.pixelsPerSecond.distance;
+
+    // animate velocity only if there is no scale change and a significant magnitude
+    if (_scaleBefore / _scale == 1.0 && magnitude >= 400.0) {
+      final Offset direction = details.velocity.pixelsPerSecond / magnitude;
+      animatePosition(_position, clampPosition(_position + direction * 100.0));
     }
   }
 
@@ -148,12 +155,8 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   double scaleStateAwareScale() {
     return _scale != null || widget.scaleState == PhotoViewScaleState.zooming
         ? _scale
-        : getScaleForScaleState(
-                imageInfo: widget.imageInfo,
-                scaleState: widget.scaleState,
-                size: widget.size)
-            .clamp(widget.scaleBoundaries.computeMinScale(),
-                widget.scaleBoundaries.computeMaxScale());
+        : getScaleForScaleState(widget.size, widget.scaleState,
+            widget.imageInfo, widget.scaleBoundaries);
   }
 
   void animateScale(double from, double to) {
@@ -214,20 +217,12 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     if (oldWidget.scaleState != widget.scaleState &&
         widget.scaleState != PhotoViewScaleState.zooming) {
       final double prevScale = _scale == null
-          ? getScaleForScaleState(
-                  imageInfo: widget.imageInfo,
-                  scaleState: PhotoViewScaleState.contained,
-                  size: widget.size)
-              .clamp(widget.scaleBoundaries.computeMinScale(),
-                  widget.scaleBoundaries.computeMaxScale())
+          ? getScaleForScaleState(widget.size, PhotoViewScaleState.initial,
+              widget.imageInfo, widget.scaleBoundaries)
           : _scale;
 
-      final double nextScale = getScaleForScaleState(
-              imageInfo: widget.imageInfo,
-              scaleState: widget.scaleState,
-              size: widget.size)
-          .clamp(widget.scaleBoundaries.computeMinScale(),
-              widget.scaleBoundaries.computeMaxScale());
+      final double nextScale = getScaleForScaleState(widget.size,
+          widget.scaleState, widget.imageInfo, widget.scaleBoundaries);
 
       animateScale(prevScale, nextScale);
       animatePosition(_position, Offset.zero);
@@ -242,12 +237,8 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
       return;
     }
 
-    final double originalScale = getScaleForScaleState(
-            imageInfo: widget.imageInfo,
-            scaleState: _originalScaleState,
-            size: widget.size)
-        .clamp(widget.scaleBoundaries.computeMinScale(),
-            widget.scaleBoundaries.computeMaxScale());
+    final double originalScale = getScaleForScaleState(widget.size,
+        _originalScaleState, widget.imageInfo, widget.scaleBoundaries);
 
     double prevScale = originalScale;
     PhotoViewScaleState _prevScaleState = _originalScaleState;
@@ -257,12 +248,8 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
       prevScale = nextScale;
       _prevScaleState = _nextScaleState;
       _nextScaleState = nextScaleState(_prevScaleState);
-      nextScale = getScaleForScaleState(
-              imageInfo: widget.imageInfo,
-              scaleState: _nextScaleState,
-              size: widget.size)
-          .clamp(widget.scaleBoundaries.computeMinScale(),
-              widget.scaleBoundaries.computeMaxScale());
+      nextScale = getScaleForScaleState(widget.size, _nextScaleState,
+          widget.imageInfo, widget.scaleBoundaries);
     } while (prevScale == nextScale && _originalScaleState != _nextScaleState);
 
     if (originalScale == nextScale) {
@@ -287,12 +274,13 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
           child: Transform(
             child: Transform(
               child: CustomSingleChildLayout(
-                delegate: ImagePositionDelegate(widget.imageInfo.image.width / 1,
+                delegate: _ImagePositionDelegate(widget.imageInfo.image.width / 1,
                     widget.imageInfo.image.height / 1),
                 child: _buildHero(),
               ),
               transform: rotationMatrix,
-              alignment: Alignment.center,	              origin: _rotationFocusPoint,
+              alignment: Alignment.center,
+              origin: _rotationFocusPoint,
             ),
             transform: matrix,
             alignment: Alignment.center,
@@ -321,10 +309,11 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   }
 }
 
-class ImagePositionDelegate extends SingleChildLayoutDelegate {
+class _ImagePositionDelegate extends SingleChildLayoutDelegate {
+  const _ImagePositionDelegate(this.imageWidth, this.imageHeight);
+
   final double imageWidth;
   final double imageHeight;
-  const ImagePositionDelegate(this.imageWidth, this.imageHeight);
 
   @override
   Offset getPositionForChild(Size size, Size childSize) {

@@ -1,6 +1,8 @@
+library photo_view_gallery;
+
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:photo_view/photo_view_scale_state.dart';
+import 'package:photo_view/src/photo_view_scale_state.dart';
 
 typedef PhotoViewGalleryPageChangedCallback = void Function(int index);
 
@@ -9,10 +11,11 @@ class PhotoViewGallery extends StatefulWidget {
     Key key,
     @required this.pageOptions,
     this.loadingChild,
-    this.backgroundColor,
+    this.backgroundColor = const Color.fromRGBO(0, 0, 0, 1.0),
     this.gaplessPlayback = false,
     this.pageController,
     this.onPageChanged,
+    this.scaleStateChangedCallback,
   }) : super(key: key);
 
   final List<PhotoViewGalleryPageOptions> pageOptions;
@@ -21,6 +24,7 @@ class PhotoViewGallery extends StatefulWidget {
   final bool gaplessPlayback;
   final PageController pageController;
   final PhotoViewGalleryPageChangedCallback onPageChanged;
+  final PhotoViewScaleStateChangedCallback scaleStateChangedCallback;
 
   @override
   State<StatefulWidget> createState() {
@@ -41,8 +45,11 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
 
   void scaleStateChangedCallback(PhotoViewScaleState scaleState) {
     setState(() {
-      _locked = scaleState != PhotoViewScaleState.contained;
+      _locked = scaleState != PhotoViewScaleState.initial;
     });
+    widget.scaleStateChangedCallback != null
+        ? widget.scaleStateChangedCallback(scaleState)
+        : null;
   }
 
   int get actualPage {
@@ -69,6 +76,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
         backgroundColor: widget.backgroundColor,
         minScale: pageOption.minScale,
         maxScale: pageOption.maxScale,
+        initialScale: pageOption.initialScale,
         gaplessPlayback: widget.gaplessPlayback,
         heroTag: pageOption.heroTag,
         scaleStateChangedCallback: scaleStateChangedCallback);
@@ -82,10 +90,12 @@ class PhotoViewGalleryPageOptions {
     this.heroTag,
     this.minScale,
     this.maxScale,
+    this.initialScale,
   });
 
   final ImageProvider imageProvider;
   final Object heroTag;
   final dynamic minScale;
   final dynamic maxScale;
+  final dynamic initialScale;
 }

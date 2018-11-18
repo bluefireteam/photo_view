@@ -4,20 +4,18 @@ import 'package:photo_view/photo_view.dart';
 import './app_bar.dart';
 
 class GalleryExample extends StatelessWidget {
-
-  void open (BuildContext context, final int index){
+  void open(BuildContext context, final int index) {
     Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => GalleryPhotoViewWrapper(
-          backgroundColor: Colors.black87,
-          imageProvider: AssetImage("assets/gallery1.jpeg"),
-          imageProvider2: AssetImage("assets/gallery2.jpeg"),
-          imageProvider3: AssetImage("assets/gallery3.jpeg"),
-          index: index,
-        ),
-      )
-    );
+        context,
+        MaterialPageRoute(
+          builder: (context) => GalleryPhotoViewWrapper(
+                backgroundColor: Colors.black87,
+                imageProvider: const AssetImage("assets/gallery1.jpeg"),
+                imageProvider2: const AssetImage("assets/gallery2.jpeg"),
+                imageProvider3: const AssetImage("assets/gallery3.jpeg"),
+                index: index,
+              ),
+        ));
   }
 
   @override
@@ -31,56 +29,50 @@ class GalleryExample extends StatelessWidget {
             showGoBack: true,
           ),
           Expanded(
-            child: Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                    child: GestureDetector(
-                      onTap: (){
-                        open(context, 0);
-                      },
-                      child: Hero(
-                        tag: "tag1",
-                        child: Image.asset("assets/gallery1.jpeg", height: 80.0),
-                      ),
-                    )
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                    child: GestureDetector(
-                      onTap: (){
-                        open(context, 1);
-                      },
-                      child: Hero(
-                        tag: "tag2",
-                        child: Image.asset("assets/gallery2.jpeg", height: 80.0),
-                      ),
-                    )
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                    child: GestureDetector(
-                      onTap: (){
-                        open(context, 2);
-                      },
-                      child: Hero(
-                        tag: "tag3",
-                        child: Image.asset("assets/gallery3.jpeg", height: 80.0),
-                      ),
-                    )
-                  ),
-                ],
-              )
-            )
-          ),
+              child: Center(
+                  child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      open(context, 0);
+                    },
+                    child: Hero(
+                      tag: "tag1",
+                      child: Image.asset("assets/gallery1.jpeg", height: 80.0),
+                    ),
+                  )),
+              Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      open(context, 1);
+                    },
+                    child: Hero(
+                      tag: "tag2",
+                      child: Image.asset("assets/gallery2.jpeg", height: 80.0),
+                    ),
+                  )),
+              Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      open(context, 2);
+                    },
+                    child: Hero(
+                      tag: "tag3",
+                      child: Image.asset("assets/gallery3.jpeg", height: 80.0),
+                    ),
+                  )),
+            ],
+          ))),
         ],
       ),
     );
   }
 }
-
 
 class GalleryPhotoViewWrapper extends StatefulWidget {
   final ImageProvider imageProvider;
@@ -102,20 +94,15 @@ class GalleryPhotoViewWrapper extends StatefulWidget {
     this.minScale,
     this.maxScale,
     this.index,
-  }) :
-        this.pageController = PageController(
-            initialPage: index
-        );
+  }) : this.pageController = PageController(initialPage: index);
 
   @override
   State<StatefulWidget> createState() {
     return _GalleryPhotoViewWrapperState();
   }
-
 }
 
 class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
-
   int currentIndex;
   @override
   void initState() {
@@ -123,7 +110,7 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
     super.initState();
   }
 
-  void onPageChanged (int index) {
+  void onPageChanged(int index) {
     setState(() {
       currentIndex = index;
     });
@@ -133,53 +120,44 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        constraints: BoxConstraints.expand(
-          height: MediaQuery.of(context).size.height,
-        ),
-        child: Stack(
-          alignment: Alignment.bottomRight,
-
-          children: <Widget>[
-            PhotoViewGallery(
-              pageOptions: <PhotoViewGalleryPageOptions>[
-                PhotoViewGalleryPageOptions(
-                  imageProvider: widget.imageProvider,
-                  heroTag: "tag1",
-                ),
-                PhotoViewGalleryPageOptions(
-                    imageProvider: widget.imageProvider2,
-                    heroTag: "tag2",
-                    maxScale: PhotoViewComputedScale.contained * 0.3
-                ),
-                PhotoViewGalleryPageOptions(
-                  imageProvider: widget.imageProvider3,
-                  minScale: PhotoViewComputedScale.contained * 0.8,
-                  maxScale: PhotoViewComputedScale.covered * 1.1,
-                  heroTag: "tag3",
-                ),
-              ],
-              loadingChild: widget.loadingChild,
-              backgroundColor: widget.backgroundColor,
-              pageController: widget.pageController,
-              onPageChanged: onPageChanged,
-            ),
-            Container(
-              padding: const EdgeInsets.all(20.0),
-              child: Text(
-                "Image ${currentIndex + 1}",
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 17.0,
-                  decoration: null
-                ),
+          constraints: BoxConstraints.expand(
+            height: MediaQuery.of(context).size.height,
+          ),
+          child: Stack(
+            alignment: Alignment.bottomRight,
+            children: <Widget>[
+              PhotoViewGallery(
+                pageOptions: <PhotoViewGalleryPageOptions>[
+                  PhotoViewGalleryPageOptions(
+                    imageProvider: widget.imageProvider,
+                    heroTag: "tag1",
+                  ),
+                  PhotoViewGalleryPageOptions(
+                      imageProvider: widget.imageProvider2,
+                      heroTag: "tag2",
+                      maxScale: PhotoViewComputedScale.contained * 0.3),
+                  PhotoViewGalleryPageOptions(
+                    imageProvider: widget.imageProvider3,
+                    minScale: PhotoViewComputedScale.contained * 0.8,
+                    maxScale: PhotoViewComputedScale.covered * 1.1,
+                    heroTag: "tag3",
+                  ),
+                ],
+                loadingChild: widget.loadingChild,
+                backgroundColor: widget.backgroundColor,
+                pageController: widget.pageController,
+                onPageChanged: onPageChanged,
               ),
-            )
-          ],
-        )
-      ),
+              Container(
+                padding: const EdgeInsets.all(20.0),
+                child: Text(
+                  "Image ${currentIndex + 1}",
+                  style: const TextStyle(
+                      color: Colors.white, fontSize: 17.0, decoration: null),
+                ),
+              )
+            ],
+          )),
     );
   }
-
 }
-
-
