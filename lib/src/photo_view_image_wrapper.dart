@@ -90,7 +90,6 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
       final Offset clampedPosition =
           clampPosition(_position * scaleComebackRatio, maxScale);
       animatePosition(_position, clampedPosition);
-      computeNextScaleState();
       return;
     }
 
@@ -100,7 +99,6 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
       animateScale(_scale, minScale);
       animatePosition(
           _position, clampPosition(_position * scaleComebackRatio, minScale));
-      computeNextScaleState();
       return;
     }
     // get magnitude from gesture velocity
