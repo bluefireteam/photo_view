@@ -4,7 +4,7 @@
 
 A simple zoomable image widget for Flutter
 
-[PhotoView](/lib/photo_view.dart) is useful in full screen exibition cases.
+[PhotoView](/lib/photo_view.dart) is useful in full screen exhibition cases.
 
 Resolves a image provider and shows the result with useful gestures support, such as pinch to zoom and pan.
 
@@ -34,7 +34,7 @@ Widget build(BuildContext context) {
   return Container(
     child: PhotoView(
       imageProvider: AssetImage("assets/large-image.jpg"),
-    );
+    )
   );
 }
 ```
@@ -55,7 +55,7 @@ Widget build(BuildContext context) {
     height: 300.0,
     child: PhotoViewInline(
       imageProvider: AssetImage("assets/large-image.jpg"),
-    );
+    )
   );
 }
 ```
@@ -85,13 +85,12 @@ Widget build(BuildContext context) {
         ),
         PhotoViewGalleryPageOptions(
           imageProvider: AssetImage("assets/gallery3.jpeg"),
-          minScale: PhotoViewComputedScale.contained * 0.8,
-          maxScale: PhotoViewComputedScale.covered * 1.1,
+          initialScale: PhotoViewComputedScale.contained * 0.98,
           heroTag: "tag3",
         ),
       ],
       backgroundColor: Colors.black87,
-    );
+    )
   );
 }
 ```
