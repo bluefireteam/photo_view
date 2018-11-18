@@ -22,3 +22,7 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
+/*
+PhotoView.FullScreen()
+ */

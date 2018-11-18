@@ -144,9 +144,11 @@ class PhotoView extends StatefulWidget {
   }
 }
 
-class _PhotoViewState extends State<PhotoView> {
+class _PhotoViewState extends State<PhotoView>
+    with AfterLayoutMixin<PhotoView> {
   PhotoViewScaleState _scaleState;
   ImageInfo _imageInfo;
+  Size _size;
 
   Future<ImageInfo> _getImage() {
     final Completer completer = Completer<ImageInfo>();
@@ -193,6 +195,13 @@ class _PhotoViewState extends State<PhotoView> {
   }
 
   @override
+  void afterFirstLayout(BuildContext context) {
+    setState(() {
+      _size = context.size;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return widget.heroTag == null
         ? buildWithFuture(context)
@@ -227,7 +236,7 @@ class _PhotoViewState extends State<PhotoView> {
       scaleState: _scaleState,
       backgroundColor: widget.backgroundColor,
       gaplessPlayback: widget.gaplessPlayback,
-      size: widget.size ?? MediaQuery.of(context).size,
+      size: widget.size ?? _size ?? MediaQuery.of(context).size,
       scaleBoundaries: ScaleBoundaries(
         widget.minScale ?? 0.0,
         widget.maxScale ?? double.infinity,
@@ -252,60 +261,30 @@ class _PhotoViewState extends State<PhotoView> {
   }
 }
 
-/// A [StatelessWidget] which the only child is a [PhotoView] with an automacally
-/// calculated [size]. All but [size] arguments are the same as [PhotoView].
-class PhotoViewInline extends StatefulWidget {
+@Deprecated("Use PhotoView instead")
+class PhotoViewInline extends PhotoView {
   const PhotoViewInline({
     Key key,
-    @required this.imageProvider,
-    this.loadingChild,
-    this.backgroundColor = const Color.fromRGBO(0, 0, 0, 1.0),
-    this.minScale,
-    this.maxScale,
-    this.initialScale,
-    this.gaplessPlayback = false,
-    this.heroTag,
-    this.scaleStateChangedCallback,
-  }) : super(key: key);
-
-  final ImageProvider imageProvider;
-  final Widget loadingChild;
-  final Color backgroundColor;
-  final dynamic minScale;
-  final dynamic maxScale;
-  final dynamic initialScale;
-  final bool gaplessPlayback;
-  final Object heroTag;
-  final PhotoViewScaleStateChangedCallback scaleStateChangedCallback;
-
-  @override
-  State<StatefulWidget> createState() => _PhotoViewInlineState();
-}
-
-class _PhotoViewInlineState extends State<PhotoViewInline>
-    with AfterLayoutMixin<PhotoViewInline> {
-  Size _size;
-
-  @override
-  void afterFirstLayout(BuildContext context) {
-    setState(() {
-      _size = context.size;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return PhotoView(
-      imageProvider: widget.imageProvider,
-      loadingChild: widget.loadingChild,
-      backgroundColor: widget.backgroundColor,
-      minScale: widget.minScale,
-      maxScale: widget.maxScale,
-      initialScale: widget.initialScale,
-      gaplessPlayback: widget.gaplessPlayback,
-      size: _size,
-      heroTag: widget.heroTag,
-      scaleStateChangedCallback: widget.scaleStateChangedCallback,
-    );
-  }
+    @required ImageProvider imageProvider,
+    Widget loadingChild,
+    Color backgroundColor,
+    dynamic minScale,
+    dynamic maxScale,
+    dynamic initialScale,
+    bool gaplessPlayback,
+    Size size,
+    Object heroTag,
+    PhotoViewScaleStateChangedCallback scaleStateChangedCallback,
+  }) : super(
+            key: key,
+            imageProvider: imageProvider,
+            loadingChild: loadingChild,
+            backgroundColor: backgroundColor,
+            minScale: minScale,
+            maxScale: maxScale,
+            initialScale: initialScale,
+            gaplessPlayback: gaplessPlayback,
+            size: size,
+            heroTag: heroTag,
+            scaleStateChangedCallback: scaleStateChangedCallback);
 }

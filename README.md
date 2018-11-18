@@ -25,7 +25,7 @@ For more information about how to use Photo View, check the [API Docs](https://p
 If you want to see it in practice, check the [example app](/example/lib) that explores most of Photo View's use cases or download the latest version apk on the [releases page](https://github.com/renancaraujo/photo_view/releases)
 
 
-## Full screen usage
+## Usage
 
 Given a `ImageProvider imageProvider` (such as [AssetImage](https://docs.flutter.io/flutter/painting/AssetImage-class.html) or [NetworkImage](https://docs.flutter.io/flutter/painting/NetworkImage-class.html)):
 
@@ -46,7 +46,7 @@ Result:
 
 ## Inline Usage
 
-If you want `PhotoView` to scale the image in container with size different than the screen, use `PhotoViewInline` instead.
+`PhotoView` can be used inside a container with size different than the screen.
 
 ```dart
 @override
@@ -54,7 +54,7 @@ Widget build(BuildContext context) {
   return Container(
     margin: const EdgeInsets.symmetric(vertical: 20.0),
     height: 300.0,
-    child: PhotoViewInline(
+    child: PhotoView(
       imageProvider: AssetImage("assets/large-image.jpg"),
     )
   );
@@ -64,6 +64,9 @@ Widget build(BuildContext context) {
 Result: 
 
 ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen5.gif)
+
+**Note: If you don't want to the zoomed image do not overlaps the size of the container, use [ClipRect](https://docs.flutter.io/flutter/widgets/ClipRect-class.html)**
+
 
 ## Gallery
 
