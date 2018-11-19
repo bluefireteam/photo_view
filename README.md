@@ -4,7 +4,7 @@
 
 A simple zoomable image widget for Flutter
 
-[PhotoView](/lib/photo_view.dart) is useful in full screen exibition cases.
+[PhotoView](/lib/photo_view.dart) is useful in full screen exhibition cases.
 
 Resolves a image provider and shows the result with useful gestures support, such as pinch to zoom and pan.
 
@@ -22,9 +22,10 @@ import 'package:photo_view/photo_view.dart';
 For more information about how to use Photo View, check the [API Docs](https://pub.dartlang.org/documentation/photo_view/latest/photo_view/photo_view-library.html)
 
 
-If you want to see it in practice, check the [example app](/example/lib) that explores most of Photo View's use cases.
+If you want to see it in practice, check the [example app](/example/lib) that explores most of Photo View's use cases or download the latest version apk on the [releases page](https://github.com/renancaraujo/photo_view/releases)
 
-## Full screen usage
+
+## Usage
 
 Given a `ImageProvider imageProvider` (such as [AssetImage](https://docs.flutter.io/flutter/painting/AssetImage-class.html) or [NetworkImage](https://docs.flutter.io/flutter/painting/NetworkImage-class.html)):
 
@@ -34,7 +35,7 @@ Widget build(BuildContext context) {
   return Container(
     child: PhotoView(
       imageProvider: AssetImage("assets/large-image.jpg"),
-    );
+    )
   );
 }
 ```
@@ -45,7 +46,9 @@ Result:
 
 ## Inline Usage
 
-If you want `PhotoView` to scale the image in container with size different than the screen, use `PhotoViewInline` instead.
+`PhotoView` can be used inside a container with size different than the screen.
+
+**The previous class `PhotoViewInline` has been deprecated and will be removed in future releases**
 
 ```dart
 @override
@@ -53,9 +56,9 @@ Widget build(BuildContext context) {
   return Container(
     margin: const EdgeInsets.symmetric(vertical: 20.0),
     height: 300.0,
-    child: PhotoViewInline(
+    child: PhotoView(
       imageProvider: AssetImage("assets/large-image.jpg"),
-    );
+    )
   );
 }
 ```
@@ -63,6 +66,9 @@ Widget build(BuildContext context) {
 Result: 
 
 ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen5.gif)
+
+**Note: If you don't want to the zoomed image do not overlaps the size of the container, use [ClipRect](https://docs.flutter.io/flutter/widgets/ClipRect-class.html)**
+
 
 ## Gallery
 
@@ -85,13 +91,12 @@ Widget build(BuildContext context) {
         ),
         PhotoViewGalleryPageOptions(
           imageProvider: AssetImage("assets/gallery3.jpeg"),
-          minScale: PhotoViewComputedScale.contained * 0.8,
-          maxScale: PhotoViewComputedScale.covered * 1.1,
+          initialScale: PhotoViewComputedScale.contained * 0.98,
           heroTag: "tag3",
         ),
       ],
       backgroundColor: Colors.black87,
-    );
+    )
   );
 }
 ```

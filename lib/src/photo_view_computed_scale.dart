@@ -3,7 +3,7 @@ class PhotoViewComputedScale {
 
   final String _value;
   final double multiplier;
-  
+
   @override
   String toString() => 'Enum.$_value';
 

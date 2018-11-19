@@ -69,7 +69,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
 
   Widget _buildItem(context, int index) {
     final pageOption = widget.pageOptions[index];
-    return PhotoViewInline(
+    return PhotoView(
         key: ObjectKey(index),
         imageProvider: pageOption.imageProvider,
         loadingChild: widget.loadingChild,

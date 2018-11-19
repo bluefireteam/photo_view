@@ -14,25 +14,28 @@ class InlineExamples extends StatelessWidget {
             showGoBack: true,
           ),
           Expanded(
-              child: ListView(
+            child: ListView(
             children: <Widget>[
               Container(
                 padding: const EdgeInsets.all(20.0),
                 child: const Text(
-                  "In order to use photoview in a box with the size different than the screen, use the class PhotoViewInline",
+                  "Example of usage in a contained context",
                   style: const TextStyle(fontSize: 18.0),
                 ),
               ),
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 20.0),
-                height: 300.0,
-                child: const PhotoViewInline(
-                  imageProvider: const AssetImage("assets/large-image.jpg"),
-                  maxScale: PhotoViewComputedScale.covered,
+              ClipRect(
+                child: Container(
+                  margin: const EdgeInsets.symmetric(vertical: 20.0),
+                  height: 300.0,
+                  child: const PhotoView(
+                    imageProvider: const AssetImage("assets/large-image.jpg"),
+                    maxScale: PhotoViewComputedScale.covered,
+                  ),
                 ),
-              ),
+              )
             ],
-          ))
+            )
+          )
         ],
       ),
     );
