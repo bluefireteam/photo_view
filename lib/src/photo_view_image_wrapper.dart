@@ -1,7 +1,9 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:photo_view/src/photo_view_scale_boundaries.dart';
 import 'package:photo_view/src/photo_view_scale_state.dart';
 import 'package:photo_view/src/photo_view_utils.dart';
+
 
 class PhotoViewImageWrapper extends StatefulWidget {
 
@@ -170,11 +172,10 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     _scaleAnimationController
       ..value = 0.0
       ..fling(velocity: 0.4);
-
-    animateRotation(_rotation, 0.0);
   }
 
   void animatePosition(Offset from, Offset to) {
+
     _positionAnimation = Tween<Offset>(begin: from, end: to)
         .animate(_positionAnimationController);
     _positionAnimationController
@@ -229,6 +230,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
 
       animateScale(prevScale, nextScale);
       animatePosition(_position, Offset.zero);
+      animateRotation(_rotation, 0.0);
     }
   }
 

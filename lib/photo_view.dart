@@ -229,7 +229,6 @@ class _PhotoViewState extends State<PhotoView>
   }
 
   Widget buildWrapper(BuildContext context, ImageInfo info) {
-    print(_size);
     return PhotoViewImageWrapper(
       setNextScaleState: setNextScaleState,
       onStartPanning: onStartPanning,
