@@ -94,6 +94,7 @@ class PhotoView extends StatefulWidget {
     this.customSize,
     this.heroTag,
     this.scaleStateChangedCallback,
+    this.enableRotation = false,
   }) : super(key: key);
 
   /// Given a [imageProvider] it resolves into an zoomable image widget using. It
@@ -135,6 +136,8 @@ class PhotoView extends StatefulWidget {
   final Object heroTag;
 
   final PhotoViewScaleStateChangedCallback scaleStateChangedCallback;
+
+  final bool enableRotation;
 
   @override
   State<StatefulWidget> createState() {
@@ -226,6 +229,7 @@ class _PhotoViewState extends State<PhotoView>
   }
 
   Widget buildWrapper(BuildContext context, ImageInfo info) {
+    print(_size);
     return PhotoViewImageWrapper(
       setNextScaleState: setNextScaleState,
       onStartPanning: onStartPanning,
@@ -234,13 +238,14 @@ class _PhotoViewState extends State<PhotoView>
       scaleState: _scaleState,
       backgroundColor: widget.backgroundColor,
       gaplessPlayback: widget.gaplessPlayback,
-      size: widget.customSize ?? _size ?? MediaQuery.of(context).size,
+      size: _computedSize,
+      enableRotation: widget.enableRotation,
       scaleBoundaries: ScaleBoundaries(
         widget.minScale ?? 0.0,
         widget.maxScale ?? double.infinity,
         widget.initialScale ?? PhotoViewComputedScale.contained,
         imageInfo: info,
-        size: widget.customSize ?? MediaQuery.of(context).size,
+        size: _computedSize,
       ),
       heroTag: widget.heroTag,
     );
@@ -257,6 +262,8 @@ class _PhotoViewState extends State<PhotoView>
             ),
           );
   }
+
+  Size get _computedSize => widget.customSize ?? _size ?? MediaQuery.of(context).size;
 }
 
 @Deprecated("Use PhotoView instead")

@@ -95,7 +95,7 @@ class FullScreenExamples extends StatelessWidget {
                               imageProvider:
                                   const AssetImage("assets/large-image.jpg"),
                               initialScale:
-                                  PhotoViewComputedScale.contained * 0.9,
+                                  PhotoViewComputedScale.contained * 0.7,
                             ),
                       ),
                     );

@@ -1,3 +1,4 @@
+import 'package:example/screens/rotation_examples.dart';
 import 'package:flutter/material.dart';
 import './app_bar.dart';
 import './full_screen_examples.dart';
@@ -40,6 +41,14 @@ class HomeScreen extends StatelessWidget {
                   ),
                 );
               }, text: "Part of the screen"),
+              _buildItem(context, onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RotationExamples(),
+                  ),
+                );
+              }, text: "Rotation Gesture"),
               _buildItem(context, onPressed: () {
                 Navigator.push(
                   context,

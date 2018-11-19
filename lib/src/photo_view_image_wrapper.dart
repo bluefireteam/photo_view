@@ -4,6 +4,7 @@ import 'package:photo_view/src/photo_view_scale_state.dart';
 import 'package:photo_view/src/photo_view_utils.dart';
 
 class PhotoViewImageWrapper extends StatefulWidget {
+
   const PhotoViewImageWrapper({
     Key key,
     @required this.setNextScaleState,
@@ -16,6 +17,7 @@ class PhotoViewImageWrapper extends StatefulWidget {
     this.backgroundColor,
     this.gaplessPlayback = false,
     this.heroTag,
+    this.enableRotation,
   }) : super(key: key);
 
   final Function setNextScaleState;
@@ -28,6 +30,7 @@ class PhotoViewImageWrapper extends StatefulWidget {
   final bool gaplessPlayback;
   final Size size;
   final String heroTag;
+  final bool enableRotation;
 
   @override
   State<StatefulWidget> createState() {
@@ -268,20 +271,22 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     final rotationMatrix = Matrix4.identity()
       ..rotateZ(_rotation);
 
+    final Widget customChildLayout = CustomSingleChildLayout(
+      delegate: _ImagePositionDelegate(widget.imageInfo.image.width / 1,
+          widget.imageInfo.image.height / 1),
+      child: _buildHero(),
+    );
+
     return GestureDetector(
       child: Container(
         child: Center(
           child: Transform(
-            child: Transform(
-              child: CustomSingleChildLayout(
-                delegate: _ImagePositionDelegate(widget.imageInfo.image.width / 1,
-                    widget.imageInfo.image.height / 1),
-                child: _buildHero(),
-              ),
+            child: widget.enableRotation ? Transform(
+              child: customChildLayout,
               transform: rotationMatrix,
               alignment: Alignment.center,
               origin: _rotationFocusPoint,
-            ),
+            ) : customChildLayout,
             transform: matrix,
             alignment: Alignment.center,
           )
