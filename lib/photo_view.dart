@@ -1,6 +1,7 @@
 library photo_view;
 
 import 'dart:async';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:photo_view/src/photo_view_computed_scale.dart';
 import 'package:photo_view/src/photo_view_image_wrapper.dart';
@@ -95,7 +96,21 @@ class PhotoView extends StatefulWidget {
     this.heroTag,
     this.scaleStateChangedCallback,
     this.enableRotation = false,
-  }) : super(key: key);
+  }) : child = null, super(key: key);
+
+  const PhotoView.customChild({
+    Key key,
+    @required this.child,
+    this.backgroundColor = const Color.fromRGBO(0, 0, 0, 1.0),
+    this.minScale,
+    this.maxScale,
+    this.initialScale,
+    this.gaplessPlayback = false,
+    this.customSize,
+    this.heroTag,
+    this.scaleStateChangedCallback,
+    this.enableRotation = false,
+  }) : loadingChild = null, imageProvider = null, super(key: key);
 
   /// Given a [imageProvider] it resolves into an zoomable image widget using. It
   /// is required
@@ -139,6 +154,8 @@ class PhotoView extends StatefulWidget {
 
   final bool enableRotation;
 
+  final Widget child;
+
   @override
   State<StatefulWidget> createState() {
     return _PhotoViewState();
@@ -148,8 +165,8 @@ class PhotoView extends StatefulWidget {
 class _PhotoViewState extends State<PhotoView>
     with AfterLayoutMixin<PhotoView> {
   PhotoViewScaleState _scaleState;
-  ImageInfo _imageInfo;
   Size _size;
+  Size _childSize;
 
   Future<ImageInfo> _getImage() {
     final Completer completer = Completer<ImageInfo>();
@@ -159,7 +176,7 @@ class _PhotoViewState extends State<PhotoView>
       if (!completer.isCompleted) {
         completer.complete(info);
         setState(() {
-          _imageInfo = info;
+          _childSize = Size(info.image.width /1, info.image.height /1);
         });
       }
     };
@@ -188,6 +205,12 @@ class _PhotoViewState extends State<PhotoView>
         : null;
   }
 
+  void onCustomChildDidLayout (Size size) {
+    setState(() {
+      _childSize = size;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -205,35 +228,65 @@ class _PhotoViewState extends State<PhotoView>
   @override
   Widget build(BuildContext context) {
     return widget.heroTag == null
-        ? buildWithFuture(context)
-        : buildSync(context);
+        ? _buildWithFuture(context)
+        : _buildSync(context);
   }
 
-  Widget buildWithFuture(BuildContext context) {
+  Widget _buildCustomChild(BuildContext context) {
+    _CustomChildWrapper childWrapper = _CustomChildWrapper(child: widget.child);
+
+    return PhotoViewImageWrapper(
+      setNextScaleState: setNextScaleState,
+      onStartPanning: onStartPanning,
+      /*imageProvider: widget.imageProvider,*/
+      /*imageInfo: info,*/
+      scaleState: _scaleState,
+      backgroundColor: widget.backgroundColor,
+      /*gaplessPlayback: widget.gaplessPlayback,*/
+      size: _computedSize,
+      enableRotation: widget.enableRotation,
+      scaleBoundaries: ScaleBoundaries(
+        widget.minScale ?? 0.0,
+        widget.maxScale ?? double.infinity,
+        widget.initialScale ?? PhotoViewComputedScale.contained,
+        /*imageInfo: info,*/
+        size: _computedSize,
+      ),
+      heroTag: widget.heroTag,
+    );
+  }
+
+  Widget _buildImage(BuildContext context) {
+    return widget.heroTag == null
+        ? _buildWithFuture(context)
+        : _buildSync(context);
+  }
+
+  Widget _buildWithFuture(BuildContext context) {
     return FutureBuilder(
         future: _getImage(),
         builder: (BuildContext context, AsyncSnapshot<ImageInfo> info) {
           if (info.hasData) {
-            return buildWrapper(context, info.data);
+            return _buildWrapperImage(context);
           } else {
-            return buildLoading();
+            return _buildLoading();
           }
         });
   }
 
-  Widget buildSync(BuildContext context) {
-    if (_imageInfo == null) {
-      return buildLoading();
+  Widget _buildSync(BuildContext context) {
+    if (_childSize == null) {
+      return _buildLoading();
     }
-    return buildWrapper(context, _imageInfo);
+    return _buildWrapperImage(context);
   }
 
-  Widget buildWrapper(BuildContext context, ImageInfo info) {
+  Widget _buildWrapperImage(BuildContext context) {
     return PhotoViewImageWrapper(
       setNextScaleState: setNextScaleState,
       onStartPanning: onStartPanning,
       imageProvider: widget.imageProvider,
-      imageInfo: info,
+      childSize: _childSize,
       scaleState: _scaleState,
       backgroundColor: widget.backgroundColor,
       gaplessPlayback: widget.gaplessPlayback,
@@ -243,14 +296,14 @@ class _PhotoViewState extends State<PhotoView>
         widget.minScale ?? 0.0,
         widget.maxScale ?? double.infinity,
         widget.initialScale ?? PhotoViewComputedScale.contained,
-        imageInfo: info,
+        childSize: _childSize,
         size: _computedSize,
       ),
       heroTag: widget.heroTag,
     );
   }
 
-  Widget buildLoading() {
+  Widget _buildLoading() {
     return widget.loadingChild != null
         ? widget.loadingChild
         : Center(
@@ -289,6 +342,41 @@ class PhotoViewInline extends PhotoView {
             initialScale: initialScale,
             gaplessPlayback: gaplessPlayback,
             customSize: size,
-            heroTag: heroTag,
-            scaleStateChangedCallback: scaleStateChangedCallback);
+            heroTag: heroTag);
+}
+
+
+class _CustomChildWrapper extends StatefulWidget{
+
+  const _CustomChildWrapper({
+    Key key,
+    @required this.child,
+    @required this.layoutCallback,
+  });
+
+  final Widget child;
+  final _CustomChildWrapperLayoutCallback layoutCallback;
+
+  @override
+  State<StatefulWidget> createState() {
+    return _CustomChildWrapperState();
+  }
+}
+
+typedef _CustomChildWrapperLayoutCallback = void Function(Size size);
+
+class _CustomChildWrapperState extends State<_CustomChildWrapper> with AfterLayoutMixin<_CustomChildWrapper> {
+
+  Size _size;
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.child;
+  }
+
+  @override
+  void afterFirstLayout(BuildContext context) {
+    widget.layoutCallback(context.size);
+  }
+
 }

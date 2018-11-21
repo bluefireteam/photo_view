@@ -25,13 +25,13 @@ double _clampIt(double size, ScaleBoundaries scaleBoundaries) {
 }
 
 double getScaleForScaleState(Size size, PhotoViewScaleState scaleState,
-    ImageInfo imageInfo, ScaleBoundaries scaleBoundaries) {
+    Size childSize, ScaleBoundaries scaleBoundaries) {
   switch (scaleState) {
     case PhotoViewScaleState.initial:
       return _clampIt(scaleBoundaries.computeInitialScale(), scaleBoundaries);
     case PhotoViewScaleState.covering:
       return _clampIt(
-          scaleForCovering(size: size, imageInfo: imageInfo), scaleBoundaries);
+          scaleForCovering(size: size, childSize: childSize), scaleBoundaries);
     case PhotoViewScaleState.originalSize:
       return _clampIt(1.0, scaleBoundaries);
     default:
@@ -39,9 +39,9 @@ double getScaleForScaleState(Size size, PhotoViewScaleState scaleState,
   }
 }
 
-double scaleForContained({@required Size size, @required ImageInfo imageInfo}) {
-  final int imageWidth = imageInfo.image.width;
-  final int imageHeight = imageInfo.image.height;
+double scaleForContained({@required Size size, @required Size childSize}) {
+  final double imageWidth = childSize.width;
+  final double imageHeight = childSize.height;
 
   final double screenWidth = size.width;
   final double screenHeight = size.height;
@@ -49,9 +49,9 @@ double scaleForContained({@required Size size, @required ImageInfo imageInfo}) {
   return math.min(screenWidth / imageWidth, screenHeight / imageHeight);
 }
 
-double scaleForCovering({@required Size size, @required ImageInfo imageInfo}) {
-  final int imageWidth = imageInfo.image.width;
-  final int imageHeight = imageInfo.image.height;
+double scaleForCovering({@required Size size, @required Size childSize}) {
+  final double imageWidth = childSize.width;
+  final double imageHeight = childSize.height;
 
   final double screenWidth = size.width;
   final double screenHeight = size.height;

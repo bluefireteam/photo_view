@@ -11,7 +11,7 @@ class PhotoViewImageWrapper extends StatefulWidget {
     Key key,
     @required this.setNextScaleState,
     @required this.onStartPanning,
-    @required this.imageInfo,
+    @required this.childSize,
     @required this.scaleState,
     @required this.scaleBoundaries,
     @required this.imageProvider,
@@ -24,7 +24,7 @@ class PhotoViewImageWrapper extends StatefulWidget {
 
   final Function setNextScaleState;
   final Function onStartPanning;
-  final ImageInfo imageInfo;
+  final Size childSize;
   final PhotoViewScaleState scaleState;
   final Color backgroundColor;
   final ScaleBoundaries scaleBoundaries;
@@ -137,8 +137,8 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     final double _scale = scale ?? scaleStateAwareScale();
     final double x = offset.dx;
     final double y = offset.dy;
-    final double computedWidth = widget.imageInfo.image.width * _scale;
-    final double computedHeight = widget.imageInfo.image.height * _scale;
+    final double computedWidth = widget.childSize.width * _scale;
+    final double computedHeight = widget.childSize.height * _scale;
     final double screenWidth = widget.size.width;
     final double screenHeight = widget.size.height;
     final double screenHalfX = screenWidth / 2;
@@ -161,7 +161,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     return _scale != null || widget.scaleState == PhotoViewScaleState.zooming
         ? _scale
         : getScaleForScaleState(widget.size, widget.scaleState,
-            widget.imageInfo, widget.scaleBoundaries);
+            widget.childSize, widget.scaleBoundaries);
   }
 
   void animateScale(double from, double to) {
@@ -222,11 +222,11 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
         widget.scaleState != PhotoViewScaleState.zooming) {
       final double prevScale = _scale == null
           ? getScaleForScaleState(widget.size, PhotoViewScaleState.initial,
-              widget.imageInfo, widget.scaleBoundaries)
+              widget.childSize, widget.scaleBoundaries)
           : _scale;
 
       final double nextScale = getScaleForScaleState(widget.size,
-          widget.scaleState, widget.imageInfo, widget.scaleBoundaries);
+          widget.scaleState, widget.childSize, widget.scaleBoundaries);
 
       animateScale(prevScale, nextScale);
       animatePosition(_position, Offset.zero);
@@ -243,7 +243,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     }
 
     final double originalScale = getScaleForScaleState(widget.size,
-        _originalScaleState, widget.imageInfo, widget.scaleBoundaries);
+        _originalScaleState, widget.childSize, widget.scaleBoundaries);
 
     double prevScale = originalScale;
     PhotoViewScaleState _prevScaleState = _originalScaleState;
@@ -254,7 +254,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
       _prevScaleState = _nextScaleState;
       _nextScaleState = nextScaleState(_prevScaleState);
       nextScale = getScaleForScaleState(widget.size, _nextScaleState,
-          widget.imageInfo, widget.scaleBoundaries);
+          widget.childSize, widget.scaleBoundaries);
     } while (prevScale == nextScale && _originalScaleState != _nextScaleState);
 
     if (originalScale == nextScale) {
@@ -274,8 +274,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
       ..rotateZ(_rotation);
 
     final Widget customChildLayout = CustomSingleChildLayout(
-      delegate: _ImagePositionDelegate(widget.imageInfo.image.width / 1,
-          widget.imageInfo.image.height / 1),
+      delegate: _ImagePositionDelegate(widget.childSize.width,widget.childSize.height),
       child: _buildHero(),
     );
 
