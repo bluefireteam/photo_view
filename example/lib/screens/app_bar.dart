@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 
 class ExampleAppBar extends StatelessWidget {
-
   const ExampleAppBar({this.title, this.showGoBack = false}) : super();
 
   final String title;
   final bool showGoBack;
-
 
   @override
   Widget build(BuildContext context) {

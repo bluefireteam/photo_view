@@ -98,7 +98,6 @@ class GalleryPhotoViewWrapper extends StatefulWidget {
   final int index;
   final PageController pageController;
 
-
   @override
   State<StatefulWidget> createState() {
     return _GalleryPhotoViewWrapperState();
