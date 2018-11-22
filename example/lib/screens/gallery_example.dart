@@ -9,7 +9,9 @@ class GalleryExample extends StatelessWidget {
         context,
         MaterialPageRoute(
           builder: (context) => GalleryPhotoViewWrapper(
-                backgroundColor: Colors.black87,
+                backgroundDecoration: const BoxDecoration(
+                  color: Colors.black87,
+                ),
                 imageProvider: const AssetImage("assets/gallery1.jpeg"),
                 imageProvider2: const AssetImage("assets/gallery2.jpeg"),
                 imageProvider3: const AssetImage("assets/gallery3.jpeg"),
@@ -80,7 +82,7 @@ class GalleryPhotoViewWrapper extends StatefulWidget {
     this.imageProvider2,
     this.imageProvider3,
     this.loadingChild,
-    this.backgroundColor,
+    this.backgroundDecoration,
     this.minScale,
     this.maxScale,
     this.index,
@@ -90,12 +92,11 @@ class GalleryPhotoViewWrapper extends StatefulWidget {
   final ImageProvider imageProvider2;
   final ImageProvider imageProvider3;
   final Widget loadingChild;
-  final Color backgroundColor;
+  final Decoration backgroundDecoration;
   final dynamic minScale;
   final dynamic maxScale;
   final int index;
   final PageController pageController;
-
 
 
   @override
@@ -146,7 +147,7 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
                   ),
                 ],
                 loadingChild: widget.loadingChild,
-                backgroundColor: widget.backgroundColor,
+                backgroundDecoration: widget.backgroundDecoration,
                 pageController: widget.pageController,
                 onPageChanged: onPageChanged,
               ),

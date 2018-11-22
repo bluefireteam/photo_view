@@ -13,7 +13,7 @@ class PhotoViewImageWrapper extends StatefulWidget {
     @required this.scaleBoundaries,
     @required this.imageProvider,
     @required this.size,
-    this.backgroundColor,
+    this.backgroundDecoration,
     this.gaplessPlayback = false,
     this.heroTag,
     this.enableRotation,
@@ -29,7 +29,7 @@ class PhotoViewImageWrapper extends StatefulWidget {
     @required this.scaleState,
     @required this.scaleBoundaries,
     @required this.size,
-    this.backgroundColor,
+    this.backgroundDecoration,
     this.heroTag,
     this.enableRotation,
   })  : imageProvider = null,
@@ -40,7 +40,7 @@ class PhotoViewImageWrapper extends StatefulWidget {
   final Function onStartPanning;
   final Size childSize;
   final PhotoViewScaleState scaleState;
-  final Color backgroundColor;
+  final Decoration backgroundDecoration;
   final ScaleBoundaries scaleBoundaries;
   final ImageProvider imageProvider;
   final bool gaplessPlayback;
@@ -306,7 +306,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
           transform: matrix,
           alignment: Alignment.center,
         )),
-        decoration: BoxDecoration(color: widget.backgroundColor),
+        decoration: widget.backgroundDecoration,
       ),
       onDoubleTap: computeNextScaleState,
       onScaleStart: onScaleStart,
