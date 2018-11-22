@@ -7,7 +7,6 @@ import './gallery_example.dart';
 import './hero_example.dart';
 import './inline_examples.dart';
 
-
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

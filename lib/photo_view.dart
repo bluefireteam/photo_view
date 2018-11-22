@@ -26,7 +26,7 @@ typedef PhotoViewScaleStateChangedCallback = void Function(
 /// PhotoView(
 ///  imageProvider: imageProvider,
 ///  loadingChild: new LoadingText(),
-///  backgroundColor: Colors.white,
+///  backgroundDecoration: BoxDecoration(color: Colors.white),
 ///  minScale: PhotoViewComputedScale.contained,
 ///  maxScale: 2.0,
 ///  gaplessPlayback: false,
@@ -86,7 +86,8 @@ class PhotoView extends StatefulWidget {
     Key key,
     @required this.imageProvider,
     this.loadingChild,
-    this.backgroundColor = const Color.fromRGBO(0, 0, 0, 1.0),
+    this.backgroundDecoration =
+        const BoxDecoration(color: const Color.fromRGBO(0, 0, 0, 1.0)),
     this.minScale,
     this.maxScale,
     this.initialScale,
@@ -103,7 +104,8 @@ class PhotoView extends StatefulWidget {
     Key key,
     @required this.child,
     @required this.childSize,
-    this.backgroundColor = const Color.fromRGBO(0, 0, 0, 1.0),
+    this.backgroundDecoration =
+        const BoxDecoration(color: const Color.fromRGBO(0, 0, 0, 1.0)),
     this.minScale,
     this.maxScale,
     this.initialScale,
@@ -125,7 +127,7 @@ class PhotoView extends StatefulWidget {
   final Widget loadingChild;
 
   /// Changes the background behind image, defaults to `Colors.black`.
-  final Color backgroundColor;
+  final Decoration backgroundDecoration;
 
   /// Defines the minimal size in which the image will be allowed to assume, it
   /// is proportional to the original image size. Can be either a double (absolute value) or a
@@ -242,7 +244,7 @@ class _PhotoViewState extends State<PhotoView>
       onStartPanning: onStartPanning,
       childSize: _childSize,
       scaleState: _scaleState,
-      backgroundColor: widget.backgroundColor,
+      backgroundDecoration: widget.backgroundDecoration,
       size: _computedSize,
       enableRotation: widget.enableRotation,
       scaleBoundaries: ScaleBoundaries(
@@ -288,7 +290,7 @@ class _PhotoViewState extends State<PhotoView>
       imageProvider: widget.imageProvider,
       childSize: _childSize,
       scaleState: _scaleState,
-      backgroundColor: widget.backgroundColor,
+      backgroundDecoration: widget.backgroundDecoration,
       gaplessPlayback: widget.gaplessPlayback,
       size: _computedSize,
       enableRotation: widget.enableRotation,
@@ -325,7 +327,7 @@ class PhotoViewInline extends PhotoView {
     Key key,
     @required ImageProvider imageProvider,
     Widget loadingChild,
-    Color backgroundColor,
+    Decoration backgroundDecoration,
     dynamic minScale,
     dynamic maxScale,
     dynamic initialScale,
@@ -337,7 +339,7 @@ class PhotoViewInline extends PhotoView {
             key: key,
             imageProvider: imageProvider,
             loadingChild: loadingChild,
-            backgroundColor: backgroundColor,
+            backgroundDecoration: backgroundDecoration,
             minScale: minScale,
             maxScale: maxScale,
             initialScale: initialScale,
