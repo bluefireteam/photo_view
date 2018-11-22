@@ -1,11 +1,12 @@
-import 'package:example/screens/custom_child_examples.dart';
-import 'package:example/screens/rotation_examples.dart';
+
 import 'package:flutter/material.dart';
 import './app_bar.dart';
+import './custom_child_examples.dart';
 import './full_screen_examples.dart';
 import './gallery_example.dart';
 import './hero_example.dart';
 import './inline_examples.dart';
+import './rotation_examples.dart';
 
 
 class HomeScreen extends StatelessWidget {

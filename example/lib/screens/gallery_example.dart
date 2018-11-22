@@ -75,6 +75,17 @@ class GalleryExample extends StatelessWidget {
 }
 
 class GalleryPhotoViewWrapper extends StatefulWidget {
+  GalleryPhotoViewWrapper({
+    this.imageProvider,
+    this.imageProvider2,
+    this.imageProvider3,
+    this.loadingChild,
+    this.backgroundColor,
+    this.minScale,
+    this.maxScale,
+    this.index,
+  }) : pageController = PageController(initialPage: index);
+
   final ImageProvider imageProvider;
   final ImageProvider imageProvider2;
   final ImageProvider imageProvider3;
@@ -85,16 +96,7 @@ class GalleryPhotoViewWrapper extends StatefulWidget {
   final int index;
   final PageController pageController;
 
-  GalleryPhotoViewWrapper({
-    this.imageProvider,
-    this.imageProvider2,
-    this.imageProvider3,
-    this.loadingChild,
-    this.backgroundColor,
-    this.minScale,
-    this.maxScale,
-    this.index,
-  }) : this.pageController = PageController(initialPage: index);
+
 
   @override
   State<StatefulWidget> createState() {

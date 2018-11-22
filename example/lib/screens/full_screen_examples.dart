@@ -109,13 +109,16 @@ class FullScreenExamples extends StatelessWidget {
 }
 
 class ExampleButtonNode extends StatelessWidget {
-  final String title;
-  final Function onPressed;
 
   const ExampleButtonNode({
     this.title,
     this.onPressed,
   });
+
+  final String title;
+  final Function onPressed;
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -147,6 +150,14 @@ class ExampleButtonNode extends StatelessWidget {
 }
 
 class FullScreenWrapper extends StatelessWidget {
+  const FullScreenWrapper(
+      {this.imageProvider,
+        this.loadingChild,
+        this.backgroundColor,
+        this.minScale,
+        this.maxScale,
+        this.initialScale});
+
   final ImageProvider imageProvider;
   final Widget loadingChild;
   final Color backgroundColor;
@@ -154,13 +165,7 @@ class FullScreenWrapper extends StatelessWidget {
   final dynamic maxScale;
   final dynamic initialScale;
 
-  const FullScreenWrapper(
-      {this.imageProvider,
-      this.loadingChild,
-      this.backgroundColor,
-      this.minScale,
-      this.maxScale,
-      this.initialScale});
+
 
   @override
   Widget build(BuildContext context) {
