@@ -343,5 +343,6 @@ class PhotoViewInline extends PhotoView {
             initialScale: initialScale,
             gaplessPlayback: gaplessPlayback,
             customSize: size,
-            heroTag: heroTag);
+            heroTag: heroTag,
+            scaleStateChangedCallback: scaleStateChangedCallback);
 }
