@@ -14,7 +14,7 @@ class RotationExamples extends StatelessWidget {
             showGoBack: true,
           ),
           Expanded(
-            child: Column(
+              child: Column(
             children: <Widget>[
               Container(
                 padding: const EdgeInsets.all(20.0),
@@ -28,17 +28,14 @@ class RotationExamples extends StatelessWidget {
                   height: 300.0,
                   child: ClipRect(
                     child: PhotoView(
-                    imageProvider: const AssetImage("assets/large-image.jpg"),
-                    maxScale: PhotoViewComputedScale.covered,
-                    initialScale: PhotoViewComputedScale.contained * 0.8,
-                    enableRotation: true,
-                  ),
-                  )
-                ),
-
+                      imageProvider: const AssetImage("assets/large-image.jpg"),
+                      maxScale: PhotoViewComputedScale.covered,
+                      initialScale: PhotoViewComputedScale.contained * 0.8,
+                      enableRotation: true,
+                    ),
+                  )),
             ],
-            )
-          )
+          ))
         ],
       ),
     );

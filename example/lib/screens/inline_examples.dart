@@ -14,7 +14,7 @@ class InlineExamples extends StatelessWidget {
             showGoBack: true,
           ),
           Expanded(
-            child: ListView(
+              child: ListView(
             children: <Widget>[
               Container(
                 padding: const EdgeInsets.all(20.0),
@@ -24,7 +24,8 @@ class InlineExamples extends StatelessWidget {
                 ),
               ),
               Container(
-                margin: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+                margin: const EdgeInsets.symmetric(
+                    vertical: 20.0, horizontal: 20.0),
                 height: 200.0,
                 child: ClipRect(
                   child: PhotoView(
@@ -36,8 +37,7 @@ class InlineExamples extends StatelessWidget {
                 ),
               )
             ],
-            )
-          )
+          ))
         ],
       ),
     );

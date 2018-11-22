@@ -1,7 +1,6 @@
 library photo_view;
 
 import 'dart:async';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:photo_view/src/photo_view_computed_scale.dart';
 import 'package:photo_view/src/photo_view_image_wrapper.dart';
@@ -12,7 +11,8 @@ import 'package:after_layout/after_layout.dart';
 export 'package:photo_view/src/photo_view_computed_scale.dart';
 export 'package:photo_view/photo_view_gallery.dart';
 
-typedef PhotoViewScaleStateChangedCallback = void Function(PhotoViewScaleState scaleState);
+typedef PhotoViewScaleStateChangedCallback = void Function(
+    PhotoViewScaleState scaleState);
 
 /// A [StatefulWidget] that contains all the photo view rendering elements.
 ///
@@ -37,7 +37,7 @@ typedef PhotoViewScaleStateChangedCallback = void Function(PhotoViewScaleState s
 ///
 
 class PhotoView extends StatefulWidget {
-  /// Creates a widget that displays an zoomable image.
+  /// Creates a widget that displays a zoomable image.
   ///
   /// To show an image from the network or from an asset bundle, use their respective
   /// image providers, ie: [AssetImage] or [NetworkImage]
@@ -95,7 +95,9 @@ class PhotoView extends StatefulWidget {
     this.heroTag,
     this.scaleStateChangedCallback,
     this.enableRotation = false,
-  }) : child = null, childSize = null, super(key: key);
+  })  : child = null,
+        childSize = null,
+        super(key: key);
 
   const PhotoView.customChild({
     Key key,
@@ -109,7 +111,10 @@ class PhotoView extends StatefulWidget {
     this.heroTag,
     this.scaleStateChangedCallback,
     this.enableRotation = false,
-  }) : loadingChild = null, imageProvider = null, gaplessPlayback = false, super(key: key);
+  })  : loadingChild = null,
+        imageProvider = null,
+        gaplessPlayback = false,
+        super(key: key);
 
   /// Given a [imageProvider] it resolves into an zoomable image widget using. It
   /// is required
@@ -177,7 +182,7 @@ class _PhotoViewState extends State<PhotoView>
       if (!completer.isCompleted) {
         completer.complete(info);
         setState(() {
-          _childSize = Size(info.image.width /1, info.image.height /1);
+          _childSize = Size(info.image.width / 1, info.image.height / 1);
         });
       }
     };
@@ -210,7 +215,9 @@ class _PhotoViewState extends State<PhotoView>
   void initState() {
     super.initState();
     widget.child ?? _getImage();
-    _childSize =  widget.child != null && widget.childSize != null ? widget.childSize : Size.zero;
+    _childSize = widget.child != null && widget.childSize != null
+        ? widget.childSize
+        : Size.zero;
     _scaleState = PhotoViewScaleState.initial;
   }
 
@@ -229,7 +236,6 @@ class _PhotoViewState extends State<PhotoView>
   }
 
   Widget _buildCustomChild(BuildContext context) {
-
     return PhotoViewImageWrapper.customChild(
       customChild: widget.child,
       setNextScaleState: setNextScaleState,
@@ -309,7 +315,8 @@ class _PhotoViewState extends State<PhotoView>
           );
   }
 
-  Size get _computedSize => widget.customSize ?? _size ?? MediaQuery.of(context).size;
+  Size get _computedSize =>
+      widget.customSize ?? _size ?? MediaQuery.of(context).size;
 }
 
 @Deprecated("Use PhotoView instead")

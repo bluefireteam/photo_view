@@ -4,9 +4,7 @@ import 'package:photo_view/src/photo_view_scale_boundaries.dart';
 import 'package:photo_view/src/photo_view_scale_state.dart';
 import 'package:photo_view/src/photo_view_utils.dart';
 
-
 class PhotoViewImageWrapper extends StatefulWidget {
-
   const PhotoViewImageWrapper({
     Key key,
     @required this.setNextScaleState,
@@ -20,7 +18,8 @@ class PhotoViewImageWrapper extends StatefulWidget {
     this.gaplessPlayback = false,
     this.heroTag,
     this.enableRotation,
-}) : customChild = null, super(key: key);
+  })  : customChild = null,
+        super(key: key);
 
   const PhotoViewImageWrapper.customChild({
     Key key,
@@ -34,7 +33,9 @@ class PhotoViewImageWrapper extends StatefulWidget {
     this.backgroundColor,
     this.heroTag,
     this.enableRotation,
-  }) : imageProvider = null, gaplessPlayback = false, super(key: key);
+  })  : imageProvider = null,
+        gaplessPlayback = false,
+        super(key: key);
 
   final Function setNextScaleState;
   final Function onStartPanning;
@@ -64,7 +65,6 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   double _rotation;
   double _rotationBefore;
   Offset _rotationFocusPoint;
-
 
   AnimationController _scaleAnimationController;
   Animation<double> _scaleAnimation;
@@ -112,7 +112,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
       _scale = newScale;
       _position = clampPosition(delta * details.scale);
       _rotation = _rotationBefore + details.rotation;
-      _rotationFocusPoint= details.focalPoint;
+      _rotationFocusPoint = details.focalPoint;
     });
   }
 
@@ -190,7 +190,6 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   }
 
   void animatePosition(Offset from, Offset to) {
-
     _positionAnimation = Tween<Offset>(begin: from, end: to)
         .animate(_positionAnimationController);
     _positionAnimationController
@@ -285,28 +284,29 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
       ..translate(_position.dx, _position.dy)
       ..scale(scaleStateAwareScale());
 
-    final rotationMatrix = Matrix4.identity()
-      ..rotateZ(_rotation);
+    final rotationMatrix = Matrix4.identity()..rotateZ(_rotation);
 
     final Widget customChildLayout = CustomSingleChildLayout(
-      delegate: _ImagePositionDelegate(widget.childSize.width,widget.childSize.height),
+      delegate: _ImagePositionDelegate(
+          widget.childSize.width, widget.childSize.height),
       child: _buildHero(),
     );
 
     return GestureDetector(
       child: Container(
         child: Center(
-          child: Transform(
-            child: widget.enableRotation ? Transform(
-              child: customChildLayout,
-              transform: rotationMatrix,
-              alignment: Alignment.center,
-              origin: _rotationFocusPoint,
-            ) : customChildLayout,
-            transform: matrix,
-            alignment: Alignment.center,
-          )
-        ),
+            child: Transform(
+          child: widget.enableRotation
+              ? Transform(
+                  child: customChildLayout,
+                  transform: rotationMatrix,
+                  alignment: Alignment.center,
+                  origin: _rotationFocusPoint,
+                )
+              : customChildLayout,
+          transform: matrix,
+          alignment: Alignment.center,
+        )),
         decoration: BoxDecoration(color: widget.backgroundColor),
       ),
       onDoubleTap: computeNextScaleState,
@@ -323,10 +323,12 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   }
 
   Widget _buildChild() {
-    return widget.customChild == null ? Image(
-      image: widget.imageProvider,
-      gaplessPlayback: widget.gaplessPlayback,
-    ) : widget.customChild;
+    return widget.customChild == null
+        ? Image(
+            image: widget.imageProvider,
+            gaplessPlayback: widget.gaplessPlayback,
+          )
+        : widget.customChild;
   }
 }
 
