@@ -11,7 +11,8 @@ class PhotoViewGallery extends StatefulWidget {
     Key key,
     @required this.pageOptions,
     this.loadingChild,
-    this.backgroundColor = const Color.fromRGBO(0, 0, 0, 1.0),
+    this.backgroundDecoration =
+        const BoxDecoration(color: const Color.fromRGBO(0, 0, 0, 1.0)),
     this.gaplessPlayback = false,
     this.pageController,
     this.onPageChanged,
@@ -20,7 +21,7 @@ class PhotoViewGallery extends StatefulWidget {
 
   final List<PhotoViewGalleryPageOptions> pageOptions;
   final Widget loadingChild;
-  final Color backgroundColor;
+  final Decoration backgroundDecoration;
   final bool gaplessPlayback;
   final PageController pageController;
   final PhotoViewGalleryPageChangedCallback onPageChanged;
@@ -73,7 +74,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
         key: ObjectKey(index),
         imageProvider: pageOption.imageProvider,
         loadingChild: widget.loadingChild,
-        backgroundColor: widget.backgroundColor,
+        backgroundDecoration: widget.backgroundDecoration,
         minScale: pageOption.minScale,
         maxScale: pageOption.maxScale,
         initialScale: pageOption.initialScale,

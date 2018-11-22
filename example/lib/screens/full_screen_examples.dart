@@ -37,7 +37,8 @@ class FullScreenExamples extends StatelessWidget {
                         builder: (context) => const FullScreenWrapper(
                               imageProvider:
                                   const AssetImage("assets/small-image.jpg"),
-                              backgroundColor: Colors.pinkAccent,
+                              backgroundDecoration:
+                                  BoxDecoration(color: Colors.pinkAccent),
                             ),
                       ),
                     );
@@ -64,7 +65,8 @@ class FullScreenExamples extends StatelessWidget {
                         builder: (context) => const FullScreenWrapper(
                               imageProvider:
                                   const AssetImage("assets/peanut.gif"),
-                              backgroundColor: Colors.white,
+                              backgroundDecoration:
+                                  BoxDecoration(color: Colors.white),
                               maxScale: 2.0,
                             ),
                       ),
@@ -149,7 +151,7 @@ class ExampleButtonNode extends StatelessWidget {
 class FullScreenWrapper extends StatelessWidget {
   final ImageProvider imageProvider;
   final Widget loadingChild;
-  final Color backgroundColor;
+  final Decoration backgroundDecoration;
   final dynamic minScale;
   final dynamic maxScale;
   final dynamic initialScale;
@@ -157,7 +159,7 @@ class FullScreenWrapper extends StatelessWidget {
   const FullScreenWrapper(
       {this.imageProvider,
       this.loadingChild,
-      this.backgroundColor,
+      this.backgroundDecoration,
       this.minScale,
       this.maxScale,
       this.initialScale});
@@ -171,7 +173,7 @@ class FullScreenWrapper extends StatelessWidget {
         child: PhotoView(
           imageProvider: imageProvider,
           loadingChild: loadingChild,
-          backgroundColor: backgroundColor,
+          backgroundDecoration: backgroundDecoration,
           minScale: minScale,
           maxScale: maxScale,
           initialScale: initialScale,

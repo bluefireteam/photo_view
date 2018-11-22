@@ -48,7 +48,6 @@ class CustomChildExample extends StatelessWidget {
                           ],
                         )),
                     childSize: const Size(220.0, 250.0),
-                    backgroundColor: Colors.blue,
                     initialScale: 10.0,
                   ),
                 ),
