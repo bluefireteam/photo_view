@@ -56,6 +56,6 @@ class ScaleBoundaries {
           (_initialScale as PhotoViewComputedScale) // ignore: avoid_as
               .multiplier;
     }
-    return _maxScale.clamp(computeMinScale(), computeMaxScale());
+    return _initialScale.clamp(computeMinScale(), computeMaxScale());
   }
 }

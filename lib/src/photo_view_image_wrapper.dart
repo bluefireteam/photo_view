@@ -20,7 +20,21 @@ class PhotoViewImageWrapper extends StatefulWidget {
     this.gaplessPlayback = false,
     this.heroTag,
     this.enableRotation,
-  }) : super(key: key);
+}) : customChild = null, super(key: key);
+
+  const PhotoViewImageWrapper.customChild({
+    Key key,
+    @required this.customChild,
+    @required this.setNextScaleState,
+    @required this.onStartPanning,
+    @required this.childSize,
+    @required this.scaleState,
+    @required this.scaleBoundaries,
+    @required this.size,
+    this.backgroundColor,
+    this.heroTag,
+    this.enableRotation,
+  }) : imageProvider = null, gaplessPlayback = false, super(key: key);
 
   final Function setNextScaleState;
   final Function onStartPanning;
@@ -33,6 +47,7 @@ class PhotoViewImageWrapper extends StatefulWidget {
   final Size size;
   final String heroTag;
   final bool enableRotation;
+  final Widget customChild;
 
   @override
   State<StatefulWidget> createState() {
@@ -303,15 +318,15 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
 
   Widget _buildHero() {
     return widget.heroTag != null
-        ? Hero(tag: widget.heroTag, child: _buildImage())
-        : _buildImage();
+        ? Hero(tag: widget.heroTag, child: _buildChild())
+        : _buildChild();
   }
 
-  Widget _buildImage() {
-    return Image(
+  Widget _buildChild() {
+    return widget.customChild == null ? Image(
       image: widget.imageProvider,
       gaplessPlayback: widget.gaplessPlayback,
-    );
+    ) : widget.customChild;
   }
 }
 

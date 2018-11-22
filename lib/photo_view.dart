@@ -12,8 +12,7 @@ import 'package:after_layout/after_layout.dart';
 export 'package:photo_view/src/photo_view_computed_scale.dart';
 export 'package:photo_view/photo_view_gallery.dart';
 
-typedef PhotoViewScaleStateChangedCallback = void Function(
-    PhotoViewScaleState scaleState);
+typedef PhotoViewScaleStateChangedCallback = void Function(PhotoViewScaleState scaleState);
 
 /// A [StatefulWidget] that contains all the photo view rendering elements.
 ///
@@ -96,21 +95,21 @@ class PhotoView extends StatefulWidget {
     this.heroTag,
     this.scaleStateChangedCallback,
     this.enableRotation = false,
-  }) : child = null, super(key: key);
+  }) : child = null, childSize = null, super(key: key);
 
   const PhotoView.customChild({
     Key key,
     @required this.child,
+    @required this.childSize,
     this.backgroundColor = const Color.fromRGBO(0, 0, 0, 1.0),
     this.minScale,
     this.maxScale,
     this.initialScale,
-    this.gaplessPlayback = false,
     this.customSize,
     this.heroTag,
     this.scaleStateChangedCallback,
     this.enableRotation = false,
-  }) : loadingChild = null, imageProvider = null, super(key: key);
+  }) : loadingChild = null, imageProvider = null, gaplessPlayback = false, super(key: key);
 
   /// Given a [imageProvider] it resolves into an zoomable image widget using. It
   /// is required
@@ -155,6 +154,8 @@ class PhotoView extends StatefulWidget {
   final bool enableRotation;
 
   final Widget child;
+
+  final Size childSize;
 
   @override
   State<StatefulWidget> createState() {
@@ -205,16 +206,11 @@ class _PhotoViewState extends State<PhotoView>
         : null;
   }
 
-  void onCustomChildDidLayout (Size size) {
-    setState(() {
-      _childSize = size;
-    });
-  }
-
   @override
   void initState() {
     super.initState();
-    _getImage();
+    widget.child ?? _getImage();
+    _childSize =  widget.child != null && widget.childSize != null ? widget.childSize : Size.zero;
     _scaleState = PhotoViewScaleState.initial;
   }
 
@@ -227,29 +223,27 @@ class _PhotoViewState extends State<PhotoView>
 
   @override
   Widget build(BuildContext context) {
-    return widget.heroTag == null
-        ? _buildWithFuture(context)
-        : _buildSync(context);
+    return widget.child == null
+        ? _buildImage(context)
+        : _buildCustomChild(context);
   }
 
   Widget _buildCustomChild(BuildContext context) {
-    _CustomChildWrapper childWrapper = _CustomChildWrapper(child: widget.child);
 
-    return PhotoViewImageWrapper(
+    return PhotoViewImageWrapper.customChild(
+      customChild: widget.child,
       setNextScaleState: setNextScaleState,
       onStartPanning: onStartPanning,
-      /*imageProvider: widget.imageProvider,*/
-      /*imageInfo: info,*/
+      childSize: _childSize,
       scaleState: _scaleState,
       backgroundColor: widget.backgroundColor,
-      /*gaplessPlayback: widget.gaplessPlayback,*/
       size: _computedSize,
       enableRotation: widget.enableRotation,
       scaleBoundaries: ScaleBoundaries(
         widget.minScale ?? 0.0,
         widget.maxScale ?? double.infinity,
         widget.initialScale ?? PhotoViewComputedScale.contained,
-        /*imageInfo: info,*/
+        childSize: _childSize,
         size: _computedSize,
       ),
       heroTag: widget.heroTag,
@@ -343,40 +337,4 @@ class PhotoViewInline extends PhotoView {
             gaplessPlayback: gaplessPlayback,
             customSize: size,
             heroTag: heroTag);
-}
-
-
-class _CustomChildWrapper extends StatefulWidget{
-
-  const _CustomChildWrapper({
-    Key key,
-    @required this.child,
-    @required this.layoutCallback,
-  });
-
-  final Widget child;
-  final _CustomChildWrapperLayoutCallback layoutCallback;
-
-  @override
-  State<StatefulWidget> createState() {
-    return _CustomChildWrapperState();
-  }
-}
-
-typedef _CustomChildWrapperLayoutCallback = void Function(Size size);
-
-class _CustomChildWrapperState extends State<_CustomChildWrapper> with AfterLayoutMixin<_CustomChildWrapper> {
-
-  Size _size;
-
-  @override
-  Widget build(BuildContext context) {
-    return widget.child;
-  }
-
-  @override
-  void afterFirstLayout(BuildContext context) {
-    widget.layoutCallback(context.size);
-  }
-
 }

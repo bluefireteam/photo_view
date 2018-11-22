@@ -1,3 +1,4 @@
+import 'package:example/screens/custom_child_examples.dart';
 import 'package:example/screens/rotation_examples.dart';
 import 'package:flutter/material.dart';
 import './app_bar.dart';
@@ -65,6 +66,14 @@ class HomeScreen extends StatelessWidget {
                   ),
                 );
               }, text: "Gallery"),
+              _buildItem(context, onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => CustomChildExample(),
+                  ),
+                );
+              }, text: "Custom child"),
             ],
           ))
         ],
