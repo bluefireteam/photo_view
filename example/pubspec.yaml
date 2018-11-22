@@ -2,6 +2,7 @@ name: example
 description: A new Flutter project.
 
 dependencies:
+  flutter_svg:
   photo_view:
     path: ../
   flutter:
@@ -29,6 +30,7 @@ flutter:
     - assets/gallery1.jpeg
     - assets/gallery2.jpeg
     - assets/gallery3.jpeg
+    - assets/firefox.svg
 
   fonts: 
     - family: PTSans 

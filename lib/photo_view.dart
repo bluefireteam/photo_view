@@ -37,7 +37,7 @@ typedef PhotoViewScaleStateChangedCallback = void Function(
 ///
 
 class PhotoView extends StatefulWidget {
-  /// Creates a widget that displays an zoomable image.
+  /// Creates a widget that displays a zoomable image.
   ///
   /// To show an image from the network or from an asset bundle, use their respective
   /// image providers, ie: [AssetImage] or [NetworkImage]
@@ -95,7 +95,26 @@ class PhotoView extends StatefulWidget {
     this.heroTag,
     this.scaleStateChangedCallback,
     this.enableRotation = false,
-  }) : super(key: key);
+  })  : child = null,
+        childSize = null,
+        super(key: key);
+
+  const PhotoView.customChild({
+    Key key,
+    @required this.child,
+    @required this.childSize,
+    this.backgroundColor = const Color.fromRGBO(0, 0, 0, 1.0),
+    this.minScale,
+    this.maxScale,
+    this.initialScale,
+    this.customSize,
+    this.heroTag,
+    this.scaleStateChangedCallback,
+    this.enableRotation = false,
+  })  : loadingChild = null,
+        imageProvider = null,
+        gaplessPlayback = false,
+        super(key: key);
 
   /// Given a [imageProvider] it resolves into an zoomable image widget using. It
   /// is required
@@ -139,6 +158,10 @@ class PhotoView extends StatefulWidget {
 
   final bool enableRotation;
 
+  final Widget child;
+
+  final Size childSize;
+
   @override
   State<StatefulWidget> createState() {
     return _PhotoViewState();
@@ -148,8 +171,8 @@ class PhotoView extends StatefulWidget {
 class _PhotoViewState extends State<PhotoView>
     with AfterLayoutMixin<PhotoView> {
   PhotoViewScaleState _scaleState;
-  ImageInfo _imageInfo;
   Size _size;
+  Size _childSize;
 
   Future<ImageInfo> _getImage() {
     final Completer completer = Completer<ImageInfo>();
@@ -159,7 +182,7 @@ class _PhotoViewState extends State<PhotoView>
       if (!completer.isCompleted) {
         completer.complete(info);
         setState(() {
-          _imageInfo = info;
+          _childSize = Size(info.image.width / 1, info.image.height / 1);
         });
       }
     };
@@ -191,7 +214,10 @@ class _PhotoViewState extends State<PhotoView>
   @override
   void initState() {
     super.initState();
-    _getImage();
+    widget.child ?? _getImage();
+    _childSize = widget.child != null && widget.childSize != null
+        ? widget.childSize
+        : Size.zero;
     _scaleState = PhotoViewScaleState.initial;
   }
 
@@ -204,36 +230,63 @@ class _PhotoViewState extends State<PhotoView>
 
   @override
   Widget build(BuildContext context) {
-    return widget.heroTag == null
-        ? buildWithFuture(context)
-        : buildSync(context);
+    return widget.child == null
+        ? _buildImage(context)
+        : _buildCustomChild(context);
   }
 
-  Widget buildWithFuture(BuildContext context) {
+  Widget _buildCustomChild(BuildContext context) {
+    return PhotoViewImageWrapper.customChild(
+      customChild: widget.child,
+      setNextScaleState: setNextScaleState,
+      onStartPanning: onStartPanning,
+      childSize: _childSize,
+      scaleState: _scaleState,
+      backgroundColor: widget.backgroundColor,
+      size: _computedSize,
+      enableRotation: widget.enableRotation,
+      scaleBoundaries: ScaleBoundaries(
+        widget.minScale ?? 0.0,
+        widget.maxScale ?? double.infinity,
+        widget.initialScale ?? PhotoViewComputedScale.contained,
+        childSize: _childSize,
+        size: _computedSize,
+      ),
+      heroTag: widget.heroTag,
+    );
+  }
+
+  Widget _buildImage(BuildContext context) {
+    return widget.heroTag == null
+        ? _buildWithFuture(context)
+        : _buildSync(context);
+  }
+
+  Widget _buildWithFuture(BuildContext context) {
     return FutureBuilder(
         future: _getImage(),
         builder: (BuildContext context, AsyncSnapshot<ImageInfo> info) {
           if (info.hasData) {
-            return buildWrapper(context, info.data);
+            return _buildWrapperImage(context);
           } else {
-            return buildLoading();
+            return _buildLoading();
           }
         });
   }
 
-  Widget buildSync(BuildContext context) {
-    if (_imageInfo == null) {
-      return buildLoading();
+  Widget _buildSync(BuildContext context) {
+    if (_childSize == null) {
+      return _buildLoading();
     }
-    return buildWrapper(context, _imageInfo);
+    return _buildWrapperImage(context);
   }
 
-  Widget buildWrapper(BuildContext context, ImageInfo info) {
+  Widget _buildWrapperImage(BuildContext context) {
     return PhotoViewImageWrapper(
       setNextScaleState: setNextScaleState,
       onStartPanning: onStartPanning,
       imageProvider: widget.imageProvider,
-      imageInfo: info,
+      childSize: _childSize,
       scaleState: _scaleState,
       backgroundColor: widget.backgroundColor,
       gaplessPlayback: widget.gaplessPlayback,
@@ -243,14 +296,14 @@ class _PhotoViewState extends State<PhotoView>
         widget.minScale ?? 0.0,
         widget.maxScale ?? double.infinity,
         widget.initialScale ?? PhotoViewComputedScale.contained,
-        imageInfo: info,
+        childSize: _childSize,
         size: _computedSize,
       ),
       heroTag: widget.heroTag,
     );
   }
 
-  Widget buildLoading() {
+  Widget _buildLoading() {
     return widget.loadingChild != null
         ? widget.loadingChild
         : Center(
@@ -262,7 +315,8 @@ class _PhotoViewState extends State<PhotoView>
           );
   }
 
-  Size get _computedSize => widget.customSize ?? _size ?? MediaQuery.of(context).size;
+  Size get _computedSize =>
+      widget.customSize ?? _size ?? MediaQuery.of(context).size;
 }
 
 @Deprecated("Use PhotoView instead")
