@@ -37,8 +37,11 @@ class FullScreenExamples extends StatelessWidget {
                         builder: (context) => const FullScreenWrapper(
                               imageProvider:
                                   const AssetImage("assets/small-image.jpg"),
-                              backgroundDecoration:
-                                  BoxDecoration(color: Colors.pinkAccent),
+                              backgroundDecoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                colors: <Color>[Colors.white, Colors.grey],
+                                stops: [0.1, 1.0],
+                              )),
                             ),
                       ),
                     );
