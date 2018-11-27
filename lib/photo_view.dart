@@ -214,9 +214,12 @@ class _PhotoViewState extends State<PhotoView>
   void initState() {
     super.initState();
     widget.child ?? _getImage();
-    _childSize = widget.child != null && widget.childSize != null
-        ? widget.childSize
-        : Size.zero;
+    if(widget.child != null){
+      if(widget.childSize!= null){
+        _childSize = Size.zero;
+      }
+      _childSize = widget.childSize;
+    }
     _scaleState = PhotoViewScaleState.initial;
   }
 
