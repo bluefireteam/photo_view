@@ -11,8 +11,7 @@ class PhotoViewGallery extends StatefulWidget {
     Key key,
     @required this.pageOptions,
     this.loadingChild,
-    this.backgroundDecoration =
-        const BoxDecoration(color: const Color.fromRGBO(0, 0, 0, 1.0)),
+    this.backgroundDecoration,
     this.gaplessPlayback = false,
     this.pageController,
     this.onPageChanged,

@@ -86,8 +86,7 @@ class PhotoView extends StatefulWidget {
     Key key,
     @required this.imageProvider,
     this.loadingChild,
-    this.backgroundDecoration =
-        const BoxDecoration(color: const Color.fromRGBO(0, 0, 0, 1.0)),
+    this.backgroundDecoration,
     this.minScale,
     this.maxScale,
     this.initialScale,
@@ -104,8 +103,7 @@ class PhotoView extends StatefulWidget {
     Key key,
     @required this.child,
     @required this.childSize,
-    this.backgroundDecoration =
-        const BoxDecoration(color: const Color.fromRGBO(0, 0, 0, 1.0)),
+    this.backgroundDecoration,
     this.minScale,
     this.maxScale,
     this.initialScale,
@@ -178,8 +176,7 @@ class _PhotoViewState extends State<PhotoView>
 
   Future<ImageInfo> _getImage() {
     final Completer completer = Completer<ImageInfo>();
-    final ImageStream stream =
-        widget.imageProvider.resolve(const ImageConfiguration());
+    final ImageStream stream = widget.imageProvider.resolve(const ImageConfiguration());
     final listener = (ImageInfo info, bool synchronousCall) {
       if (!completer.isCompleted) {
         completer.complete(info);
