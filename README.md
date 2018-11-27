@@ -99,7 +99,7 @@ Widget build(BuildContext context) {
           heroTag: "tag3",
         ),
       ],
-      backgroundColor: Colors.black87,
+      backgroundDecoration: BoxDecoration(color: Colors.black87),
     )
   );
 }
