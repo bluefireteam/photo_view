@@ -25,7 +25,8 @@ class CustomChildExample extends StatelessWidget {
                 ),
               ),
               Container(
-                margin: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
+                margin: const EdgeInsets.symmetric(
+                    vertical: 20.0, horizontal: 20.0),
                 height: 450.0,
                 child: ClipRect(
                   child: PhotoView.customChild(

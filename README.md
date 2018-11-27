@@ -23,7 +23,7 @@ For more information about how to use Photo View, check the [API Docs](https://p
 
 
 If you want to see it in practice, check the [example app](/example/lib) that explores most of Photo View's use cases or download the latest version apk on the [releases page](https://github.com/renancaraujo/photo_view/releases)
-
+ 
 
 ## Usage
 

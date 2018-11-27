@@ -127,7 +127,6 @@ class PhotoView extends StatefulWidget {
         childSize = null,
         super(key: key);
 
-
   /// Creates a widget that displays a zoomable child.
   ///
   /// It has been created to resemble [PhotoView] behavior within widgets that aren't an image, such as [Container], [Text] or a svg.

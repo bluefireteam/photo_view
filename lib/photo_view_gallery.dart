@@ -126,18 +126,18 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
   Widget _buildItem(context, int index) {
     final pageOption = widget.pageOptions[index];
     return PhotoView(
-        key: ObjectKey(index),
-        imageProvider: pageOption.imageProvider,
-        loadingChild: widget.loadingChild,
-        backgroundDecoration: widget.backgroundDecoration,
-        minScale: pageOption.minScale,
-        maxScale: pageOption.maxScale,
-        initialScale: pageOption.initialScale,
-        gaplessPlayback: widget.gaplessPlayback,
-        customSize: widget.customSize,
-        heroTag: pageOption.heroTag,
-        scaleStateChangedCallback: scaleStateChangedCallback,
-        enableRotation: widget.enableRotation,
+      key: ObjectKey(index),
+      imageProvider: pageOption.imageProvider,
+      loadingChild: widget.loadingChild,
+      backgroundDecoration: widget.backgroundDecoration,
+      minScale: pageOption.minScale,
+      maxScale: pageOption.maxScale,
+      initialScale: pageOption.initialScale,
+      gaplessPlayback: widget.gaplessPlayback,
+      customSize: widget.customSize,
+      heroTag: pageOption.heroTag,
+      scaleStateChangedCallback: scaleStateChangedCallback,
+      enableRotation: widget.enableRotation,
     );
   }
 }
