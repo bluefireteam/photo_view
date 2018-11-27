@@ -11,7 +11,7 @@ class CustomChildExample extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
           const ExampleAppBar(
-            title: "Inline Examples",
+            title: "Custom child Example",
             showGoBack: true,
           ),
           Expanded(
@@ -25,8 +25,7 @@ class CustomChildExample extends StatelessWidget {
                 ),
               ),
               Container(
-                margin: const EdgeInsets.symmetric(
-                    vertical: 20.0, horizontal: 20.0),
+                margin: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 20.0),
                 height: 450.0,
                 child: ClipRect(
                   child: PhotoView.customChild(
@@ -35,9 +34,10 @@ class CustomChildExample extends StatelessWidget {
                             const BoxDecoration(color: Colors.lightGreenAccent),
                         padding: const EdgeInsets.all(10.0),
                         child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             const Text(
-                              "Hello there, this is a text, and that is a svg",
+                              "Hello there, this is a text, that is a svg",
                               style: const TextStyle(fontSize: 10.0),
                               textAlign: TextAlign.center,
                             ),
@@ -48,7 +48,7 @@ class CustomChildExample extends StatelessWidget {
                           ],
                         )),
                     childSize: const Size(220.0, 250.0),
-                    initialScale: 10.0,
+                    initialScale: 1.0,
                   ),
                 ),
               )

@@ -4,8 +4,43 @@ import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/src/photo_view_scale_state.dart';
 
+/// A type definition for a [Function] that receives a index after a page change in [PhotoViewGallery]
+///
 typedef PhotoViewGalleryPageChangedCallback = void Function(int index);
 
+/// A [StatefulWidget] that shows multiple [PhotoView] widgets in a [PageView]
+///
+/// Some of [PhotoView] consturctor options are passed direct to [PhotoViewGallery] cosntructor. Those options will affect the gallery in a whole.
+///
+/// Some of the options may be defined to each image individually, such as `initialScale` or `heroTag`. Those can be assed through a [List] of [PhotoViewGalleryPageOptions].
+///
+/// Example of usage:
+/// ```
+/// PhotoViewGallery(
+///   pageOptions: <PhotoViewGalleryPageOptions>[
+///     PhotoViewGalleryPageOptions(
+///       imageProvider: AssetImage("assets/gallery1.jpeg"),
+///       heroTag: "tag1",
+///     ),
+///     PhotoViewGalleryPageOptions(
+///       imageProvider: AssetImage("assets/gallery2.jpeg"),
+///       heroTag: "tag2",
+///       maxScale: PhotoViewComputedScale.contained * 0.3
+///     ),
+///     PhotoViewGalleryPageOptions(
+///       imageProvider: AssetImage("assets/gallery3.jpeg"),
+///       minScale: PhotoViewComputedScale.contained * 0.8,
+///       maxScale: PhotoViewComputedScale.covered * 1.1,
+///       heroTag: "tag3",
+///     ),
+///   ],
+///   loadingChild: widget.loadingChild,
+///   backgroundDecoration: widget.backgroundDecoration,
+///   pageController: widget.pageController,
+///   onPageChanged: onPageChanged,
+/// )
+/// ```
+///
 class PhotoViewGallery extends StatefulWidget {
   const PhotoViewGallery({
     Key key,
@@ -13,18 +48,39 @@ class PhotoViewGallery extends StatefulWidget {
     this.loadingChild,
     this.backgroundDecoration,
     this.gaplessPlayback = false,
+    this.customSize,
     this.pageController,
     this.onPageChanged,
     this.scaleStateChangedCallback,
+    this.enableRotation = false,
   }) : super(key: key);
 
+  /// A list of options to describe the items in the gallery
   final List<PhotoViewGalleryPageOptions> pageOptions;
+
+  /// Mirror to [PhotoView.loadingChild]
   final Widget loadingChild;
+
+  /// Mirror to [PhotoView.backgroundDecoration]
   final Decoration backgroundDecoration;
+
+  /// Mirror to [PhotoView.gaplessPlayback]
   final bool gaplessPlayback;
+
+  /// An object that controls the [PageView] inside [PhotoViewGallery]
   final PageController pageController;
+
+  /// An callback to be called on a page change
   final PhotoViewGalleryPageChangedCallback onPageChanged;
+
+  /// Mirror to [PhotoView.scaleStateChangedCallback]
   final PhotoViewScaleStateChangedCallback scaleStateChangedCallback;
+
+  /// Mirror to [PhotoView.customSize]
+  final Size customSize;
+
+  /// Mirror to [PhotoView.enableRotation]
+  final bool enableRotation;
 
   @override
   State<StatefulWidget> createState() {
@@ -78,11 +134,18 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
         maxScale: pageOption.maxScale,
         initialScale: pageOption.initialScale,
         gaplessPlayback: widget.gaplessPlayback,
+        customSize: widget.customSize,
         heroTag: pageOption.heroTag,
-        scaleStateChangedCallback: scaleStateChangedCallback);
+        scaleStateChangedCallback: scaleStateChangedCallback,
+        enableRotation: widget.enableRotation,
+    );
   }
 }
 
+/// A helper class that wraps individual options of a item in [PhotoViewGallery]
+///
+/// The [maxScale], [minScale] and [initialScale] options may be [double] or a [PhotoViewComputedScale] constant
+///
 class PhotoViewGalleryPageOptions {
   PhotoViewGalleryPageOptions({
     Key key,
@@ -93,9 +156,18 @@ class PhotoViewGalleryPageOptions {
     this.initialScale,
   });
 
+  /// Mirror to [PhotoView.imageProvider]
   final ImageProvider imageProvider;
+
+  /// Mirror to [PhotoView.heroTag
   final Object heroTag;
+
+  /// Mirror to [PhotoView.minScale]
   final dynamic minScale;
+
+  /// Mirror to [PhotoView.maxScale]
   final dynamic maxScale;
+
+  /// Mirror to [PhotoView.initialScale]
   final dynamic initialScale;
 }

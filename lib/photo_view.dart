@@ -9,80 +9,107 @@ import 'package:photo_view/src/photo_view_scale_state.dart';
 import 'package:after_layout/after_layout.dart';
 
 export 'package:photo_view/src/photo_view_computed_scale.dart';
-export 'package:photo_view/photo_view_gallery.dart';
 export 'package:photo_view/src/photo_view_scale_state.dart';
 
+/// A type definition for a [Function] that receives a [PhotoViewScaleState]
+///
 typedef PhotoViewScaleStateChangedCallback = void Function(
     PhotoViewScaleState scaleState);
 
 /// A [StatefulWidget] that contains all the photo view rendering elements.
 ///
-/// Internally, the image is rendered within an [Image] widget.
+/// To use the hero animation, provide [heroTag] param.
 ///
-/// To use along a hero animation, provide [heroTag] param.
-///
-/// Sample code:
+/// Sample code to use within an image:
 ///
 /// ```
 /// PhotoView(
 ///  imageProvider: imageProvider,
-///  loadingChild: new LoadingText(),
-///  backgroundDecoration: BoxDecoration(color: Colors.white),
-///  minScale: PhotoViewComputedScale.contained,
-///  maxScale: 2.0,
+///  loadingChild: LoadingText(),
+///  backgroundDecoration: BoxDecoration(color: Colors.black),
+///  minScale: PhotoViewComputedScale.contained * 0.8,
+///  maxScale: PhotoViewComputedScale.covered * 1.8,
+///  initialScale: PhotoViewComputedScale.contained * 1.1,
 ///  gaplessPlayback: false,
-///  size:MediaQuery.of(context).size,
-///  heroTag: "someTag"
+///  customSize: MediaQuery.of(context).size,
+///  heroTag: "someTag",
+///  scaleStateChangedCallback: this.onScaleStateChanged,
+///  enableRotation: true,
 /// );
 /// ```
 ///
-
+/// You can customize to show an custom child instead of an image:
+///
+/// ```
+/// PhotoView.customChild(
+///  child: Container(
+///    width: 220.0,
+///    height: 250.0,
+///    child: const Text(
+///      "Hello there, this is a text",
+///    )
+///  ),
+///  childSize: const Size(220.0, 250.0),
+///  backgroundDecoration: BoxDecoration(color: Colors.black),
+///  minScale: PhotoViewComputedScale.contained * 0.8,
+///  maxScale: PhotoViewComputedScale.covered * 1.8,
+///  initialScale: 1.0,
+///  gaplessPlayback: false,
+///  customSize: MediaQuery.of(context).size,
+///  heroTag: "someTag",
+///  scaleStateChangedCallback: this.onScaleStateChanged,
+///  enableRotation: true,
+/// );
+/// ```
+/// The [maxScale], [minScale] and [initialScale] options may be [double] or a [PhotoViewComputedScale] constant
+///
+/// Sample using [maxScale], [minScale] and [initialScale]
+///
+/// ```
+/// PhotoView(
+///  imageProvider: imageProvider,
+///  minScale: PhotoViewComputedScale.contained * 0.8,
+///  maxScale: PhotoViewComputedScale.covered * 1.8,
+///  initialScale: PhotoViewComputedScale.contained * 1.1,
+/// );
+/// ```
+///
+/// [customSize] is used to define the viewPort size in which the image will be
+/// scaled to. This argument is rarely used. By befault is the size that this widget assumes.
+///
+/// The argument [gaplessPlayback] is used to continue showing the old image
+/// (`true`), or briefly show nothing (`false`), when the [imageProvider]
+/// changes.By default it's set to `false`.
+///
+/// To use within an hero animation, specify [heroTag]. When [heroTag] is
+/// specified, the image provider retrieval process should be sync.
+///
+/// Sample using hero animation
+/// ```
+/// // screen1
+///   ...
+///   Hero(
+///     tag: "someTag",
+///     child: Image.asset(
+///       "assets/large-image.jpg",
+///       width: 150.0
+///     ),
+///   )
+/// // screen2
+/// ...
+/// child: PhotoView(
+///   imageProvider: AssetImage("assets/large-image.jpg"),
+///   heroTag: "someTag",
+/// )
+/// ```
+///
 class PhotoView extends StatefulWidget {
   /// Creates a widget that displays a zoomable image.
   ///
   /// To show an image from the network or from an asset bundle, use their respective
   /// image providers, ie: [AssetImage] or [NetworkImage]
   ///
-  /// The [maxScale] and [minScale] arguments may be [double] or a [PhotoViewComputedScale] constant
-  ///
-  /// Sample using [maxScale] and [minScale]
-  ///
-  /// ```
-  /// PhotoView(
-  ///  imageProvider: imageProvider,
-  ///  minScale: PhotoViewComputedScale.contained * 1.8,
-  ///  maxScale: PhotoViewComputedScale.covered * 1.1
-  /// );
-  /// ```
-  /// [customSize] is used to define the viewPort size in which the image will be
-  /// scaled to. This argument is rarely used. By befault is the size that this widget assumes.
-  ///
-  /// The argument [gaplessPlayback] is used to continue showing the old image
-  /// (`true`), or briefly show nothing (`false`), when the [imageProvider]
-  /// changes.By default it's set to `false`.
-  ///
-  /// To use within an hero animation, specify [heroTag]. When [heroTag] is
-  /// specified, the image provider retrieval process should be sync.
-  ///
-  /// Sample using hero animation
-  /// ```
-  /// // screen1
-  ///   ...
-  ///   Hero(
-  ///     tag: "someTag",
-  ///     child: Image.asset(
-  ///       "assets/large-image.jpg",
-  ///       width: 150.0
-  ///     ),
-  ///   )
-  /// // screen2
-  /// ...
-  /// child: PhotoView(
-  ///   imageProvider: AssetImage("assets/large-image.jpg"),
-  ///   heroTag: "someTag",
-  /// )
-  /// ```
-  ///
+  /// Internally, the image is rendered within an [Image] widget.
   const PhotoView({
     Key key,
     @required this.imageProvider,
@@ -100,6 +127,13 @@ class PhotoView extends StatefulWidget {
         childSize = null,
         super(key: key);
 
+
+  /// Creates a widget that displays a zoomable child.
+  ///
+  /// It has been created to resemble [PhotoView] behavior within widgets that aren't an image, such as [Container], [Text] or a svg.
+  ///
+  /// Instead of a [imageProvider], this constructor will receive a [child] and a [childSize].
+  ///
   const PhotoView.customChild({
     Key key,
     @required this.child,
@@ -155,12 +189,16 @@ class PhotoView extends StatefulWidget {
   /// Assists the activation of a hero animation within [PhotoView]
   final Object heroTag;
 
+  /// A [Function] to be called whenever the scaleState changes, this heappens when the user double taps the content ou start to pinch-in.
   final PhotoViewScaleStateChangedCallback scaleStateChangedCallback;
 
+  /// A flag that enables the rotation gesture support
   final bool enableRotation;
 
+  /// The specified custom child to be shown instead of a image
   final Widget child;
 
+  /// The size of the custom [child]. [PhotoView] uses this value to compute the relation between the child and the container's size to calculate the scale value.
   final Size childSize;
 
   @override
@@ -177,7 +215,8 @@ class _PhotoViewState extends State<PhotoView>
 
   Future<ImageInfo> _getImage() {
     final Completer completer = Completer<ImageInfo>();
-    final ImageStream stream = widget.imageProvider.resolve(const ImageConfiguration());
+    final ImageStream stream =
+        widget.imageProvider.resolve(const ImageConfiguration());
     final listener = (ImageInfo info, bool synchronousCall) {
       if (!completer.isCompleted) {
         completer.complete(info);
@@ -215,8 +254,8 @@ class _PhotoViewState extends State<PhotoView>
   void initState() {
     super.initState();
     widget.child ?? _getImage();
-    if(widget.child != null){
-      if(widget.childSize!= null){
+    if (widget.child != null) {
+      if (widget.childSize != null) {
         _childSize = Size.zero;
       }
       _childSize = widget.childSize;
@@ -322,6 +361,8 @@ class _PhotoViewState extends State<PhotoView>
       widget.customSize ?? _size ?? MediaQuery.of(context).size;
 }
 
+/// Deprecated, use [PhotoView] instead
+///
 @Deprecated("Use PhotoView instead")
 class PhotoViewInline extends PhotoView {
   const PhotoViewInline({

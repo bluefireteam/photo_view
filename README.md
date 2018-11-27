@@ -4,9 +4,9 @@
 
 A simple zoomable image widget for Flutter
 
-[PhotoView](/lib/photo_view.dart) is useful in full screen exhibition cases.
-
 Resolves a image provider and shows the result with useful gestures support, such as pinch to zoom and pan.
+
+It also can show any widget instead of an image, such as Container, Text or a SVG.
 
 ## Installation
 
@@ -48,7 +48,7 @@ Result:
 
 `PhotoView` can be used inside a container with size different than the screen.
 
-**The previous class `PhotoViewInline` has been deprecated and will be removed in future releases**
+**The previous class `PhotoViewInline` has been deprecated and will be removed in future releases, use PhotoView instead**
 
 ```dart
 @override
@@ -75,6 +75,10 @@ Result:
 To show several images and let user change between them, use `PhotoViewGallery`.
 
 ```dart
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
+// ...
+
 @override
 Widget build(BuildContext context) {
   return Container(
@@ -114,19 +118,6 @@ Result (with a simple HUD):
 | ------------- | ------------- | ------------- | ------------- |
 | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen2.gif) | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen3.gif) | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen4.gif) | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen6.gif) |
 
-
-## Todo:
-
-- [x] Scale on doubleTap
-- [x] Zoom when pinched
-- [x] Respect screen and image boundaries
-- [x] Center image when zooming out
-- [x] Add image zoom limits (`minScale` an `maxScale`)
-- [x] Add GIF support
-- [x] Multiple image support (Gallery mode)
-- [ ] Rotate gesture rotates image ([Work in progress](https://github.com/renancaraujo/photo_view/pull/36))
-
-Pull requests are welcome 😊.
 
 
 
