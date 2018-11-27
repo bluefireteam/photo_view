@@ -10,6 +10,7 @@ import 'package:after_layout/after_layout.dart';
 
 export 'package:photo_view/src/photo_view_computed_scale.dart';
 export 'package:photo_view/photo_view_gallery.dart';
+export 'package:photo_view/src/photo_view_scale_state.dart';
 
 typedef PhotoViewScaleStateChangedCallback = void Function(
     PhotoViewScaleState scaleState);
