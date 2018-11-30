@@ -135,6 +135,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
       animateScale(_scale, minScale);
       animatePosition(
           _position, clampPosition(_position * scaleComebackRatio, minScale));
+      widget.setNextScaleState(PhotoViewScaleState.initial);
       return;
     }
     // get magnitude from gesture velocity
@@ -270,12 +271,14 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
           widget.childSize, widget.scaleBoundaries);
     } while (prevScale == nextScale && _originalScaleState != _nextScaleState);
 
-    if (originalScale == nextScale) {
+    if (widget.scaleState == PhotoViewScaleState.covering && nextScale != 1.0
+        || originalScale == nextScale
+    ) {
+      widget.setNextScaleState(PhotoViewScaleState.initial);
       return;
+    } else {
+      widget.setNextScaleState(_nextScaleState);
     }
-
-    widget.setNextScaleState(_nextScaleState);
-  }
 
   @override
   Widget build(BuildContext context) {
