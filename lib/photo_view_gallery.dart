@@ -53,6 +53,7 @@ class PhotoViewGallery extends StatefulWidget {
     this.onPageChanged,
     this.scaleStateChangedCallback,
     this.enableRotation = false,
+    this.defaultPageIndex = 0,
   }) : super(key: key);
 
   /// A list of options to describe the items in the gallery
@@ -82,6 +83,9 @@ class PhotoViewGallery extends StatefulWidget {
   /// Mirror to [PhotoView.enableRotation]
   final bool enableRotation;
 
+  /// An index of the [PageView] inside [PhotoViewGallery]
+  final int defaultPageIndex;
+
   @override
   State<StatefulWidget> createState() {
     return _PhotoViewGalleryState();
@@ -97,6 +101,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
     _controller = widget.pageController ?? PageController();
     _locked = false;
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _controller.jumpToPage(widget.defaultPageIndex) );
   }
 
   void scaleStateChangedCallback(PhotoViewScaleState scaleState) {
