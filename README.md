@@ -6,7 +6,7 @@ A simple zoomable image widget for Flutter
 
 Resolves a image provider and shows the result with useful gestures support, such as pinch to zoom and pan.
 
-It also can show any widget instead of an image, such as Container, Text or a SVG.
+It also can show any widget instead of an image, such as Container, Text or a SVG. [Just use custom child constructor](https://pub.dartlang.org/documentation/photo_view/latest/photo_view/PhotoView/PhotoView.customChild.html).
 
 ## Installation
 
@@ -48,7 +48,7 @@ Result:
 
 `PhotoView` can be used inside a container with size different than the screen.
 
-**The previous class `PhotoViewInline` has been deprecated and will be removed in future releases, use PhotoView instead**
+**The previous class `PhotoViewInline` has been removed, use PhotoView instead**
 
 ```dart
 @override
