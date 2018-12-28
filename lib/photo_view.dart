@@ -123,6 +123,7 @@ class PhotoView extends StatefulWidget {
     this.heroTag,
     this.scaleStateChangedCallback,
     this.enableRotation = false,
+    this.resetScaleStateOnMinScale = false,
   })  : child = null,
         childSize = null,
         super(key: key);
@@ -145,6 +146,7 @@ class PhotoView extends StatefulWidget {
     this.heroTag,
     this.scaleStateChangedCallback,
     this.enableRotation = false,
+    this.resetScaleStateOnMinScale = false,
   })  : loadingChild = null,
         imageProvider = null,
         gaplessPlayback = false,
@@ -199,6 +201,9 @@ class PhotoView extends StatefulWidget {
 
   /// The size of the custom [child]. [PhotoView] uses this value to compute the relation between the child and the container's size to calculate the scale value.
   final Size childSize;
+
+  /// Whether the scale state should be reset to initial if scale has reached the minScale value.
+  final bool resetScaleStateOnMinScale;
 
   @override
   State<StatefulWidget> createState() {
@@ -294,6 +299,7 @@ class _PhotoViewState extends State<PhotoView>
         size: _computedSize,
       ),
       heroTag: widget.heroTag,
+      resetScaleStateOnMinScale: widget.resetScaleStateOnMinScale,
     );
   }
 
@@ -341,6 +347,7 @@ class _PhotoViewState extends State<PhotoView>
         size: _computedSize,
       ),
       heroTag: widget.heroTag,
+      resetScaleStateOnMinScale: widget.resetScaleStateOnMinScale,
     );
   }
 

@@ -17,6 +17,7 @@ class PhotoViewImageWrapper extends StatefulWidget {
     this.gaplessPlayback = false,
     this.heroTag,
     this.enableRotation,
+    this.resetScaleStateOnMinScale = false,
   })  : customChild = null,
         super(key: key);
 
@@ -32,6 +33,7 @@ class PhotoViewImageWrapper extends StatefulWidget {
     this.backgroundDecoration,
     this.heroTag,
     this.enableRotation,
+    this.resetScaleStateOnMinScale = false,
   })  : imageProvider = null,
         gaplessPlayback = false,
         super(key: key);
@@ -48,6 +50,7 @@ class PhotoViewImageWrapper extends StatefulWidget {
   final String heroTag;
   final bool enableRotation;
   final Widget customChild;
+  final bool resetScaleStateOnMinScale;
 
   @override
   State<StatefulWidget> createState() {
@@ -78,6 +81,10 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     setState(() {
       _scale = _scaleAnimation.value;
     });
+
+    if (_scaleAnimation.status == AnimationStatus.completed) {
+      _setScaleState();
+    }
   }
 
   void handlePositionAnimate() {
@@ -329,6 +336,14 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
             gaplessPlayback: widget.gaplessPlayback,
           )
         : widget.customChild;
+  }
+
+  void _setScaleState() {
+    final double minScale = widget.scaleBoundaries.computeMinScale();
+
+    if (widget.resetScaleStateOnMinScale && _scale <= minScale) {
+      widget.setNextScaleState(PhotoViewScaleState.initial);
+    }
   }
 }
 

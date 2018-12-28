@@ -54,6 +54,7 @@ class PhotoViewGallery extends StatefulWidget {
     this.scaleStateChangedCallback,
     this.enableRotation = false,
     this.defaultPageIndex = 0,
+    this.resetScaleStateOnMinScale = false,
   }) : super(key: key);
 
   /// A list of options to describe the items in the gallery
@@ -85,6 +86,9 @@ class PhotoViewGallery extends StatefulWidget {
 
   /// An index of the [PageView] inside [PhotoViewGallery]
   final int defaultPageIndex;
+
+  /// Mirror to [PhotoView.resetScaleStateOnMinScale]
+  final bool resetScaleStateOnMinScale;
 
   @override
   State<StatefulWidget> createState() {
@@ -143,6 +147,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
       heroTag: pageOption.heroTag,
       scaleStateChangedCallback: scaleStateChangedCallback,
       enableRotation: widget.enableRotation,
+      resetScaleStateOnMinScale: widget.resetScaleStateOnMinScale,
     );
   }
 }
