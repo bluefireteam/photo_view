@@ -359,33 +359,3 @@ class _PhotoViewState extends State<PhotoView>
   Size get _computedSize =>
       widget.customSize ?? _size ?? MediaQuery.of(context).size;
 }
-
-/// Deprecated, use [PhotoView] instead
-///
-@Deprecated("Use PhotoView instead")
-class PhotoViewInline extends PhotoView {
-  const PhotoViewInline({
-    Key key,
-    @required ImageProvider imageProvider,
-    Widget loadingChild,
-    Decoration backgroundDecoration,
-    dynamic minScale,
-    dynamic maxScale,
-    dynamic initialScale,
-    bool gaplessPlayback,
-    Size size,
-    Object heroTag,
-    PhotoViewScaleStateChangedCallback scaleStateChangedCallback,
-  }) : super(
-            key: key,
-            imageProvider: imageProvider,
-            loadingChild: loadingChild,
-            backgroundDecoration: backgroundDecoration,
-            minScale: minScale,
-            maxScale: maxScale,
-            initialScale: initialScale,
-            gaplessPlayback: gaplessPlayback,
-            customSize: size,
-            heroTag: heroTag,
-            scaleStateChangedCallback: scaleStateChangedCallback);
-}
