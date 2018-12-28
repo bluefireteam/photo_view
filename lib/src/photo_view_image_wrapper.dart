@@ -3,6 +3,8 @@ import 'package:photo_view/src/photo_view_scale_boundaries.dart';
 import 'package:photo_view/src/photo_view_scale_state.dart';
 import 'package:photo_view/src/photo_view_utils.dart';
 
+
+/// Internal class in which controls the transformation values of the content
 class PhotoViewImageWrapper extends StatefulWidget {
   const PhotoViewImageWrapper({
     Key key,
@@ -74,6 +76,13 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   AnimationController _rotationAnimationController;
   Animation<double> _rotationAnimation;
 
+  double get scaleStateAwareScale {
+    return _scale != null || widget.scaleState == PhotoViewScaleState.zooming
+        ? _scale
+        : getScaleForScaleState(widget.size, widget.scaleState,
+        widget.childSize, widget.scaleBoundaries);
+  }
+
   void handleScaleAnimation() {
     setState(() {
       _scale = _scaleAnimation.value;
@@ -94,7 +103,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
 
   void onScaleStart(ScaleStartDetails details) {
     _rotationBefore = _rotation;
-    _scaleBefore = scaleStateAwareScale();
+    _scaleBefore = scaleStateAwareScale;
     _normalizedPosition = details.focalPoint - _position;
     _scaleAnimationController.stop();
     _positionAnimationController.stop();
@@ -145,10 +154,12 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
       final Offset direction = details.velocity.pixelsPerSecond / magnitude;
       animatePosition(_position, clampPosition(_position + direction * 100.0));
     }
+
+    checkAndSetToInitialScaleState();
   }
 
   Offset clampPosition(Offset offset, [double scale]) {
-    final double _scale = scale ?? scaleStateAwareScale();
+    final double _scale = scale ?? scaleStateAwareScale;
     final double x = offset.dx;
     final double y = offset.dy;
     final double computedWidth = widget.childSize.width * _scale;
@@ -171,12 +182,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     return Offset(computedX, computedY);
   }
 
-  double scaleStateAwareScale() {
-    return _scale != null || widget.scaleState == PhotoViewScaleState.zooming
-        ? _scale
-        : getScaleForScaleState(widget.size, widget.scaleState,
-            widget.childSize, widget.scaleBoundaries);
-  }
+
 
   void animateScale(double from, double to) {
     _scaleAnimation = Tween<double>(
@@ -204,6 +210,21 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
       ..fling(velocity: 0.4);
   }
 
+  void onAnimationStatus(AnimationStatus status) {
+    if(status == AnimationStatus.completed){
+      checkAndSetToInitialScaleState();
+    }
+  }
+
+  void checkAndSetToInitialScaleState(){
+    if(
+      widget.scaleState != PhotoViewScaleState.initial
+      && scaleStateAwareScale == widget.scaleBoundaries.computeInitialScale()
+    ){
+      widget.setNextScaleState(PhotoViewScaleState.initial);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -212,6 +233,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     _scale = null;
     _scaleAnimationController = AnimationController(vsync: this)
       ..addListener(handleScaleAnimation);
+    _scaleAnimationController.addStatusListener(onAnimationStatus);
 
     _positionAnimationController = AnimationController(vsync: this)
       ..addListener(handlePositionAnimate);
@@ -220,10 +242,12 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
       ..addListener(handleRotationAnimation);
   }
 
+
   @override
   void dispose() {
-    _positionAnimationController.dispose();
+    _scaleAnimationController.removeStatusListener(onAnimationStatus);
     _scaleAnimationController.dispose();
+    _positionAnimationController.dispose();
     _rotationAnimationController.dispose();
     super.dispose();
   }
@@ -281,7 +305,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   Widget build(BuildContext context) {
     final matrix = Matrix4.identity()
       ..translate(_position.dx, _position.dy)
-      ..scale(scaleStateAwareScale());
+      ..scale(scaleStateAwareScale);
 
     final rotationMatrix = Matrix4.identity()..rotateZ(_rotation);
 
