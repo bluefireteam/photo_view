@@ -4,7 +4,7 @@ import 'package:photo_view/src/photo_view_scale_state.dart';
 import 'package:photo_view/src/photo_view_utils.dart';
 
 
-/// Internal class in which controls the transformation values of the content
+/// Internal widget in which controls the transformation values of the content
 class PhotoViewImageWrapper extends StatefulWidget {
   const PhotoViewImageWrapper({
     Key key,
@@ -19,6 +19,7 @@ class PhotoViewImageWrapper extends StatefulWidget {
     this.gaplessPlayback = false,
     this.heroTag,
     this.enableRotation,
+    this.transitionOnUserGestures = false,
   })  : customChild = null,
         super(key: key);
 
@@ -34,6 +35,7 @@ class PhotoViewImageWrapper extends StatefulWidget {
     this.backgroundDecoration,
     this.heroTag,
     this.enableRotation,
+    this.transitionOnUserGestures = false,
   })  : imageProvider = null,
         gaplessPlayback = false,
         super(key: key);
@@ -50,6 +52,7 @@ class PhotoViewImageWrapper extends StatefulWidget {
   final String heroTag;
   final bool enableRotation;
   final Widget customChild;
+  final bool transitionOnUserGestures;
 
   @override
   State<StatefulWidget> createState() {
@@ -342,8 +345,11 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
 
   Widget _buildHero() {
     return widget.heroTag != null
-        ? Hero(tag: widget.heroTag, child: _buildChild())
-        : _buildChild();
+      ? Hero(
+        tag: widget.heroTag,
+        child: _buildChild(),
+        transitionOnUserGestures: widget.transitionOnUserGestures,
+      ) : _buildChild();
   }
 
   Widget _buildChild() {
