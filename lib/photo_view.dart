@@ -227,9 +227,11 @@ class _PhotoViewState extends State<PhotoView>
     final listener = (ImageInfo info, bool synchronousCall) {
       if (!completer.isCompleted) {
         completer.complete(info);
-        setState(() {
-          _childSize = Size(info.image.width / 1, info.image.height / 1);
-        });
+        if (mounted) {
+          setState(() {
+            _childSize = Size(info.image.width / 1, info.image.height / 1);
+          });
+        }
       }
     };
     stream.addListener(listener);
@@ -272,9 +274,11 @@ class _PhotoViewState extends State<PhotoView>
 
   @override
   void afterFirstLayout(BuildContext context) {
-    setState(() {
-      _size = context.size;
-    });
+    if (mounted) {
+      setState(() {
+        _size = context.size;
+      });
+    }
   }
 
   @override
