@@ -53,6 +53,7 @@ class PhotoViewGallery extends StatefulWidget {
     this.onPageChanged,
     this.scaleStateChangedCallback,
     this.enableRotation = false,
+    this.transitionOnUserGestures,
   }) : super(key: key);
 
   /// A list of options to describe the items in the gallery
@@ -81,6 +82,9 @@ class PhotoViewGallery extends StatefulWidget {
 
   /// Mirror to [PhotoView.enableRotation]
   final bool enableRotation;
+
+  /// Mirror to [PhotoView.transitionOnUserGestures]
+  final bool transitionOnUserGestures;
 
   @override
   State<StatefulWidget> createState() {
@@ -138,6 +142,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
       heroTag: pageOption.heroTag,
       scaleStateChangedCallback: scaleStateChangedCallback,
       enableRotation: widget.enableRotation,
+      transitionOnUserGestures: widget.transitionOnUserGestures,
     );
   }
 }
