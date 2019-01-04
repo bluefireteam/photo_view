@@ -353,6 +353,7 @@ class _PhotoViewState extends State<PhotoView>
         size: _computedSize,
       ),
       heroTag: widget.heroTag,
+      transitionOnUserGestures: widget.transitionOnUserGestures,
     );
   }
 
