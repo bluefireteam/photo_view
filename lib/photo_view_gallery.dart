@@ -53,7 +53,7 @@ class PhotoViewGallery extends StatefulWidget {
     this.onPageChanged,
     this.scaleStateChangedCallback,
     this.enableRotation = false,
-    this.transitionOnUserGestures,
+    this.transitionOnUserGestures = false,
   }) : super(key: key);
 
   /// A list of options to describe the items in the gallery
