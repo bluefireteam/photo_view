@@ -1,20 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:photo_view/src/photo_view_scale_boundaries.dart';
+import 'package:photo_view/src/photo_view_controller.dart';
 import 'package:photo_view/src/photo_view_scale_state.dart';
 import 'package:photo_view/src/photo_view_utils.dart';
-
 
 /// Internal widget in which controls the transformation values of the content
 class PhotoViewImageWrapper extends StatefulWidget {
   const PhotoViewImageWrapper({
     Key key,
-    @required this.setNextScaleState,
-    @required this.onStartPanning,
-    @required this.childSize,
-    @required this.scaleState,
-    @required this.scaleBoundaries,
+    @required this.controller,
     @required this.imageProvider,
-    @required this.size,
     this.backgroundDecoration,
     this.gaplessPlayback = false,
     this.heroTag,
@@ -25,13 +19,8 @@ class PhotoViewImageWrapper extends StatefulWidget {
 
   const PhotoViewImageWrapper.customChild({
     Key key,
+    @required this.controller,
     @required this.customChild,
-    @required this.setNextScaleState,
-    @required this.onStartPanning,
-    @required this.childSize,
-    @required this.scaleState,
-    @required this.scaleBoundaries,
-    @required this.size,
     this.backgroundDecoration,
     this.heroTag,
     this.enableRotation,
@@ -40,15 +29,10 @@ class PhotoViewImageWrapper extends StatefulWidget {
         gaplessPlayback = false,
         super(key: key);
 
-  final Function setNextScaleState;
-  final Function onStartPanning;
-  final Size childSize;
-  final PhotoViewScaleState scaleState;
+  final PhotoViewControllerBase controller;
   final Decoration backgroundDecoration;
-  final ScaleBoundaries scaleBoundaries;
   final ImageProvider imageProvider;
   final bool gaplessPlayback;
-  final Size size;
   final String heroTag;
   final bool enableRotation;
   final Widget customChild;
@@ -62,13 +46,9 @@ class PhotoViewImageWrapper extends StatefulWidget {
 
 class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     with TickerProviderStateMixin {
-  Offset _position;
   Offset _normalizedPosition;
-  double _scale;
   double _scaleBefore;
-  double _rotation;
   double _rotationBefore;
-  Offset _rotationFocusPoint;
 
   AnimationController _scaleAnimationController;
   Animation<double> _scaleAnimation;
@@ -79,35 +59,22 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   AnimationController _rotationAnimationController;
   Animation<double> _rotationAnimation;
 
-  double get scaleStateAwareScale {
-    return _scale != null || widget.scaleState == PhotoViewScaleState.zooming
-        ? _scale
-        : getScaleForScaleState(widget.size, widget.scaleState,
-        widget.childSize, widget.scaleBoundaries);
-  }
-
   void handleScaleAnimation() {
-    setState(() {
-      _scale = _scaleAnimation.value;
-    });
+    widget.controller.scale = _scaleAnimation.value;
   }
 
   void handlePositionAnimate() {
-    setState(() {
-      _position = _positionAnimation.value;
-    });
+    widget.controller.position = _positionAnimation.value;
   }
 
   void handleRotationAnimation() {
-    setState(() {
-      _rotation = _rotationAnimation.value;
-    });
+    widget.controller.rotation = _rotationAnimation.value;
   }
 
   void onScaleStart(ScaleStartDetails details) {
-    _rotationBefore = _rotation;
-    _scaleBefore = scaleStateAwareScale;
-    _normalizedPosition = details.focalPoint - _position;
+    _rotationBefore = widget.controller.rotation;
+    _scaleBefore = widget.controller.scale;
+    _normalizedPosition = details.focalPoint - widget.controller.position;
     _scaleAnimationController.stop();
     _positionAnimationController.stop();
     _rotationAnimationController.stop();
@@ -117,14 +84,13 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     final double newScale = _scaleBefore * details.scale;
     final Offset delta = details.focalPoint - _normalizedPosition;
     if (details.scale != 1.0) {
-      widget.onStartPanning();
+      widget.controller.onStartZooming();
     }
-    setState(() {
-      _scale = newScale;
-      _position = clampPosition(delta * details.scale);
-      _rotation = _rotationBefore + details.rotation;
-      _rotationFocusPoint = details.focalPoint;
-    });
+    widget.controller.updateMultiple(
+        scale: newScale,
+        position: clampPosition(delta * details.scale),
+        rotation: _rotationBefore + details.rotation,
+        rotationFocusPoint: details.focalPoint);
   }
 
   void onScaleEnd(ScaleEndDetails details) {
@@ -185,8 +151,6 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     return Offset(computedX, computedY);
   }
 
-
-
   void animateScale(double from, double to) {
     _scaleAnimation = Tween<double>(
       begin: from,
@@ -214,16 +178,14 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   }
 
   void onAnimationStatus(AnimationStatus status) {
-    if(status == AnimationStatus.completed){
+    if (status == AnimationStatus.completed) {
       checkAndSetToInitialScaleState();
     }
   }
 
-  void checkAndSetToInitialScaleState(){
-    if(
-      widget.scaleState != PhotoViewScaleState.initial
-      && scaleStateAwareScale == widget.scaleBoundaries.computeInitialScale()
-    ){
+  void checkAndSetToInitialScaleState() {
+    if (widget.scaleState != PhotoViewScaleState.initial &&
+        scaleStateAwareScale == widget.scaleBoundaries.computeInitialScale()) {
       widget.setNextScaleState(PhotoViewScaleState.initial);
     }
   }
@@ -231,9 +193,6 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   @override
   void initState() {
     super.initState();
-    _position = Offset.zero;
-    _rotation = 0.0;
-    _scale = null;
     _scaleAnimationController = AnimationController(vsync: this)
       ..addListener(handleScaleAnimation);
     _scaleAnimationController.addStatusListener(onAnimationStatus);
@@ -244,7 +203,6 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     _rotationAnimationController = AnimationController(vsync: this)
       ..addListener(handleRotationAnimation);
   }
-
 
   @override
   void dispose() {
@@ -313,7 +271,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     final rotationMatrix = Matrix4.identity()..rotateZ(_rotation);
 
     final Widget customChildLayout = CustomSingleChildLayout(
-      delegate: _ImagePositionDelegate(
+      delegate: _CenterWithOriginalSizeDelegate(
           widget.childSize.width, widget.childSize.height),
       child: _buildHero(),
     );
@@ -345,11 +303,12 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
 
   Widget _buildHero() {
     return widget.heroTag != null
-      ? Hero(
-        tag: widget.heroTag,
-        child: _buildChild(),
-        transitionOnUserGestures: widget.transitionOnUserGestures,
-      ) : _buildChild();
+        ? Hero(
+            tag: widget.heroTag,
+            child: _buildChild(),
+            transitionOnUserGestures: widget.transitionOnUserGestures,
+          )
+        : _buildChild();
   }
 
   Widget _buildChild() {
@@ -362,26 +321,26 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   }
 }
 
-class _ImagePositionDelegate extends SingleChildLayoutDelegate {
-  const _ImagePositionDelegate(this.imageWidth, this.imageHeight);
+class _CenterWithOriginalSizeDelegate extends SingleChildLayoutDelegate {
+  const _CenterWithOriginalSizeDelegate(this.subjectWidth, this.subjectHeight);
 
-  final double imageWidth;
-  final double imageHeight;
+  final double subjectWidth;
+  final double subjectHeight;
 
   @override
   Offset getPositionForChild(Size size, Size childSize) {
-    final double offsetX = (size.width - imageWidth) / 2;
-    final double offsetY = (size.height - imageHeight) / 2;
+    final double offsetX = (size.width - subjectWidth) / 2;
+    final double offsetY = (size.height - subjectHeight) / 2;
     return Offset(offsetX, offsetY);
   }
 
   @override
   BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
     return BoxConstraints(
-      maxWidth: imageWidth,
-      maxHeight: imageHeight,
-      minHeight: imageHeight,
-      minWidth: imageWidth,
+      maxWidth: subjectWidth,
+      maxHeight: subjectHeight,
+      minHeight: subjectHeight,
+      minWidth: subjectWidth,
     );
   }
 

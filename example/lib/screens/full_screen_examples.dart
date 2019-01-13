@@ -86,7 +86,8 @@ class FullScreenExamples extends StatelessWidget {
                                   const AssetImage("assets/large-image.jpg"),
                               minScale: PhotoViewComputedScale.contained * 0.8,
                               maxScale: PhotoViewComputedScale.covered * 1.1,
-                              initialScale: PhotoViewComputedScale.covered * 1.1,
+                              initialScale:
+                                  PhotoViewComputedScale.covered * 1.1,
                             ),
                       ),
                     );
