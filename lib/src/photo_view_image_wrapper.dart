@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:photo_view/src/photo_view_controller.dart';
 import 'package:photo_view/src/photo_view_scale_state.dart';
-import 'package:photo_view/src/photo_view_utils.dart';
 
 /// Internal widget in which controls the transformation values of the content
 class PhotoViewImageWrapper extends StatefulWidget {
@@ -94,8 +93,10 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   }
 
   void onScaleEnd(ScaleEndDetails details) {
-    final double maxScale = widget.scaleBoundaries.computeMaxScale();
-    final double minScale = widget.scaleBoundaries.computeMinScale();
+    final double _scale = widget.controller.scale;
+    final Offset _position = widget.controller.position;
+    final double maxScale = widget.controller.maxScale;
+    final double minScale = widget.controller.minScale;
 
     //animate back to maxScale if gesture exceeded the maxScale specified
     if (_scale > maxScale) {
@@ -128,13 +129,13 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   }
 
   Offset clampPosition(Offset offset, [double scale]) {
-    final double _scale = scale ?? scaleStateAwareScale;
+    final double _scale = scale ?? widget.controller.scaleStateAwareScale;
     final double x = offset.dx;
     final double y = offset.dy;
-    final double computedWidth = widget.childSize.width * _scale;
-    final double computedHeight = widget.childSize.height * _scale;
-    final double screenWidth = widget.size.width;
-    final double screenHeight = widget.size.height;
+    final double computedWidth = widget.controller.childSize.width * _scale;
+    final double computedHeight = widget.controller.childSize.height * _scale;
+    final double screenWidth = widget.controller.outerSize.width;
+    final double screenHeight = widget.controller.outerSize.height;
     final double screenHalfX = screenWidth / 2;
     final double screenHalfY = screenHeight / 2;
 
@@ -184,9 +185,9 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   }
 
   void checkAndSetToInitialScaleState() {
-    if (widget.scaleState != PhotoViewScaleState.initial &&
-        scaleStateAwareScale == widget.scaleBoundaries.computeInitialScale()) {
-      widget.setNextScaleState(PhotoViewScaleState.initial);
+    if (widget.controller.scaleState != PhotoViewScaleState.initial &&
+        widget.controller.scaleStateAwareScale == widget.controller.initialScale) {
+      widget.controller.scaleState = PhotoViewScaleState.initial;
     }
   }
 
@@ -202,6 +203,14 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
 
     _rotationAnimationController = AnimationController(vsync: this)
       ..addListener(handleRotationAnimation);
+    
+    widget.controller.addScaleStateListener(scaleStateListener);
+  }
+
+  void scaleStateListener(prevScale, nextScale) {
+    animateScale(prevScale, nextScale);
+    animatePosition(widget.controller.position, Offset.zero);
+    animateRotation(widget.controller.rotation, 0.0);
   }
 
   @override
@@ -210,95 +219,52 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     _scaleAnimationController.dispose();
     _positionAnimationController.dispose();
     _rotationAnimationController.dispose();
+    widget.controller.removeScaleStateListener(scaleStateListener);
     super.dispose();
   }
 
-  @override
-  void didUpdateWidget(PhotoViewImageWrapper oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.scaleState != widget.scaleState &&
-        widget.scaleState != PhotoViewScaleState.zooming) {
-      final double prevScale = _scale == null
-          ? getScaleForScaleState(widget.size, PhotoViewScaleState.initial,
-              widget.childSize, widget.scaleBoundaries)
-          : _scale;
-
-      final double nextScale = getScaleForScaleState(widget.size,
-          widget.scaleState, widget.childSize, widget.scaleBoundaries);
-
-      animateScale(prevScale, nextScale);
-      animatePosition(_position, Offset.zero);
-      animateRotation(_rotation, 0.0);
-    }
-  }
-
-  void computeNextScaleState() {
-    final PhotoViewScaleState _originalScaleState = widget.scaleState;
-
-    if (_originalScaleState == PhotoViewScaleState.zooming) {
-      widget.setNextScaleState(nextScaleState(_originalScaleState));
-      return;
-    }
-
-    final double originalScale = getScaleForScaleState(widget.size,
-        _originalScaleState, widget.childSize, widget.scaleBoundaries);
-
-    double prevScale = originalScale;
-    PhotoViewScaleState _prevScaleState = _originalScaleState;
-    double nextScale = originalScale;
-    PhotoViewScaleState _nextScaleState = _originalScaleState;
-    do {
-      prevScale = nextScale;
-      _prevScaleState = _nextScaleState;
-      _nextScaleState = nextScaleState(_prevScaleState);
-      nextScale = getScaleForScaleState(widget.size, _nextScaleState,
-          widget.childSize, widget.scaleBoundaries);
-    } while (prevScale == nextScale && _originalScaleState != _nextScaleState);
-
-    if (originalScale == nextScale) {
-      return;
-    }
-
-    widget.setNextScaleState(_nextScaleState);
-  }
 
   @override
   Widget build(BuildContext context) {
-    final matrix = Matrix4.identity()
-      ..translate(_position.dx, _position.dy)
-      ..scale(scaleStateAwareScale);
 
-    final rotationMatrix = Matrix4.identity()..rotateZ(_rotation);
+    return ValueListenableBuilder(valueListenable: widget.controller, builder:  (BuildContext context, PhotoViewControllerValue value, Widget child){
+      final matrix = Matrix4.identity()
+        ..translate(value.position.dx, value.position.dy)
+        ..scale(widget.controller.scaleStateAwareScale);
 
-    final Widget customChildLayout = CustomSingleChildLayout(
-      delegate: _CenterWithOriginalSizeDelegate(
-          widget.childSize.width, widget.childSize.height),
-      child: _buildHero(),
-    );
+      final rotationMatrix = Matrix4.identity()..rotateZ(value.rotation);
 
-    return GestureDetector(
-      child: Container(
-        child: Center(
-            child: Transform(
-          child: widget.enableRotation
-              ? Transform(
+      final Widget customChildLayout = CustomSingleChildLayout(
+        delegate: _CenterWithOriginalSizeDelegate(
+            widget.controller.childSize.width, widget.controller.childSize.height),
+        child: _buildHero(),
+      );
+
+      return GestureDetector(
+        child: Container(
+          child: Center(
+              child: Transform(
+                child: widget.enableRotation
+                    ? Transform(
                   child: customChildLayout,
                   transform: rotationMatrix,
                   alignment: Alignment.center,
-                  origin: _rotationFocusPoint,
+                  origin: value.rotationFocusPoint,
                 )
-              : customChildLayout,
-          transform: matrix,
-          alignment: Alignment.center,
-        )),
-        decoration: widget.backgroundDecoration ??
-            const BoxDecoration(color: const Color.fromRGBO(0, 0, 0, 1.0)),
-      ),
-      onDoubleTap: computeNextScaleState,
-      onScaleStart: onScaleStart,
-      onScaleUpdate: onScaleUpdate,
-      onScaleEnd: onScaleEnd,
-    );
+                    : customChildLayout,
+                transform: matrix,
+                alignment: Alignment.center,
+              )),
+          decoration: widget.backgroundDecoration ??
+              const BoxDecoration(color: const Color.fromRGBO(0, 0, 0, 1.0)),
+        ),
+        onDoubleTap: widget.controller.nextScaleState,
+        onScaleStart: onScaleStart,
+        onScaleUpdate: onScaleUpdate,
+        onScaleEnd: onScaleEnd,
+      );
+
+    });
   }
 
   Widget _buildHero() {

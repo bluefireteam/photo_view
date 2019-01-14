@@ -3,6 +3,7 @@ library photo_view;
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:photo_view/src/photo_view_computed_scale.dart';
+import 'package:photo_view/src/photo_view_controller.dart';
 import 'package:photo_view/src/photo_view_image_wrapper.dart';
 import 'package:photo_view/src/photo_view_scale_state.dart';
 import 'package:after_layout/after_layout.dart';
@@ -123,6 +124,7 @@ class PhotoView extends StatefulWidget {
     this.scaleStateChangedCallback,
     this.enableRotation = false,
     this.transitionOnUserGestures = false,
+    this.controller,
   })  : child = null,
         childSize = null,
         super(key: key);
@@ -146,6 +148,7 @@ class PhotoView extends StatefulWidget {
     this.scaleStateChangedCallback,
     this.enableRotation = false,
     this.transitionOnUserGestures = false,
+    this.controller,
   })  : loadingChild = null,
         imageProvider = null,
         gaplessPlayback = false,
@@ -206,6 +209,8 @@ class PhotoView extends StatefulWidget {
   /// Should only be set when [PhotoView.heroTag] is set
   final bool transitionOnUserGestures;
 
+  final PhotoViewControllerBase controller;
+
   @override
   State<StatefulWidget> createState() {
     return _PhotoViewState();
@@ -214,9 +219,8 @@ class PhotoView extends StatefulWidget {
 
 class _PhotoViewState extends State<PhotoView>
     with AfterLayoutMixin<PhotoView> {
-  PhotoViewScaleState _scaleState;
-  Size _size;
-  Size _childSize;
+
+  bool _loading;
 
   Future<ImageInfo> _getImage() {
     final Completer completer = Completer<ImageInfo>();
@@ -226,8 +230,9 @@ class _PhotoViewState extends State<PhotoView>
       if (!completer.isCompleted) {
         completer.complete(info);
         if (mounted) {
+          widget.controller.childSize = Size(info.image.width / 1, info.image.height / 1);
           setState(() {
-            _childSize = Size(info.image.width / 1, info.image.height / 1);
+            _loading: false;
           });
         }
       }
@@ -239,44 +244,36 @@ class _PhotoViewState extends State<PhotoView>
     return completer.future;
   }
 
-  void setNextScaleState(PhotoViewScaleState newScaleState) {
-    setState(() {
-      _scaleState = newScaleState;
-    });
-    widget.scaleStateChangedCallback != null
-        ? widget.scaleStateChangedCallback(newScaleState)
-        : null;
-  }
-
-  void onStartPanning() {
-    setState(() {
-      _scaleState = PhotoViewScaleState.zooming;
-    });
-    widget.scaleStateChangedCallback != null
-        ? widget.scaleStateChangedCallback(PhotoViewScaleState.zooming)
-        : null;
-  }
-
   @override
   void initState() {
     super.initState();
-    widget.child ?? _getImage();
-    if (widget.child != null) {
-      if (widget.childSize != null) {
-        _childSize = Size.zero;
-      }
-      _childSize = widget.childSize;
+    if(widget.child == null){
+      _getImage();
+    } else {
+      widget.controller.childSize = widget.childSize;
+      _loading = false;
     }
-    _scaleState = PhotoViewScaleState.initial;
+
+    widget.controller.addScaleStateListener(scaleStateListener);
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeScaleStateListener(scaleStateListener);
+    super.dispose();
   }
 
   @override
   void afterFirstLayout(BuildContext context) {
     if (mounted) {
-      setState(() {
-        _size = context.size;
-      });
+      size = context.size;
     }
+  }
+
+  void scaleStateListener(prevScale, nextScale) {
+    widget.scaleStateChangedCallback != null
+        ? widget.scaleStateChangedCallback(widget.controller.scaleState)
+        : null;
   }
 
   @override
@@ -289,20 +286,8 @@ class _PhotoViewState extends State<PhotoView>
   Widget _buildCustomChild(BuildContext context) {
     return PhotoViewImageWrapper.customChild(
       customChild: widget.child,
-      setNextScaleState: setNextScaleState,
-      onStartPanning: onStartPanning,
-      childSize: _childSize,
-      scaleState: _scaleState,
       backgroundDecoration: widget.backgroundDecoration,
-      size: _computedSize,
       enableRotation: widget.enableRotation,
-      scaleBoundaries: ScaleBoundaries(
-        widget.minScale ?? 0.0,
-        widget.maxScale ?? double.infinity,
-        widget.initialScale ?? PhotoViewComputedScale.contained,
-        childSize: _childSize,
-        size: _computedSize,
-      ),
       heroTag: widget.heroTag,
     );
   }
@@ -326,7 +311,7 @@ class _PhotoViewState extends State<PhotoView>
   }
 
   Widget _buildSync(BuildContext context) {
-    if (_childSize == null) {
+    if (_loading == null) {
       return _buildLoading();
     }
     return _buildWrapperImage(context);
@@ -334,24 +319,13 @@ class _PhotoViewState extends State<PhotoView>
 
   Widget _buildWrapperImage(BuildContext context) {
     return PhotoViewImageWrapper(
-      setNextScaleState: setNextScaleState,
-      onStartPanning: onStartPanning,
       imageProvider: widget.imageProvider,
-      childSize: _childSize,
-      scaleState: _scaleState,
       backgroundDecoration: widget.backgroundDecoration,
       gaplessPlayback: widget.gaplessPlayback,
-      size: _computedSize,
       enableRotation: widget.enableRotation,
-      scaleBoundaries: ScaleBoundaries(
-        widget.minScale ?? 0.0,
-        widget.maxScale ?? double.infinity,
-        widget.initialScale ?? PhotoViewComputedScale.contained,
-        childSize: _childSize,
-        size: _computedSize,
-      ),
       heroTag: widget.heroTag,
       transitionOnUserGestures: widget.transitionOnUserGestures,
+      controller: widget.controller,
     );
   }
 
@@ -367,6 +341,9 @@ class _PhotoViewState extends State<PhotoView>
           );
   }
 
-  Size get _computedSize =>
-      widget.customSize ?? _size ?? MediaQuery.of(context).size;
+  set size(Size _size) {
+    widget.controller.outerSize = widget.customSize ?? _size ?? MediaQuery.of(context).size;
+  }
+
+
 }
