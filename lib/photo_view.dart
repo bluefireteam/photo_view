@@ -115,9 +115,6 @@ class PhotoView extends StatefulWidget {
     @required this.imageProvider,
     this.loadingChild,
     this.backgroundDecoration,
-    this.minScale,
-    this.maxScale,
-    this.initialScale,
     this.gaplessPlayback = false,
     this.customSize,
     this.heroTag,
@@ -140,9 +137,6 @@ class PhotoView extends StatefulWidget {
     @required this.child,
     @required this.childSize,
     this.backgroundDecoration,
-    this.minScale,
-    this.maxScale,
-    this.initialScale,
     this.customSize,
     this.heroTag,
     this.scaleStateChangedCallback,
@@ -164,21 +158,6 @@ class PhotoView extends StatefulWidget {
 
   /// Changes the background behind image, defaults to `Colors.black`.
   final Decoration backgroundDecoration;
-
-  /// Defines the minimal size in which the image will be allowed to assume, it
-  /// is proportional to the original image size. Can be either a double (absolute value) or a
-  /// [PhotoViewComputedScale], that can be multiplied by a double
-  final dynamic minScale;
-
-  /// Defines the maximal size in which the image will be allowed to assume, it
-  /// is proportional to the original image size. Can be either a double (absolute value) or a
-  /// [PhotoViewComputedScale], that can be multiplied by a double
-  final dynamic maxScale;
-
-  /// Defines the inial size in which the image will be assume in the mounting of the component, it
-  /// is proportional to the original image size. Can be either a double (absolute value) or a
-  /// [PhotoViewComputedScale], that can be multiplied by a double
-  final dynamic initialScale;
 
   /// This is used to continue showing the old image (`true`), or briefly show
   /// nothing (`false`), when the `imageProvider` changes. By default it's set
@@ -219,7 +198,6 @@ class PhotoView extends StatefulWidget {
 
 class _PhotoViewState extends State<PhotoView>
     with AfterLayoutMixin<PhotoView> {
-
   bool _loading;
 
   Future<ImageInfo> _getImage() {
@@ -230,9 +208,10 @@ class _PhotoViewState extends State<PhotoView>
       if (!completer.isCompleted) {
         completer.complete(info);
         if (mounted) {
-          widget.controller.childSize = Size(info.image.width / 1, info.image.height / 1);
+          widget.controller.childSize =
+              Size(info.image.width / 1, info.image.height / 1);
           setState(() {
-            _loading: false;
+            _loading = false;
           });
         }
       }
@@ -247,7 +226,7 @@ class _PhotoViewState extends State<PhotoView>
   @override
   void initState() {
     super.initState();
-    if(widget.child == null){
+    if (widget.child == null) {
       _getImage();
     } else {
       widget.controller.childSize = widget.childSize;
@@ -255,6 +234,17 @@ class _PhotoViewState extends State<PhotoView>
     }
 
     widget.controller.addScaleStateListener(scaleStateListener);
+  }
+
+  @override
+  void didUpdateWidget(PhotoView oldWidget) {
+    if (oldWidget.childSize != widget.childSize && widget.childSize != null) {
+      widget.controller.childSize = widget.childSize;
+    }
+    if (oldWidget.customSize != widget.customSize) {
+      _size = widget.customSize;
+    }
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -266,7 +256,7 @@ class _PhotoViewState extends State<PhotoView>
   @override
   void afterFirstLayout(BuildContext context) {
     if (mounted) {
-      size = context.size;
+      _size = context.size;
     }
   }
 
@@ -289,6 +279,7 @@ class _PhotoViewState extends State<PhotoView>
       backgroundDecoration: widget.backgroundDecoration,
       enableRotation: widget.enableRotation,
       heroTag: widget.heroTag,
+      controller: widget.controller,
     );
   }
 
@@ -341,9 +332,8 @@ class _PhotoViewState extends State<PhotoView>
           );
   }
 
-  set size(Size _size) {
-    widget.controller.outerSize = widget.customSize ?? _size ?? MediaQuery.of(context).size;
+  set _size(Size _size) {
+    widget.controller.outerSize =
+        widget.customSize ?? _size ?? MediaQuery.of(context).size;
   }
-
-
 }

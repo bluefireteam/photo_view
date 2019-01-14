@@ -6,29 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/src/photo_view_scale_state.dart';
 
-/// callbacks?
-/// DONE eset?
-/// double tap response (contraints)
-/// clamp position
-/// DONE store state: scalestate, scale, positionoffset, subjectsize, size
-/// callbacks: ondoubletap, onscalestart, onscalegesturefinish, onscalefinish
-/// doubletap gesture cycle
-/// initiascalel comparizon after animatioons
-/// animation curvesn and dureation
-/// scaleto
-/// baseposition #79
-/// clamping behavior (position and scale): animated, strict, not clamp
-/// evaluatiom after clamp
-/// customize reset position and rotation after scale sgtate change
-
-mixin PhotoViewControllerBase on ValueNotifier<PhotoViewControllerValue>{
-
+mixin PhotoViewControllerBase on ValueNotifier<PhotoViewControllerValue> {
   void reset();
 
   double get scaleStateAwareScale;
   Size childSize;
   Size outerSize;
-
 
   Offset position;
   double scale;
@@ -36,8 +19,19 @@ mixin PhotoViewControllerBase on ValueNotifier<PhotoViewControllerValue>{
   Offset rotationFocusPoint;
   PhotoViewScaleState scaleState;
 
+  /// Defines the maximum size in which the image will be allowed to assume, it
+  /// is proportional to the original image size. Can be either a double (absolute value) or a
+  /// [PhotoViewComputedScale], that can be multiplied by a double
   dynamic maxScale;
+
+  // Defines the minimum size in which the image will be allowed to assume, it
+  /// is proportional to the original image size. Can be either a double (absolute value) or a
+  /// [PhotoViewComputedScale], that can be multiplied by a double
   dynamic minScale;
+
+  /// Defines the initial size in which the image will be assume in the mounting of the component, it
+  /// is proportional to the original image size. Can be either a double (absolute value) or a
+  /// [PhotoViewComputedScale], that can be multiplied by a double
   dynamic initialScale;
 
   void onStartZooming();
@@ -54,8 +48,6 @@ mixin PhotoViewControllerBase on ValueNotifier<PhotoViewControllerValue>{
   void removeScaleStateListener(Function listener);
 
   void nextScaleState();
-
-
 }
 
 @immutable
@@ -78,21 +70,17 @@ class PhotoViewControllerValue {
 
   final Size outerSize;
   final Size childSize;
-
-
 }
 
 class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
     with PhotoViewControllerBase {
-  PhotoViewController({
-        final double minScale,
-        final double maxScale,
-        final double initialScale,
-        Size customSize,
-        Size childSize,
-        Offset initialPosition = Offset.zero,
-        double initialRotation = 0.0
-      }) : _scaleBoundaries = _ScaleBoundaries(
+  PhotoViewController(
+      {final double minScale,
+      final double maxScale,
+      final double initialScale,
+      Offset initialPosition = Offset.zero,
+      double initialRotation = 0.0})
+      : _scaleBoundaries = _ScaleBoundaries(
           minScale ?? 0.0,
           maxScale ?? double.infinity,
           initialScale ?? PhotoViewComputedScale.contained,
@@ -104,8 +92,8 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
               null, // initial  scale is obtained via PhotoViewScaleState, therefore will compute via scaleStateAwareScale
           scaleState: PhotoViewScaleState.initial,
           rotationFocusPoint: null,
-          childSize: childSize,
-          outerSize: customSize,
+          childSize: null,
+          outerSize: null,
         )) {
     initial = value;
   }
@@ -126,7 +114,8 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
     return value.scale != null ||
             value.scaleState == PhotoViewScaleState.zooming
         ? value.scale
-        : _getScaleForScaleState(value.scaleState, _scaleBoundaries, outerSize, childSize);
+        : _getScaleForScaleState(
+            value.scaleState, _scaleBoundaries, outerSize, childSize);
   }
 
   @override
@@ -233,7 +222,7 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
   }
 
   @override
-  Size get outerSize =>  value.outerSize;
+  Size get outerSize => value.outerSize;
 
   @override
   void updateMultiple({
@@ -246,21 +235,21 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
     Size childSize,
   }) {
     value = PhotoViewControllerValue(
-        position: position ?? value.position,
-        scale: scale ?? value.scale,
-        rotation: rotation ?? value.rotation,
-        scaleState: scaleState ?? value.scaleState,
-        rotationFocusPoint: rotationFocusPoint ?? value.rotationFocusPoint,
-        outerSize: outerSize ?? value.outerSize,
-        childSize: childSize ?? value.childSize,
+      position: position ?? value.position,
+      scale: scale ?? value.scale,
+      rotation: rotation ?? value.rotation,
+      scaleState: scaleState ?? value.scaleState,
+      rotationFocusPoint: rotationFocusPoint ?? value.rotationFocusPoint,
+      outerSize: outerSize ?? value.outerSize,
+      childSize: childSize ?? value.childSize,
     );
   }
 
-
-  HashMap<VoidCallback, Function> scaleStateListeners = HashMap<VoidCallback, Function>();
+  HashMap<VoidCallback, Function> scaleStateListeners =
+      HashMap<VoidCallback, Function>();
 
   @override
-  void addScaleStateListener(Function listener){
+  void addScaleStateListener(Function listener) {
     scaleStateListeners[listener] = _scaleStateListener(listener);
     super.addListener(scaleStateListeners[listener]);
   }
@@ -270,16 +259,19 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
     super.removeListener(scaleStateListeners[listener]);
   }
 
-  Function _scaleStateListener(Function listener) => (){
-    if (_prevScaleState != scaleState && scaleState != PhotoViewScaleState.zooming) {
-      final double prevScale = scale == null
-          ? _getScaleForScaleState(PhotoViewScaleState.initial, _scaleBoundaries, outerSize, childSize)
-          : scale;
+  Function _scaleStateListener(Function listener) => () {
+        if (_prevScaleState != scaleState &&
+            scaleState != PhotoViewScaleState.zooming) {
+          final double prevScale = scale == null
+              ? _getScaleForScaleState(PhotoViewScaleState.initial,
+                  _scaleBoundaries, outerSize, childSize)
+              : scale;
 
-      final double nextScale = _getScaleForScaleState(scaleState, _scaleBoundaries, outerSize, childSize);
-      listener(prevScale, nextScale);
-    }
-  };
+          final double nextScale = _getScaleForScaleState(
+              scaleState, _scaleBoundaries, outerSize, childSize);
+          listener(prevScale, nextScale);
+        }
+      };
 
   @override
   void onStartZooming() {
@@ -292,8 +284,8 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
   }
 
   @override
-  dynamic get initialScale => _scaleBoundaries.getInitialScale(outerSize, childSize);
-
+  dynamic get initialScale =>
+      _scaleBoundaries.getInitialScale(outerSize, childSize);
 
   @override
   set maxScale(_maxScale) {
@@ -311,16 +303,15 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
   @override
   dynamic get minScale => _scaleBoundaries.getMinScale(outerSize, childSize);
 
-
   @override
   void nextScaleState() {
-    if(scaleState == PhotoViewScaleState.zooming){
+    if (scaleState == PhotoViewScaleState.zooming) {
       scaleState = _scaleStateSelector(scaleState);
       return;
     }
 
-
-    final double originalScale = _getScaleForScaleState(scaleState, _scaleBoundaries, outerSize, childSize);
+    final double originalScale = _getScaleForScaleState(
+        scaleState, _scaleBoundaries, outerSize, childSize);
 
     double prevScale = originalScale;
     PhotoViewScaleState prevScaleState = scaleState;
@@ -331,7 +322,8 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
       prevScale = nextScale;
       prevScaleState = nextScaleState;
       nextScaleState = _scaleStateSelector(prevScaleState);
-      nextScale = _getScaleForScaleState(nextScaleState, _scaleBoundaries, outerSize, childSize);
+      nextScale = _getScaleForScaleState(
+          nextScaleState, _scaleBoundaries, outerSize, childSize);
     } while (prevScale == nextScale && scaleState != nextScaleState);
 
     if (originalScale == nextScale) {
@@ -340,6 +332,7 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
 
     scaleState = nextScaleState;
   }
+
   PhotoViewScaleState _scaleStateSelector(PhotoViewScaleState actual) {
     switch (actual) {
       case PhotoViewScaleState.initial:
@@ -366,7 +359,6 @@ class _ScaleBoundaries {
   dynamic _minScale;
   dynamic _maxScale;
   dynamic _initialScale;
-
 
   double getMinScale(Size outerSize, Size childSize) {
     if (_minScale == PhotoViewComputedScale.contained) {
@@ -408,7 +400,8 @@ class _ScaleBoundaries {
           (_initialScale as PhotoViewComputedScale) // ignore: avoid_as
               .multiplier;
     }
-    return _initialScale.clamp(getMinScale(outerSize, childSize), getMaxScale(outerSize, childSize));
+    return _initialScale.clamp(
+        getMinScale(outerSize, childSize), getMaxScale(outerSize, childSize));
   }
 }
 
@@ -432,18 +425,14 @@ double _scaleForCovering(Size size, Size childSize) {
   return math.max(screenWidth / imageWidth, screenHeight / imageHeight);
 }
 
-double _getScaleForScaleState(
-    PhotoViewScaleState scaleState,
-    _ScaleBoundaries scaleBoundaries,
-    Size outerSize,
-    Size childSize
-) {
+double _getScaleForScaleState(PhotoViewScaleState scaleState,
+    _ScaleBoundaries scaleBoundaries, Size outerSize, Size childSize) {
   switch (scaleState) {
     case PhotoViewScaleState.initial:
-      return _clampSize(scaleBoundaries.getInitialScale(outerSize, childSize), scaleBoundaries, outerSize, childSize);
+      return _clampSize(scaleBoundaries.getInitialScale(outerSize, childSize),
+          scaleBoundaries, outerSize, childSize);
     case PhotoViewScaleState.covering:
-      return _clampSize(
-          _scaleForCovering(outerSize, childSize),
+      return _clampSize(_scaleForCovering(outerSize, childSize),
           scaleBoundaries, outerSize, childSize);
     case PhotoViewScaleState.originalSize:
       return _clampSize(1.0, scaleBoundaries, outerSize, childSize);
@@ -452,6 +441,8 @@ double _getScaleForScaleState(
   }
 }
 
-double _clampSize(double size, _ScaleBoundaries scaleBoundaries, Size outerSize, Size childSize) {
-  return size.clamp(scaleBoundaries.getMinScale(outerSize, childSize), scaleBoundaries.getMaxScale(outerSize, childSize));
+double _clampSize(double size, _ScaleBoundaries scaleBoundaries, Size outerSize,
+    Size childSize) {
+  return size.clamp(scaleBoundaries.getMinScale(outerSize, childSize),
+      scaleBoundaries.getMaxScale(outerSize, childSize));
 }
