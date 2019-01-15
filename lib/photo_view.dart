@@ -10,6 +10,8 @@ import 'package:after_layout/after_layout.dart';
 
 export 'package:photo_view/src/photo_view_computed_scale.dart';
 export 'package:photo_view/src/photo_view_scale_state.dart';
+export 'package:photo_view/src/photo_view_controller.dart';
+
 
 /// A type definition for a [Function] that receives a [PhotoViewScaleState]
 ///
@@ -110,7 +112,7 @@ class PhotoView extends StatefulWidget {
   /// image providers, ie: [AssetImage] or [NetworkImage]
   ///
   /// Internally, the image is rendered within an [Image] widget.
-  const PhotoView({
+  PhotoView({
     Key key,
     @required this.imageProvider,
     this.loadingChild,
@@ -121,9 +123,10 @@ class PhotoView extends StatefulWidget {
     this.scaleStateChangedCallback,
     this.enableRotation = false,
     this.transitionOnUserGestures = false,
-    this.controller,
+    controller,
   })  : child = null,
         childSize = null,
+        controller = controller ?? PhotoViewController(),
         super(key: key);
 
   /// Creates a widget that displays a zoomable child.
@@ -132,7 +135,7 @@ class PhotoView extends StatefulWidget {
   ///
   /// Instead of a [imageProvider], this constructor will receive a [child] and a [childSize].
   ///
-  const PhotoView.customChild({
+  PhotoView.customChild({
     Key key,
     @required this.child,
     @required this.childSize,
@@ -142,10 +145,11 @@ class PhotoView extends StatefulWidget {
     this.scaleStateChangedCallback,
     this.enableRotation = false,
     this.transitionOnUserGestures = false,
-    this.controller,
+    controller,
   })  : loadingChild = null,
         imageProvider = null,
         gaplessPlayback = false,
+        controller = controller ?? PhotoViewController(),
         super(key: key);
 
   /// Given a [imageProvider] it resolves into an zoomable image widget using. It
@@ -188,7 +192,7 @@ class PhotoView extends StatefulWidget {
   /// Should only be set when [PhotoView.heroTag] is set
   final bool transitionOnUserGestures;
 
-  final PhotoViewControllerBase controller;
+  PhotoViewControllerBase controller;
 
   @override
   State<StatefulWidget> createState() {
@@ -233,7 +237,7 @@ class _PhotoViewState extends State<PhotoView>
       _loading = false;
     }
 
-    widget.controller.addScaleStateListener(scaleStateListener);
+    widget.controller.addListener(scaleStateListener);
   }
 
   @override
@@ -249,7 +253,7 @@ class _PhotoViewState extends State<PhotoView>
 
   @override
   void dispose() {
-    widget.controller.removeScaleStateListener(scaleStateListener);
+    widget.controller.removeListener(scaleStateListener);
     super.dispose();
   }
 
@@ -260,7 +264,7 @@ class _PhotoViewState extends State<PhotoView>
     }
   }
 
-  void scaleStateListener(prevScale, nextScale) {
+  void scaleStateListener() {
     widget.scaleStateChangedCallback != null
         ? widget.scaleStateChangedCallback(widget.controller.scaleState)
         : null;

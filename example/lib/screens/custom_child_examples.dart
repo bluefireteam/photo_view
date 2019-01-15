@@ -49,7 +49,9 @@ class CustomChildExample extends StatelessWidget {
                           ],
                         )),
                     childSize: const Size(220.0, 250.0),
-                    initialScale: 1.0,
+                    controller: PhotoViewController(
+                      initialScale: 1.0,
+                    ),
                   ),
                 ),
               )

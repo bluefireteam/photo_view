@@ -30,9 +30,11 @@ class InlineExamples extends StatelessWidget {
                 child: ClipRect(
                   child: PhotoView(
                     imageProvider: const AssetImage("assets/large-image.jpg"),
-                    maxScale: PhotoViewComputedScale.covered * 2.0,
-                    minScale: PhotoViewComputedScale.contained * 0.8,
-                    initialScale: PhotoViewComputedScale.covered,
+                    controller: PhotoViewController(
+                      maxScale: PhotoViewComputedScale.covered * 2.0,
+                      minScale: PhotoViewComputedScale.contained * 0.8,
+                      initialScale: PhotoViewComputedScale.covered,
+                    ),
                   ),
                 ),
               )

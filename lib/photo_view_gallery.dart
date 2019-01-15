@@ -2,6 +2,7 @@ library photo_view_gallery;
 
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/src/photo_view_controller.dart';
 import 'package:photo_view/src/photo_view_scale_state.dart';
 
 /// A type definition for a [Function] that receives a index after a page change in [PhotoViewGallery]
@@ -134,9 +135,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
       imageProvider: pageOption.imageProvider,
       loadingChild: widget.loadingChild,
       backgroundDecoration: widget.backgroundDecoration,
-      minScale: pageOption.minScale,
-      maxScale: pageOption.maxScale,
-      initialScale: pageOption.initialScale,
+      controller: pageOption.controller,
       gaplessPlayback: widget.gaplessPlayback,
       customSize: widget.customSize,
       heroTag: pageOption.heroTag,
@@ -156,9 +155,7 @@ class PhotoViewGalleryPageOptions {
     Key key,
     @required this.imageProvider,
     this.heroTag,
-    this.minScale,
-    this.maxScale,
-    this.initialScale,
+    this.controller
   });
 
   /// Mirror to [PhotoView.imageProvider]
@@ -167,12 +164,7 @@ class PhotoViewGalleryPageOptions {
   /// Mirror to [PhotoView.heroTag
   final Object heroTag;
 
-  /// Mirror to [PhotoView.minScale]
-  final dynamic minScale;
+  /// Mirror to [PhotoView.controller]
+  final PhotoViewController controller;
 
-  /// Mirror to [PhotoView.maxScale]
-  final dynamic maxScale;
-
-  /// Mirror to [PhotoView.initialScale]
-  final dynamic initialScale;
 }

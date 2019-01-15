@@ -179,9 +179,11 @@ class FullScreenWrapper extends StatelessWidget {
           imageProvider: imageProvider,
           loadingChild: loadingChild,
           backgroundDecoration: backgroundDecoration,
-          minScale: minScale,
-          maxScale: maxScale,
-          initialScale: initialScale,
+          controller: PhotoViewController(
+            minScale: minScale,
+            maxScale: maxScale,
+            initialScale: initialScale,
+          ),
         ));
   }
 }

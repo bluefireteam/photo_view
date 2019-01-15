@@ -72,7 +72,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
 
   void onScaleStart(ScaleStartDetails details) {
     _rotationBefore = widget.controller.rotation;
-    _scaleBefore = widget.controller.scale;
+    _scaleBefore = widget.controller.scaleStateAwareScale;
     _normalizedPosition = details.focalPoint - widget.controller.position;
     _scaleAnimationController.stop();
     _positionAnimationController.stop();
@@ -205,13 +205,23 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     _rotationAnimationController = AnimationController(vsync: this)
       ..addListener(handleRotationAnimation);
 
-    widget.controller.addScaleStateListener(scaleStateListener);
+    widget.controller.addListener(scaleStateListener);
   }
 
-  void scaleStateListener(prevScale, nextScale) {
-    animateScale(prevScale, nextScale);
-    animatePosition(widget.controller.position, Offset.zero);
-    animateRotation(widget.controller.rotation, 0.0);
+  void scaleStateListener() {
+    print("listener");
+    if (widget.controller.prevValue.scaleState != widget.controller.scaleState &&
+        widget.controller.scaleState != PhotoViewScaleState.zooming) {
+      final double prevScale = widget.controller.scale ?? widget.controller.getScaleForScaleState(PhotoViewScaleState.initial);
+
+      final double nextScale = widget.controller.getScaleForScaleState(widget.controller.scaleState);
+
+      animateScale(prevScale, nextScale);
+      animatePosition(widget.controller.position, Offset.zero);
+      animateRotation(widget.controller.rotation, 0.0);
+    }
+
+
   }
 
   @override
@@ -220,7 +230,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     _scaleAnimationController.dispose();
     _positionAnimationController.dispose();
     _rotationAnimationController.dispose();
-    widget.controller.removeScaleStateListener(scaleStateListener);
+    widget.controller.removeListener(scaleStateListener);
     super.dispose();
   }
 
