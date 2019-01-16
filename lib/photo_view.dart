@@ -12,7 +12,6 @@ export 'package:photo_view/src/photo_view_computed_scale.dart';
 export 'package:photo_view/src/photo_view_scale_state.dart';
 export 'package:photo_view/src/photo_view_controller.dart';
 
-
 /// A type definition for a [Function] that receives a [PhotoViewScaleState]
 ///
 typedef PhotoViewScaleStateChangedCallback = void Function(
@@ -127,6 +126,7 @@ class PhotoView extends StatefulWidget {
   })  : child = null,
         childSize = null,
         controller = controller ?? PhotoViewController(),
+        _controlledController = controller == null,
         super(key: key);
 
   /// Creates a widget that displays a zoomable child.
@@ -150,6 +150,7 @@ class PhotoView extends StatefulWidget {
         imageProvider = null,
         gaplessPlayback = false,
         controller = controller ?? PhotoViewController(),
+        _controlledController = controller == null,
         super(key: key);
 
   /// Given a [imageProvider] it resolves into an zoomable image widget using. It
@@ -194,6 +195,8 @@ class PhotoView extends StatefulWidget {
 
   PhotoViewControllerBase controller;
 
+  final bool _controlledController;
+
   @override
   State<StatefulWidget> createState() {
     return _PhotoViewState();
@@ -237,7 +240,7 @@ class _PhotoViewState extends State<PhotoView>
       _loading = false;
     }
 
-    widget.controller.addListener(scaleStateListener);
+    widget.controller.outputStateStream.listen(scaleStateListener);
   }
 
   @override
@@ -253,7 +256,9 @@ class _PhotoViewState extends State<PhotoView>
 
   @override
   void dispose() {
-    widget.controller.removeListener(scaleStateListener);
+    if (widget._controlledController) {
+      widget.controller.dispose();
+    }
     super.dispose();
   }
 
@@ -264,7 +269,7 @@ class _PhotoViewState extends State<PhotoView>
     }
   }
 
-  void scaleStateListener() {
+  void scaleStateListener(PhotoViewControllerValue value) {
     widget.scaleStateChangedCallback != null
         ? widget.scaleStateChangedCallback(widget.controller.scaleState)
         : null;

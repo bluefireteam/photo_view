@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:math' as math;
 import 'dart:ui';
 
@@ -5,12 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/src/photo_view_scale_state.dart';
 
-
 typedef ScaleStateListener = void Function(double prevScale, double nextScale);
 
-mixin PhotoViewControllerBase on ValueNotifier<PhotoViewControllerValue> {
+abstract class PhotoViewControllerBase<T extends PhotoViewControllerValue> {
+  Stream<T> get outputStateStream;
+
+  T prevValue;
 
   void reset();
+  void dispose();
 
   double get scaleStateAwareScale;
   Size childSize;
@@ -21,7 +25,6 @@ mixin PhotoViewControllerBase on ValueNotifier<PhotoViewControllerValue> {
   double rotation;
   Offset rotationFocusPoint;
   PhotoViewScaleState scaleState;
-  PhotoViewControllerValue prevValue;
 
   /// Defines the maximum size in which the image will be allowed to assume, it
   /// is proportional to the original image size. Can be either a double (absolute value) or a
@@ -47,12 +50,6 @@ mixin PhotoViewControllerBase on ValueNotifier<PhotoViewControllerValue> {
     PhotoViewScaleState scaleState,
     Offset rotationFocusPoint,
   });
-
-  @override
-  void addListener(VoidCallback listener);
-
-  @override
-  void removeListener(VoidCallback listener);
 
   void nextScaleState();
 
@@ -82,7 +79,7 @@ class PhotoViewControllerValue {
 }
 
 class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
-    with PhotoViewControllerBase {
+    implements PhotoViewControllerBase<PhotoViewControllerValue> {
   PhotoViewController(
       {final dynamic minScale,
       final dynamic maxScale,
@@ -106,14 +103,21 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
         )) {
     initial = value;
     prevValue = initial;
+    _outputCtrl = StreamController<PhotoViewControllerValue>.broadcast();
+    _outputCtrl.sink.add(initial);
+    super.addListener(_changeListener);
   }
 
   PhotoViewControllerValue initial;
   _ScaleBoundaries _scaleBoundaries;
 
+  StreamController<PhotoViewControllerValue> _outputCtrl;
 
-  PhotoViewControllerValue prevVsalue;
+  @override
+  Stream<PhotoViewControllerValue> get outputStateStream => _outputCtrl.stream;
 
+  @override
+  PhotoViewControllerValue prevValue;
 
   @override
   void reset() {
@@ -125,8 +129,19 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
     return value.scale ?? getScaleForScaleState(value.scaleState);
   }
 
+  void _changeListener() {
+    _outputCtrl.sink.add(value);
+  }
+
+  @override
+  void dispose() {
+    _outputCtrl.close();
+    super.dispose();
+  }
+
   @override
   set position(Offset position) {
+    prevValue = value;
     value = PhotoViewControllerValue(
         position: position,
         scale: scale,
@@ -142,6 +157,7 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
 
   @override
   set scale(double scale) {
+    prevValue = value;
     value = PhotoViewControllerValue(
         position: position,
         scale: scale,
@@ -157,6 +173,7 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
 
   @override
   set rotation(double rotation) {
+    prevValue = value;
     value = PhotoViewControllerValue(
         position: position,
         scale: scale,
@@ -188,7 +205,6 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
 
   @override
   set rotationFocusPoint(Offset rotationFocusPoint) {
-    prevValue = value;
     value = PhotoViewControllerValue(
         position: position,
         scale: scale,
@@ -219,7 +235,6 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
 
   @override
   set outerSize(Size outerSize) {
-    prevValue = value;
     value = PhotoViewControllerValue(
         position: position,
         scale: scale,
@@ -253,20 +268,6 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
       childSize: childSize ?? value.childSize,
     );
   }
-
-  @override
-  void addListener(VoidCallback listener) {
-    super.addListener(listener);
-  }
-
-  @override
-  void removeListener(VoidCallback listener) {
-    super.removeListener(listener);
-  }
-
-  VoidCallback scaleStateListener() => () {
-
-      };
 
   @override
   void onStartZooming() {
@@ -346,8 +347,11 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
     switch (scaleState) {
       case PhotoViewScaleState.initial:
       case PhotoViewScaleState.zooming:
-        return _clampSize(_scaleBoundaries.getInitialScale(outerSize, childSize),
-            _scaleBoundaries, outerSize, childSize);
+        return _clampSize(
+            _scaleBoundaries.getInitialScale(outerSize, childSize),
+            _scaleBoundaries,
+            outerSize,
+            childSize);
       case PhotoViewScaleState.covering:
         return _clampSize(_scaleForCovering(outerSize, childSize),
             _scaleBoundaries, outerSize, childSize);
@@ -434,8 +438,6 @@ double _scaleForCovering(Size size, Size childSize) {
 
   return math.max(screenWidth / imageWidth, screenHeight / imageHeight);
 }
-
-
 
 double _clampSize(double size, _ScaleBoundaries scaleBoundaries, Size outerSize,
     Size childSize) {

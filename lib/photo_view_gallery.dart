@@ -151,12 +151,8 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
 /// The [maxScale], [minScale] and [initialScale] options may be [double] or a [PhotoViewComputedScale] constant
 ///
 class PhotoViewGalleryPageOptions {
-  PhotoViewGalleryPageOptions({
-    Key key,
-    @required this.imageProvider,
-    this.heroTag,
-    this.controller
-  });
+  PhotoViewGalleryPageOptions(
+      {Key key, @required this.imageProvider, this.heroTag, this.controller});
 
   /// Mirror to [PhotoView.imageProvider]
   final ImageProvider imageProvider;
@@ -166,5 +162,4 @@ class PhotoViewGalleryPageOptions {
 
   /// Mirror to [PhotoView.controller]
   final PhotoViewController controller;
-
 }

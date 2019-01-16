@@ -205,23 +205,23 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     _rotationAnimationController = AnimationController(vsync: this)
       ..addListener(handleRotationAnimation);
 
-    widget.controller.addListener(scaleStateListener);
+    widget.controller.outputStateStream.listen(scaleStateListener);
   }
 
-  void scaleStateListener() {
-    print("listener");
-    if (widget.controller.prevValue.scaleState != widget.controller.scaleState &&
+  void scaleStateListener(PhotoViewControllerValue value) {
+    if (widget.controller.prevValue.scaleState !=
+            widget.controller.scaleState &&
         widget.controller.scaleState != PhotoViewScaleState.zooming) {
-      final double prevScale = widget.controller.scale ?? widget.controller.getScaleForScaleState(PhotoViewScaleState.initial);
+      final double prevScale = widget.controller.scale ??
+          widget.controller.getScaleForScaleState(PhotoViewScaleState.initial);
 
-      final double nextScale = widget.controller.getScaleForScaleState(widget.controller.scaleState);
+      final double nextScale =
+          widget.controller.getScaleForScaleState(widget.controller.scaleState);
 
       animateScale(prevScale, nextScale);
       animatePosition(widget.controller.position, Offset.zero);
       animateRotation(widget.controller.rotation, 0.0);
     }
-
-
   }
 
   @override
@@ -230,53 +230,56 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     _scaleAnimationController.dispose();
     _positionAnimationController.dispose();
     _rotationAnimationController.dispose();
-    widget.controller.removeListener(scaleStateListener);
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder(
-        valueListenable: widget.controller,
-        builder: (BuildContext context, PhotoViewControllerValue value,
-            Widget child) {
-          final matrix = Matrix4.identity()
-            ..translate(value.position.dx, value.position.dy)
-            ..scale(widget.controller.scaleStateAwareScale);
+    return StreamBuilder(
+        stream: widget.controller.outputStateStream,
+        initialData: widget.controller.prevValue,
+        builder: (BuildContext context,
+            AsyncSnapshot<PhotoViewControllerValue> snapshot) {
+          if (snapshot.hasData) {
+            final PhotoViewControllerValue value = snapshot.data;
+            final matrix = Matrix4.identity()
+              ..translate(value.position.dx, value.position.dy)
+              ..scale(widget.controller.scaleStateAwareScale);
 
-          final rotationMatrix = Matrix4.identity()..rotateZ(value.rotation);
-
-          final Widget customChildLayout = CustomSingleChildLayout(
-            delegate: _CenterWithOriginalSizeDelegate(
-                widget.controller.childSize.width,
-                widget.controller.childSize.height),
-            child: _buildHero(),
-          );
-
-          return GestureDetector(
-            child: Container(
-              child: Center(
-                  child: Transform(
-                child: widget.enableRotation
-                    ? Transform(
-                        child: customChildLayout,
-                        transform: rotationMatrix,
-                        alignment: Alignment.center,
-                        origin: value.rotationFocusPoint,
-                      )
-                    : customChildLayout,
-                transform: matrix,
-                alignment: Alignment.center,
-              )),
-              decoration: widget.backgroundDecoration ??
-                  const BoxDecoration(
-                      color: const Color.fromRGBO(0, 0, 0, 1.0)),
-            ),
-            onDoubleTap: widget.controller.nextScaleState,
-            onScaleStart: onScaleStart,
-            onScaleUpdate: onScaleUpdate,
-            onScaleEnd: onScaleEnd,
-          );
+            final rotationMatrix = Matrix4.identity()..rotateZ(value.rotation);
+            final Widget customChildLayout = CustomSingleChildLayout(
+              delegate: _CenterWithOriginalSizeDelegate(
+                  widget.controller.childSize.width,
+                  widget.controller.childSize.height),
+              child: _buildHero(),
+            );
+            return GestureDetector(
+              child: Container(
+                child: Center(
+                    child: Transform(
+                  child: widget.enableRotation
+                      ? Transform(
+                          child: customChildLayout,
+                          transform: rotationMatrix,
+                          alignment: Alignment.center,
+                          origin: value.rotationFocusPoint,
+                        )
+                      : customChildLayout,
+                  transform: matrix,
+                  alignment: Alignment.center,
+                )),
+                decoration: widget.backgroundDecoration ??
+                    const BoxDecoration(
+                        color: const Color.fromRGBO(0, 0, 0, 1.0)),
+              ),
+              onDoubleTap: widget.controller.nextScaleState,
+              onScaleStart: onScaleStart,
+              onScaleUpdate: onScaleUpdate,
+              onScaleEnd: onScaleEnd,
+            );
+          } else {
+            return Container();
+          }
         });
   }
 
