@@ -138,15 +138,12 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
                   PhotoViewGalleryPageOptions(
                       imageProvider: widget.imageProvider2,
                       heroTag: "tag2",
-                      controller: PhotoViewController(
-                          maxScale: PhotoViewComputedScale.contained * 0.3)),
+                      maxScale: PhotoViewComputedScale.contained * 0.3),
                   PhotoViewGalleryPageOptions(
                     imageProvider: widget.imageProvider3,
-                    controller: PhotoViewController(
-                      initialScale: PhotoViewComputedScale.contained * 0.8,
-                      minScale: PhotoViewComputedScale.contained * 0.8,
-                      maxScale: PhotoViewComputedScale.covered * 1.1,
-                    ),
+                    initialScale: PhotoViewComputedScale.contained * 0.8,
+                    minScale: PhotoViewComputedScale.contained * 0.8,
+                    maxScale: PhotoViewComputedScale.covered * 1.1,
                     heroTag: "tag3",
                   ),
                 ],

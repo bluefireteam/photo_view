@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:photo_view/src/photo_view_controller.dart';
 import 'package:photo_view/src/photo_view_scale_state.dart';
+import 'package:photo_view/src/photo_view_utils.dart';
 
 /// Internal widget in which controls the transformation values of the content
 class PhotoViewImageWrapper extends StatefulWidget {
@@ -13,6 +14,7 @@ class PhotoViewImageWrapper extends StatefulWidget {
     this.heroTag,
     this.enableRotation,
     this.transitionOnUserGestures = false,
+    @required this.scaleBoundaries,
   })  : customChild = null,
         super(key: key);
 
@@ -24,6 +26,7 @@ class PhotoViewImageWrapper extends StatefulWidget {
     this.heroTag,
     this.enableRotation,
     this.transitionOnUserGestures = false,
+    @required this.scaleBoundaries,
   })  : imageProvider = null,
         gaplessPlayback = false,
         super(key: key);
@@ -36,6 +39,7 @@ class PhotoViewImageWrapper extends StatefulWidget {
   final bool enableRotation;
   final Widget customChild;
   final bool transitionOnUserGestures;
+  final ScaleBoundaries scaleBoundaries;
 
   @override
   State<StatefulWidget> createState() {
@@ -58,6 +62,12 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   AnimationController _rotationAnimationController;
   Animation<double> _rotationAnimation;
 
+  double get scaleStateAwareScale {
+    return widget.controller.scale ??
+        getScaleForScaleState(
+            widget.controller.scaleState, widget.scaleBoundaries);
+  }
+
   void handleScaleAnimation() {
     widget.controller.scale = _scaleAnimation.value;
   }
@@ -72,7 +82,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
 
   void onScaleStart(ScaleStartDetails details) {
     _rotationBefore = widget.controller.rotation;
-    _scaleBefore = widget.controller.scaleStateAwareScale;
+    _scaleBefore = scaleStateAwareScale;
     _normalizedPosition = details.focalPoint - widget.controller.position;
     _scaleAnimationController.stop();
     _positionAnimationController.stop();
@@ -95,8 +105,8 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   void onScaleEnd(ScaleEndDetails details) {
     final double _scale = widget.controller.scale;
     final Offset _position = widget.controller.position;
-    final double maxScale = widget.controller.maxScale;
-    final double minScale = widget.controller.minScale;
+    final double maxScale = widget.scaleBoundaries.maxScale;
+    final double minScale = widget.scaleBoundaries.minScale;
 
     //animate back to maxScale if gesture exceeded the maxScale specified
     if (_scale > maxScale) {
@@ -129,13 +139,15 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   }
 
   Offset clampPosition(Offset offset, [double scale]) {
-    final double _scale = scale ?? widget.controller.scaleStateAwareScale;
+    final double _scale = scale ?? scaleStateAwareScale;
     final double x = offset.dx;
     final double y = offset.dy;
-    final double computedWidth = widget.controller.childSize.width * _scale;
-    final double computedHeight = widget.controller.childSize.height * _scale;
-    final double screenWidth = widget.controller.outerSize.width;
-    final double screenHeight = widget.controller.outerSize.height;
+    final double computedWidth =
+        widget.scaleBoundaries.childSize.width * _scale;
+    final double computedHeight =
+        widget.scaleBoundaries.childSize.height * _scale;
+    final double screenWidth = widget.scaleBoundaries.outerSize.width;
+    final double screenHeight = widget.scaleBoundaries.outerSize.height;
     final double screenHalfX = screenWidth / 2;
     final double screenHalfY = screenHeight / 2;
 
@@ -186,8 +198,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
 
   void checkAndSetToInitialScaleState() {
     if (widget.controller.scaleState != PhotoViewScaleState.initial &&
-        widget.controller.scaleStateAwareScale ==
-            widget.controller.initialScale) {
+        scaleStateAwareScale == widget.scaleBoundaries.initialScale) {
       widget.controller.scaleState = PhotoViewScaleState.initial;
     }
   }
@@ -213,15 +224,47 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
             widget.controller.scaleState &&
         widget.controller.scaleState != PhotoViewScaleState.zooming) {
       final double prevScale = widget.controller.scale ??
-          widget.controller.getScaleForScaleState(PhotoViewScaleState.initial);
+          getScaleForScaleState(
+              PhotoViewScaleState.initial, widget.scaleBoundaries);
 
-      final double nextScale =
-          widget.controller.getScaleForScaleState(widget.controller.scaleState);
+      final double nextScale = getScaleForScaleState(
+          widget.controller.scaleState, widget.scaleBoundaries);
 
       animateScale(prevScale, nextScale);
       animatePosition(widget.controller.position, Offset.zero);
       animateRotation(widget.controller.rotation, 0.0);
     }
+  }
+
+  void nextScaleState() {
+    final ScaleBoundaries scaleBoundaries = widget.scaleBoundaries;
+    PhotoViewScaleState scaleState = widget.controller.scaleState;
+    final PhotoViewControllerBase controller = widget.controller;
+    if (scaleState == PhotoViewScaleState.zooming) {
+      controller.scaleState = controller.scaleStateSelector(scaleState);
+      return;
+    }
+
+    final double originalScale =
+        getScaleForScaleState(scaleState, scaleBoundaries);
+
+    double prevScale = originalScale;
+    PhotoViewScaleState prevScaleState = scaleState;
+    double nextScale = originalScale;
+    PhotoViewScaleState nextScaleState = scaleState;
+
+    do {
+      prevScale = nextScale;
+      prevScaleState = nextScaleState;
+      nextScaleState = controller.scaleStateSelector(prevScaleState);
+      nextScale = getScaleForScaleState(nextScaleState, scaleBoundaries);
+    } while (prevScale == nextScale && scaleState != nextScaleState);
+
+    if (originalScale == nextScale) {
+      return;
+    }
+
+    controller.scaleState = nextScaleState;
   }
 
   @override
@@ -244,13 +287,13 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
             final PhotoViewControllerValue value = snapshot.data;
             final matrix = Matrix4.identity()
               ..translate(value.position.dx, value.position.dy)
-              ..scale(widget.controller.scaleStateAwareScale);
+              ..scale(scaleStateAwareScale);
 
             final rotationMatrix = Matrix4.identity()..rotateZ(value.rotation);
             final Widget customChildLayout = CustomSingleChildLayout(
               delegate: _CenterWithOriginalSizeDelegate(
-                  widget.controller.childSize.width,
-                  widget.controller.childSize.height),
+                  widget.scaleBoundaries.childSize.width,
+                  widget.scaleBoundaries.childSize.height),
               child: _buildHero(),
             );
             return GestureDetector(
@@ -272,7 +315,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
                     const BoxDecoration(
                         color: const Color.fromRGBO(0, 0, 0, 1.0)),
               ),
-              onDoubleTap: widget.controller.nextScaleState,
+              onDoubleTap: nextScaleState,
               onScaleStart: onScaleStart,
               onScaleUpdate: onScaleUpdate,
               onScaleEnd: onScaleEnd,

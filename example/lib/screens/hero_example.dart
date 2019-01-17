@@ -63,10 +63,8 @@ class HeroPhotoViewWrapper extends StatelessWidget {
           imageProvider: imageProvider,
           loadingChild: loadingChild,
           backgroundDecoration: backgroundDecoration,
-          controller: PhotoViewController(
-            minScale: minScale,
-            maxScale: maxScale,
-          ),
+          minScale: minScale,
+          maxScale: maxScale,
           heroTag: "someTag",
         ));
   }

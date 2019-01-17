@@ -152,13 +152,28 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
 ///
 class PhotoViewGalleryPageOptions {
   PhotoViewGalleryPageOptions(
-      {Key key, @required this.imageProvider, this.heroTag, this.controller});
+      {Key key,
+      @required this.imageProvider,
+      this.heroTag,
+      this.minScale,
+      this.maxScale,
+      this.initialScale,
+      this.controller});
 
   /// Mirror to [PhotoView.imageProvider]
   final ImageProvider imageProvider;
 
   /// Mirror to [PhotoView.heroTag
   final Object heroTag;
+
+  /// Mirror to [PhotoView.minScale]
+  final dynamic minScale;
+
+  /// Mirror to [PhotoView.maxScale]
+  final dynamic maxScale;
+
+  /// Mirror to [PhotoView.initialScale]
+  final dynamic initialScale;
 
   /// Mirror to [PhotoView.controller]
   final PhotoViewController controller;

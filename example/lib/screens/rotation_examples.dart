@@ -29,10 +29,8 @@ class RotationExamples extends StatelessWidget {
                   child: ClipRect(
                     child: PhotoView(
                       imageProvider: const AssetImage("assets/large-image.jpg"),
-                      controller: PhotoViewController(
-                        maxScale: PhotoViewComputedScale.covered,
-                        initialScale: PhotoViewComputedScale.contained * 0.8,
-                      ),
+                      maxScale: PhotoViewComputedScale.covered,
+                      initialScale: PhotoViewComputedScale.contained * 0.8,
                       enableRotation: true,
                     ),
                   )),
