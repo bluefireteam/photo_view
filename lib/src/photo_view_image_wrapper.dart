@@ -266,7 +266,6 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     if (originalScale == nextScale) {
       return;
     }
-
     controller.scaleState = nextScaleState;
   }
 

@@ -128,6 +128,8 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
 
   @override
   set position(Offset position) {
+    if (value.position == position)
+      return;
     prevValue = value;
     value = PhotoViewControllerValue(
         position: position,
@@ -142,6 +144,8 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
 
   @override
   set scale(double scale) {
+    if (value.scale == scale)
+      return;
     prevValue = value;
     value = PhotoViewControllerValue(
         position: position,
@@ -156,6 +160,8 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
 
   @override
   set rotation(double rotation) {
+    if (value.rotation == rotation)
+      return;
     prevValue = value;
     value = PhotoViewControllerValue(
         position: position,
@@ -170,6 +176,8 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
 
   @override
   set scaleState(PhotoViewScaleState scaleState) {
+    if (value.scaleState == scaleState)
+      return;
     prevValue = value;
     value = PhotoViewControllerValue(
         position: position,
@@ -184,6 +192,9 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
 
   @override
   set rotationFocusPoint(Offset rotationFocusPoint) {
+    if (value.rotationFocusPoint == rotationFocusPoint)
+      return;
+    prevValue = value;
     value = PhotoViewControllerValue(
         position: position,
         scale: scale,
@@ -205,6 +216,7 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
     Size outerSize,
     Size childSize,
   }) {
+    prevValue = value;
     value = PhotoViewControllerValue(
         position: position ?? value.position,
         scale: scale ?? value.scale,

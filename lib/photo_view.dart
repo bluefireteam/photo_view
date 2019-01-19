@@ -127,15 +127,13 @@ class PhotoView extends StatefulWidget {
     this.scaleStateChangedCallback,
     this.enableRotation = false,
     this.transitionOnUserGestures = false,
-    controller,
+    this.controller,
     this.maxScale,
     this.minScale,
     this.initialScale,
     this.basePosition,
   })  : child = null,
         childSize = null,
-        controller = controller ?? PhotoViewController(),
-        _controlledController = controller == null,
         super(key: key);
 
   /// Creates a widget that displays a zoomable child.
@@ -154,7 +152,7 @@ class PhotoView extends StatefulWidget {
     this.scaleStateChangedCallback,
     this.enableRotation = false,
     this.transitionOnUserGestures = false,
-    controller,
+    this.controller,
     this.maxScale,
     this.minScale,
     this.initialScale,
@@ -162,8 +160,6 @@ class PhotoView extends StatefulWidget {
   })  : loadingChild = null,
         imageProvider = null,
         gaplessPlayback = false,
-        controller = controller ?? PhotoViewController(),
-        _controlledController = controller == null,
         super(key: key);
 
   /// Given a [imageProvider] it resolves into an zoomable image widget using. It
@@ -224,9 +220,6 @@ class PhotoView extends StatefulWidget {
   /// A way to control PhotovVew transformation factors externally and listen to its updates
   final PhotoViewControllerBase controller;
 
-  // True if the controller is internally instantiated
-  final bool _controlledController;
-
   /// The alignment of the scale origin in relation to the widget size
   final Alignment basePosition;
 
@@ -241,6 +234,8 @@ class _PhotoViewState extends State<PhotoView>
   bool _loading;
   Size _childSize;
   Size _outerSize;
+  bool _controlledController;
+  PhotoViewControllerBase controller;
 
   Future<ImageInfo> _getImage() {
     final Completer completer = Completer<ImageInfo>();
@@ -274,8 +269,14 @@ class _PhotoViewState extends State<PhotoView>
       _childSize = widget.childSize;
       _loading = false;
     }
-
-    widget.controller.outputStateStream.listen(scaleStateListener);
+    if (widget.controller == null) {
+      _controlledController = true;
+      controller = PhotoViewController();
+    } else {
+      _controlledController = false;
+      controller = widget.controller;
+    }
+    controller.outputStateStream.listen(scaleStateListener);
   }
 
   @override
@@ -290,13 +291,22 @@ class _PhotoViewState extends State<PhotoView>
         _outerSize = widget.customSize;
       });
     }
+    if (widget.controller == null) {
+      if (!_controlledController) {
+        _controlledController = true;
+        controller = PhotoViewController();
+      }
+    } else {
+      _controlledController = false;
+      controller = widget.controller;
+    }
     super.didUpdateWidget(oldWidget);
   }
 
   @override
   void dispose() {
-    if (widget._controlledController) {
-      widget.controller.dispose();
+    if (_controlledController) {
+      controller.dispose();
     }
     super.dispose();
   }
@@ -310,7 +320,7 @@ class _PhotoViewState extends State<PhotoView>
 
   void scaleStateListener(PhotoViewControllerValue value) {
     widget.scaleStateChangedCallback != null
-        ? widget.scaleStateChangedCallback(widget.controller.scaleState)
+        ? widget.scaleStateChangedCallback(controller.scaleState)
         : null;
   }
 
@@ -327,7 +337,7 @@ class _PhotoViewState extends State<PhotoView>
       backgroundDecoration: widget.backgroundDecoration,
       enableRotation: widget.enableRotation,
       heroTag: widget.heroTag,
-      controller: widget.controller,
+      controller: controller,
       basePosition: widget.basePosition ?? Alignment.center,
       scaleBoundaries: ScaleBoundaries(
         widget.minScale ?? 0.0,
@@ -372,7 +382,7 @@ class _PhotoViewState extends State<PhotoView>
       enableRotation: widget.enableRotation,
       heroTag: widget.heroTag,
       transitionOnUserGestures: widget.transitionOnUserGestures,
-      controller: widget.controller,
+      controller: controller,
       basePosition: widget.basePosition ?? Alignment.center,
       scaleBoundaries: ScaleBoundaries(
         widget.minScale ?? 0.0,
