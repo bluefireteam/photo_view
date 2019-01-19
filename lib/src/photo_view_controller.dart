@@ -7,22 +7,48 @@ import 'package:photo_view/src/photo_view_scale_state.dart';
 
 typedef ScaleStateListener = void Function(double prevScale, double nextScale);
 
+/// The interface in which controllers will be implemented.
+///
+/// It concerns storing the state ([PhotoViewControllerValue]) and streaming its updates.
+/// [PhotoViewImageWrapper] will respond to user gestures setting thew fields in the instance of a controller.
+///
+/// Any instance of a controller must be disposed after unmount. So if you instantiate a [PhotoViewController] or your custom implementation, do not forget to dispose it when not using it anymore.
+///
+/// The controller exposes value fields like [scale] or [rotationFocus]. Usually those fields will be only getters and setters serving as hooks to the internal [PhotoViewControllerValue].
+///
+/// The default implementation used by [PhotoView] is [PhotoViewController].
 abstract class PhotoViewControllerBase<T extends PhotoViewControllerValue> {
+  /// The output for state updates. Usually a broadcast [Stream]
   Stream<T> get outputStateStream;
 
+  /// The state value before the last change or the initial state if trhe state has not been changed.
   T prevValue;
 
+  /// Resets the state to the initial value;
   void reset();
+
+  /// Closes initial streams and remove eventual listeners.
   void dispose();
 
   Offset position;
+
+  Alignment basePosition;
+
+  /// The scale factor to transform the child (image or a customChild).
+  ///
+  /// Important: Avoid setting this field without setting [scaleState] to [PhotoViewScaleState.zooming].
   double scale;
+
+  /// The rotation factor to transform the child (image or a customChild).
   double rotation;
+
+  /// The center of the rotation transformation. It is a coordinate referring to the absolute dimensions of the image.
   Offset rotationFocusPoint;
+
+  /// A way to represent the step of the "doubletap gesture cycle" in which PhotoView is. This fields is rarely externally set to a value different than [PhotoViewScaleState.zooming].
   PhotoViewScaleState scaleState;
 
-  void onStartZooming();
-
+  /// Update multiple fields of the state with only one update streamed.
   void updateMultiple({
     Offset position,
     double scale,
@@ -31,9 +57,11 @@ abstract class PhotoViewControllerBase<T extends PhotoViewControllerValue> {
     Offset rotationFocusPoint,
   });
 
-  PhotoViewScaleState scaleStateSelector(PhotoViewScaleState actual);
+  /// Defines de next [PhotoViewScaleState] given the actual one. It is used internally to walk in the "doubletap gesture cycle".
+  PhotoViewScaleState setNextScaleState(PhotoViewScaleState actual);
 }
 
+/// The state value stored and streamed by [PhotoViewController].
 @immutable
 class PhotoViewControllerValue {
   const PhotoViewControllerValue({
@@ -51,15 +79,23 @@ class PhotoViewControllerValue {
   final PhotoViewScaleState scaleState;
 }
 
+/// The default implementation of [PhotoViewControllerBase].
+///
+/// Being a [ValueNotifier] it stores the state in the [value] fields (not externally accessible) and streams updates via [ValueNotifier.addListener].
+///
+/// For details of fields and methods, check [PhotoViewControllerBase].
+///
 class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
     implements PhotoViewControllerBase<PhotoViewControllerValue> {
   PhotoViewController(
-      {Offset initialPosition = Offset.zero, double initialRotation = 0.0})
+      {Offset initialPosition = Offset.zero,
+      double initialRotation = 0.0,
+      this.basePosition = Alignment.center})
       : super(PhotoViewControllerValue(
             position: initialPosition,
             rotation: initialRotation,
             scale:
-                null, // initial  scale is obtained via PhotoViewScaleState, therefore will compute via scaleStateAwareScale
+                null, // initial  scale is obtained via PhotoViewScaleState, therefore will be computed via scaleStateAwareScale
             scaleState: PhotoViewScaleState.initial,
             rotationFocusPoint: null)) {
     initial = value;
@@ -72,6 +108,9 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
   PhotoViewControllerValue initial;
 
   StreamController<PhotoViewControllerValue> _outputCtrl;
+
+  @override
+  Alignment basePosition;
 
   @override
   Stream<PhotoViewControllerValue> get outputStateStream => _outputCtrl.stream;
@@ -164,11 +203,6 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
   Offset get rotationFocusPoint => value.rotationFocusPoint;
 
   @override
-  void onStartZooming() {
-    scaleState = PhotoViewScaleState.zooming;
-  }
-
-  @override
   void updateMultiple({
     Offset position,
     double scale,
@@ -187,7 +221,7 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
   }
 
   @override
-  PhotoViewScaleState scaleStateSelector(PhotoViewScaleState actual) {
+  PhotoViewScaleState setNextScaleState(PhotoViewScaleState actual) {
     switch (actual) {
       case PhotoViewScaleState.initial:
         return PhotoViewScaleState.covering;

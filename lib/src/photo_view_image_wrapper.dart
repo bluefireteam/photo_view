@@ -3,7 +3,7 @@ import 'package:photo_view/src/photo_view_controller.dart';
 import 'package:photo_view/src/photo_view_scale_state.dart';
 import 'package:photo_view/src/photo_view_utils.dart';
 
-/// Internal widget in which controls the transformation values of the content
+/// Internal widget in which controls all animations lifecycles, core responses to user gestures, updates to  the controller state and mounts the entire PhotoView Layout
 class PhotoViewImageWrapper extends StatefulWidget {
   const PhotoViewImageWrapper({
     Key key,
@@ -93,7 +93,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     final double newScale = _scaleBefore * details.scale;
     final Offset delta = details.focalPoint - _normalizedPosition;
     if (details.scale != 1.0) {
-      widget.controller.onStartZooming();
+      widget.controller.scaleState = PhotoViewScaleState.zooming;
     }
     widget.controller.updateMultiple(
         scale: newScale,
@@ -241,7 +241,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     PhotoViewScaleState scaleState = widget.controller.scaleState;
     final PhotoViewControllerBase controller = widget.controller;
     if (scaleState == PhotoViewScaleState.zooming) {
-      controller.scaleState = controller.scaleStateSelector(scaleState);
+      controller.scaleState = controller.setNextScaleState(scaleState);
       return;
     }
 
@@ -256,7 +256,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     do {
       prevScale = nextScale;
       prevScaleState = nextScaleState;
-      nextScaleState = controller.scaleStateSelector(prevScaleState);
+      nextScaleState = controller.setNextScaleState(prevScaleState);
       nextScale = getScaleForScaleState(nextScaleState, scaleBoundaries);
     } while (prevScale == nextScale && scaleState != nextScaleState);
 
@@ -291,9 +291,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
 
             final rotationMatrix = Matrix4.identity()..rotateZ(value.rotation);
             final Widget customChildLayout = CustomSingleChildLayout(
-              delegate: _CenterWithOriginalSizeDelegate(
-                  widget.scaleBoundaries.childSize.width,
-                  widget.scaleBoundaries.childSize.height),
+              delegate: _CenterWithOriginalSizeDelegate(widget.scaleBoundaries.childSize, widget.controller.basePosition),
               child: _buildHero(),
             );
             return GestureDetector(
@@ -309,7 +307,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
                         )
                       : customChildLayout,
                   transform: matrix,
-                  alignment: Alignment.center,
+                  alignment: widget.controller.basePosition,
                 )),
                 decoration: widget.backgroundDecoration ??
                     const BoxDecoration(
@@ -347,25 +345,26 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
 }
 
 class _CenterWithOriginalSizeDelegate extends SingleChildLayoutDelegate {
-  const _CenterWithOriginalSizeDelegate(this.subjectWidth, this.subjectHeight);
+  const _CenterWithOriginalSizeDelegate(this.subjectSize, this.basePosition);
 
-  final double subjectWidth;
-  final double subjectHeight;
+  final Size subjectSize;
+  final Alignment basePosition;
+
 
   @override
   Offset getPositionForChild(Size size, Size childSize) {
-    final double offsetX = (size.width - subjectWidth) / 2;
-    final double offsetY = (size.height - subjectHeight) / 2;
+    final double offsetX = ((size.width - subjectSize.width) / 2)* (basePosition.x + 1);
+    final double offsetY = ((size.height - subjectSize.height) / 2) * (basePosition.y + 1);
     return Offset(offsetX, offsetY);
   }
 
   @override
   BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
     return BoxConstraints(
-      maxWidth: subjectWidth,
-      maxHeight: subjectHeight,
-      minHeight: subjectHeight,
-      minWidth: subjectWidth,
+      maxWidth: subjectSize.width,
+      maxHeight: subjectSize.height,
+      minHeight: subjectSize.height,
+      minWidth: subjectSize.width,
     );
   }
 

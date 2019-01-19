@@ -105,6 +105,10 @@ typedef PhotoViewScaleStateChangedCallback = void Function(
 /// )
 /// ```
 ///
+/// ### Controller
+///
+/// When the state of the transformations applied to the image (or the custom child) must be accessed, changed or listened for changes, you can use the [controller] property.
+///
 class PhotoView extends StatefulWidget {
   /// Creates a widget that displays a zoomable image.
   ///
@@ -215,8 +219,10 @@ class PhotoView extends StatefulWidget {
   /// [PhotoViewComputedScale], that can be multiplied by a double
   final dynamic initialScale;
 
+  /// A way to control PhotovVew transformation factors externally and listen to its updates
   final PhotoViewControllerBase controller;
 
+  // True if the controller is internally instantiated
   final bool _controlledController;
 
   @override
@@ -240,7 +246,8 @@ class _PhotoViewState extends State<PhotoView>
         completer.complete(info);
         if (mounted) {
           setState(() {
-            _childSize = Size(info.image.width.toDouble(), info.image.height.toDouble());
+            _childSize =
+                Size(info.image.width.toDouble(), info.image.height.toDouble());
             _loading = false;
           });
         }
