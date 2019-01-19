@@ -131,6 +131,7 @@ class PhotoView extends StatefulWidget {
     this.maxScale,
     this.minScale,
     this.initialScale,
+    this.basePosition,
   })  : child = null,
         childSize = null,
         controller = controller ?? PhotoViewController(),
@@ -157,6 +158,7 @@ class PhotoView extends StatefulWidget {
     this.maxScale,
     this.minScale,
     this.initialScale,
+    this.basePosition,
   })  : loadingChild = null,
         imageProvider = null,
         gaplessPlayback = false,
@@ -224,6 +226,9 @@ class PhotoView extends StatefulWidget {
 
   // True if the controller is internally instantiated
   final bool _controlledController;
+
+  /// The alignment of the scale origin in relation to the widget size
+  final Alignment basePosition;
 
   @override
   State<StatefulWidget> createState() {
@@ -323,6 +328,7 @@ class _PhotoViewState extends State<PhotoView>
       enableRotation: widget.enableRotation,
       heroTag: widget.heroTag,
       controller: widget.controller,
+      basePosition: widget.basePosition ?? Alignment.center,
       scaleBoundaries: ScaleBoundaries(
         widget.minScale ?? 0.0,
         widget.maxScale ?? double.infinity,
@@ -367,6 +373,7 @@ class _PhotoViewState extends State<PhotoView>
       heroTag: widget.heroTag,
       transitionOnUserGestures: widget.transitionOnUserGestures,
       controller: widget.controller,
+      basePosition: widget.basePosition ?? Alignment.center,
       scaleBoundaries: ScaleBoundaries(
         widget.minScale ?? 0.0,
         widget.maxScale ?? double.infinity,

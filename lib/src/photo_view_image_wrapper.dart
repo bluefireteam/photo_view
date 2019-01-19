@@ -15,6 +15,7 @@ class PhotoViewImageWrapper extends StatefulWidget {
     this.enableRotation,
     this.transitionOnUserGestures = false,
     @required this.scaleBoundaries,
+    @required this.basePosition,
   })  : customChild = null,
         super(key: key);
 
@@ -27,6 +28,7 @@ class PhotoViewImageWrapper extends StatefulWidget {
     this.enableRotation,
     this.transitionOnUserGestures = false,
     @required this.scaleBoundaries,
+    @required this.basePosition,
   })  : imageProvider = null,
         gaplessPlayback = false,
         super(key: key);
@@ -40,6 +42,7 @@ class PhotoViewImageWrapper extends StatefulWidget {
   final Widget customChild;
   final bool transitionOnUserGestures;
   final ScaleBoundaries scaleBoundaries;
+  final Alignment basePosition;
 
   @override
   State<StatefulWidget> createState() {
@@ -238,8 +241,8 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
 
   void nextScaleState() {
     final ScaleBoundaries scaleBoundaries = widget.scaleBoundaries;
-    PhotoViewScaleState scaleState = widget.controller.scaleState;
     final PhotoViewControllerBase controller = widget.controller;
+    final PhotoViewScaleState scaleState = controller.scaleState;
     if (scaleState == PhotoViewScaleState.zooming) {
       controller.scaleState = controller.setNextScaleState(scaleState);
       return;
@@ -291,7 +294,8 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
 
             final rotationMatrix = Matrix4.identity()..rotateZ(value.rotation);
             final Widget customChildLayout = CustomSingleChildLayout(
-              delegate: _CenterWithOriginalSizeDelegate(widget.scaleBoundaries.childSize, widget.controller.basePosition),
+              delegate: _CenterWithOriginalSizeDelegate(
+                  widget.scaleBoundaries.childSize, widget.basePosition),
               child: _buildHero(),
             );
             return GestureDetector(
@@ -307,7 +311,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
                         )
                       : customChildLayout,
                   transform: matrix,
-                  alignment: widget.controller.basePosition,
+                  alignment: widget.basePosition,
                 )),
                 decoration: widget.backgroundDecoration ??
                     const BoxDecoration(
@@ -350,11 +354,12 @@ class _CenterWithOriginalSizeDelegate extends SingleChildLayoutDelegate {
   final Size subjectSize;
   final Alignment basePosition;
 
-
   @override
   Offset getPositionForChild(Size size, Size childSize) {
-    final double offsetX = ((size.width - subjectSize.width) / 2)* (basePosition.x + 1);
-    final double offsetY = ((size.height - subjectSize.height) / 2) * (basePosition.y + 1);
+    final double offsetX =
+        ((size.width - subjectSize.width) / 2) * (basePosition.x + 1);
+    final double offsetY =
+        ((size.height - subjectSize.height) / 2) * (basePosition.y + 1);
     return Offset(offsetX, offsetY);
   }
 

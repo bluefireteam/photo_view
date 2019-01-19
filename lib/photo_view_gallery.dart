@@ -158,7 +158,8 @@ class PhotoViewGalleryPageOptions {
       this.minScale,
       this.maxScale,
       this.initialScale,
-      this.controller});
+      this.controller,
+      this.basePosition});
 
   /// Mirror to [PhotoView.imageProvider]
   final ImageProvider imageProvider;
@@ -177,4 +178,7 @@ class PhotoViewGalleryPageOptions {
 
   /// Mirror to [PhotoView.controller]
   final PhotoViewController controller;
+
+  /// Mirror to [PhotoView.basePosition]
+  final Alignment basePosition;
 }

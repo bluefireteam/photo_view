@@ -32,8 +32,6 @@ abstract class PhotoViewControllerBase<T extends PhotoViewControllerValue> {
 
   Offset position;
 
-  Alignment basePosition;
-
   /// The scale factor to transform the child (image or a customChild).
   ///
   /// Important: Avoid setting this field without setting [scaleState] to [PhotoViewScaleState.zooming].
@@ -88,9 +86,7 @@ class PhotoViewControllerValue {
 class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
     implements PhotoViewControllerBase<PhotoViewControllerValue> {
   PhotoViewController(
-      {Offset initialPosition = Offset.zero,
-      double initialRotation = 0.0,
-      this.basePosition = Alignment.center})
+      {Offset initialPosition = Offset.zero, double initialRotation = 0.0})
       : super(PhotoViewControllerValue(
             position: initialPosition,
             rotation: initialRotation,
@@ -108,9 +104,6 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
   PhotoViewControllerValue initial;
 
   StreamController<PhotoViewControllerValue> _outputCtrl;
-
-  @override
-  Alignment basePosition;
 
   @override
   Stream<PhotoViewControllerValue> get outputStateStream => _outputCtrl.stream;

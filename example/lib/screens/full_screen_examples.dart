@@ -182,6 +182,7 @@ class FullScreenWrapper extends StatelessWidget {
           minScale: minScale,
           maxScale: maxScale,
           initialScale: initialScale,
+          basePosition: Alignment.centerLeft,
         ));
   }
 }
