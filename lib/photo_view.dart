@@ -3,18 +3,17 @@ library photo_view;
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:photo_view/src/photo_view_computed_scale.dart';
+import 'package:photo_view/src/photo_view_controller.dart';
 import 'package:photo_view/src/photo_view_image_wrapper.dart';
-import 'package:photo_view/src/photo_view_scale_boundaries.dart';
 import 'package:photo_view/src/photo_view_scale_state.dart';
 import 'package:after_layout/after_layout.dart';
+import 'package:photo_view/src/photo_view_typedefs.dart';
+import 'package:photo_view/src/photo_view_utils.dart';
 
 export 'package:photo_view/src/photo_view_computed_scale.dart';
 export 'package:photo_view/src/photo_view_scale_state.dart';
-
-/// A type definition for a [Function] that receives a [PhotoViewScaleState]
-///
-typedef PhotoViewScaleStateChangedCallback = void Function(
-    PhotoViewScaleState scaleState);
+export 'package:photo_view/src/photo_view_controller.dart';
+export 'package:photo_view/src/photo_view_typedefs.dart';
 
 /// A [StatefulWidget] that contains all the photo view rendering elements.
 ///
@@ -103,28 +102,34 @@ typedef PhotoViewScaleStateChangedCallback = void Function(
 /// )
 /// ```
 ///
+/// ### Controller
+///
+/// When the state of the transformations applied to the image (or the custom child) must be accessed, changed or listened for changes, you can use the [controller] property.
+///
 class PhotoView extends StatefulWidget {
-
   /// Creates a widget that displays a zoomable image.
   ///
   /// To show an image from the network or from an asset bundle, use their respective
   /// image providers, ie: [AssetImage] or [NetworkImage]
   ///
   /// Internally, the image is rendered within an [Image] widget.
-  const PhotoView({
+  PhotoView({
     Key key,
     @required this.imageProvider,
     this.loadingChild,
     this.backgroundDecoration,
-    this.minScale,
-    this.maxScale,
-    this.initialScale,
     this.gaplessPlayback = false,
     this.customSize,
     this.heroTag,
     this.scaleStateChangedCallback,
     this.enableRotation = false,
     this.transitionOnUserGestures = false,
+    this.controller,
+    this.maxScale,
+    this.minScale,
+    this.initialScale,
+    this.basePosition,
+    this.scaleStateCycle,
   })  : child = null,
         childSize = null,
         super(key: key);
@@ -135,19 +140,22 @@ class PhotoView extends StatefulWidget {
   ///
   /// Instead of a [imageProvider], this constructor will receive a [child] and a [childSize].
   ///
-  const PhotoView.customChild({
+  PhotoView.customChild({
     Key key,
     @required this.child,
     @required this.childSize,
     this.backgroundDecoration,
-    this.minScale,
-    this.maxScale,
-    this.initialScale,
     this.customSize,
     this.heroTag,
     this.scaleStateChangedCallback,
     this.enableRotation = false,
     this.transitionOnUserGestures = false,
+    this.controller,
+    this.maxScale,
+    this.minScale,
+    this.initialScale,
+    this.basePosition,
+    this.scaleStateCycle,
   })  : loadingChild = null,
         imageProvider = null,
         gaplessPlayback = false,
@@ -163,21 +171,6 @@ class PhotoView extends StatefulWidget {
 
   /// Changes the background behind image, defaults to `Colors.black`.
   final Decoration backgroundDecoration;
-
-  /// Defines the minimal size in which the image will be allowed to assume, it
-  /// is proportional to the original image size. Can be either a double (absolute value) or a
-  /// [PhotoViewComputedScale], that can be multiplied by a double
-  final dynamic minScale;
-
-  /// Defines the maximal size in which the image will be allowed to assume, it
-  /// is proportional to the original image size. Can be either a double (absolute value) or a
-  /// [PhotoViewComputedScale], that can be multiplied by a double
-  final dynamic maxScale;
-
-  /// Defines the inial size in which the image will be assume in the mounting of the component, it
-  /// is proportional to the original image size. Can be either a double (absolute value) or a
-  /// [PhotoViewComputedScale], that can be multiplied by a double
-  final dynamic initialScale;
 
   /// This is used to continue showing the old image (`true`), or briefly show
   /// nothing (`false`), when the `imageProvider` changes. By default it's set
@@ -208,6 +201,30 @@ class PhotoView extends StatefulWidget {
   /// Should only be set when [PhotoView.heroTag] is set
   final bool transitionOnUserGestures;
 
+  /// Defines the maximum size in which the image will be allowed to assume, it
+  /// is proportional to the original image size. Can be either a double (absolute value) or a
+  /// [PhotoViewComputedScale], that can be multiplied by a double
+  final dynamic maxScale;
+
+  /// Defines the minimum size in which the image will be allowed to assume, it
+  /// is proportional to the original image size. Can be either a double (absolute value) or a
+  /// [PhotoViewComputedScale], that can be multiplied by a double
+  final dynamic minScale;
+
+  /// Defines the initial size in which the image will be assume in the mounting of the component, it
+  /// is proportional to the original image size. Can be either a double (absolute value) or a
+  /// [PhotoViewComputedScale], that can be multiplied by a double
+  final dynamic initialScale;
+
+  /// A way to control PhotovVew transformation factors externally and listen to its updates
+  final PhotoViewControllerBase controller;
+
+  /// The alignment of the scale origin in relation to the widget size. Default is [Alignment.center]
+  final Alignment basePosition;
+
+  /// Defines de next [PhotoViewScaleState] given the actual one. Default is [defaultScaleStateCycle]
+  final ScaleStateCycle scaleStateCycle;
+
   @override
   State<StatefulWidget> createState() {
     return _PhotoViewState();
@@ -216,9 +233,11 @@ class PhotoView extends StatefulWidget {
 
 class _PhotoViewState extends State<PhotoView>
     with AfterLayoutMixin<PhotoView> {
-  PhotoViewScaleState _scaleState;
-  Size _size;
+  bool _loading;
   Size _childSize;
+  Size _outerSize;
+  bool _controlledController;
+  PhotoViewControllerBase controller;
 
   Future<ImageInfo> _getImage() {
     final Completer completer = Completer<ImageInfo>();
@@ -229,7 +248,9 @@ class _PhotoViewState extends State<PhotoView>
         completer.complete(info);
         if (mounted) {
           setState(() {
-            _childSize = Size(info.image.width / 1, info.image.height / 1);
+            _childSize =
+                Size(info.image.width.toDouble(), info.image.height.toDouble());
+            _loading = false;
           });
         }
       }
@@ -241,44 +262,68 @@ class _PhotoViewState extends State<PhotoView>
     return completer.future;
   }
 
-  void setNextScaleState(PhotoViewScaleState newScaleState) {
-    setState(() {
-      _scaleState = newScaleState;
-    });
-    widget.scaleStateChangedCallback != null
-        ? widget.scaleStateChangedCallback(newScaleState)
-        : null;
-  }
-
-  void onStartPanning() {
-    setState(() {
-      _scaleState = PhotoViewScaleState.zooming;
-    });
-    widget.scaleStateChangedCallback != null
-        ? widget.scaleStateChangedCallback(PhotoViewScaleState.zooming)
-        : null;
-  }
-
   @override
   void initState() {
     super.initState();
-    widget.child ?? _getImage();
-    if (widget.child != null) {
-      if (widget.childSize != null) {
-        _childSize = Size.zero;
-      }
+    if (widget.child == null) {
+      _getImage();
+    } else {
       _childSize = widget.childSize;
+      _loading = false;
     }
-    _scaleState = PhotoViewScaleState.initial;
+    if (widget.controller == null) {
+      _controlledController = true;
+      controller = PhotoViewController();
+    } else {
+      _controlledController = false;
+      controller = widget.controller;
+    }
+    controller.outputStateStream.listen(scaleStateListener);
+  }
+
+  @override
+  void didUpdateWidget(PhotoView oldWidget) {
+    if (oldWidget.childSize != widget.childSize && widget.childSize != null) {
+      setState(() {
+        _childSize = widget.childSize;
+      });
+    }
+    if (oldWidget.customSize != widget.customSize) {
+      setState(() {
+        _outerSize = widget.customSize;
+      });
+    }
+    if (widget.controller == null) {
+      if (!_controlledController) {
+        _controlledController = true;
+        controller = PhotoViewController();
+      }
+    } else {
+      _controlledController = false;
+      controller = widget.controller;
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void dispose() {
+    if (_controlledController) {
+      controller.dispose();
+    }
+    super.dispose();
   }
 
   @override
   void afterFirstLayout(BuildContext context) {
     if (mounted) {
-      setState(() {
-        _size = context.size;
-      });
+      _outerSize = context.size;
     }
+  }
+
+  void scaleStateListener(PhotoViewControllerValue value) {
+    widget.scaleStateChangedCallback != null
+        ? widget.scaleStateChangedCallback(controller.scaleState)
+        : null;
   }
 
   @override
@@ -291,21 +336,19 @@ class _PhotoViewState extends State<PhotoView>
   Widget _buildCustomChild(BuildContext context) {
     return PhotoViewImageWrapper.customChild(
       customChild: widget.child,
-      setNextScaleState: setNextScaleState,
-      onStartPanning: onStartPanning,
-      childSize: _childSize,
-      scaleState: _scaleState,
       backgroundDecoration: widget.backgroundDecoration,
-      size: _computedSize,
       enableRotation: widget.enableRotation,
+      heroTag: widget.heroTag,
+      controller: controller,
+      basePosition: widget.basePosition ?? Alignment.center,
+      scaleStateCycle: widget.scaleStateCycle ?? defaultScaleStateCycle,
       scaleBoundaries: ScaleBoundaries(
         widget.minScale ?? 0.0,
         widget.maxScale ?? double.infinity,
         widget.initialScale ?? PhotoViewComputedScale.contained,
-        childSize: _childSize,
-        size: _computedSize,
+        _computedOuterSize,
+        _childSize,
       ),
-      heroTag: widget.heroTag,
     );
   }
 
@@ -328,7 +371,7 @@ class _PhotoViewState extends State<PhotoView>
   }
 
   Widget _buildSync(BuildContext context) {
-    if (_childSize == null) {
+    if (_loading == null) {
       return _buildLoading();
     }
     return _buildWrapperImage(context);
@@ -336,24 +379,22 @@ class _PhotoViewState extends State<PhotoView>
 
   Widget _buildWrapperImage(BuildContext context) {
     return PhotoViewImageWrapper(
-      setNextScaleState: setNextScaleState,
-      onStartPanning: onStartPanning,
       imageProvider: widget.imageProvider,
-      childSize: _childSize,
-      scaleState: _scaleState,
       backgroundDecoration: widget.backgroundDecoration,
       gaplessPlayback: widget.gaplessPlayback,
-      size: _computedSize,
       enableRotation: widget.enableRotation,
+      heroTag: widget.heroTag,
+      transitionOnUserGestures: widget.transitionOnUserGestures,
+      controller: controller,
+      basePosition: widget.basePosition ?? Alignment.center,
+      scaleStateCycle: widget.scaleStateCycle ?? defaultScaleStateCycle,
       scaleBoundaries: ScaleBoundaries(
         widget.minScale ?? 0.0,
         widget.maxScale ?? double.infinity,
         widget.initialScale ?? PhotoViewComputedScale.contained,
-        childSize: _childSize,
-        size: _computedSize,
+        _computedOuterSize,
+        _childSize,
       ),
-      heroTag: widget.heroTag,
-      transitionOnUserGestures: widget.transitionOnUserGestures,
     );
   }
 
@@ -369,6 +410,22 @@ class _PhotoViewState extends State<PhotoView>
           );
   }
 
-  Size get _computedSize =>
-      widget.customSize ?? _size ?? MediaQuery.of(context).size;
+  Size get _computedOuterSize =>
+      widget.customSize ?? _outerSize ?? MediaQuery.of(context).size;
+}
+
+/// The default [ScaleStateCycle]
+PhotoViewScaleState defaultScaleStateCycle(PhotoViewScaleState actual) {
+  switch (actual) {
+    case PhotoViewScaleState.initial:
+      return PhotoViewScaleState.covering;
+    case PhotoViewScaleState.covering:
+      return PhotoViewScaleState.originalSize;
+    case PhotoViewScaleState.originalSize:
+      return PhotoViewScaleState.initial;
+    case PhotoViewScaleState.zooming:
+      return PhotoViewScaleState.initial;
+    default:
+      return PhotoViewScaleState.initial;
+  }
 }
