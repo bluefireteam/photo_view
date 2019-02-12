@@ -23,9 +23,9 @@ class FullScreenExamples extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) => const FullScreenWrapper(
-                                imageProvider:
-                                    const AssetImage("assets/large-image.jpg"),
-                              ),
+                            imageProvider:
+                              const AssetImage("assets/large-image.jpg"),
+                          ),
                         ));
                   }),
               ExampleButtonNode(
@@ -43,6 +43,24 @@ class FullScreenExamples extends StatelessWidget {
                                 stops: [0.1, 1.0],
                               )),
                             ),
+                      ),
+                    );
+                  }),
+              ExampleButtonNode(
+                  title: "Small Image (custom alignment)",
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const FullScreenWrapper(
+
+                          imageProvider:
+                          const AssetImage("assets/small-image.jpg"),
+                          backgroundDecoration: BoxDecoration(
+                            color: Colors.white,
+                          ),
+                          basePosition: Alignment(0.5, 0.0),
+                        ),
                       ),
                     );
                   }),
@@ -68,9 +86,9 @@ class FullScreenExamples extends StatelessWidget {
                         builder: (context) => const FullScreenWrapper(
                               imageProvider:
                                   const AssetImage("assets/peanut.gif"),
-                              backgroundDecoration:
-                                  BoxDecoration(color: Colors.white),
-                              maxScale: 2.0,
+                              //backgroundDecoration:
+                               //   BoxDecoration(color: Colors.white),
+                              //axScale: 2.0,
                             ),
                       ),
                     );
@@ -160,7 +178,8 @@ class FullScreenWrapper extends StatelessWidget {
       this.backgroundDecoration,
       this.minScale,
       this.maxScale,
-      this.initialScale});
+      this.initialScale,
+      this.basePosition = Alignment.center});
 
   final ImageProvider imageProvider;
   final Widget loadingChild;
@@ -168,6 +187,7 @@ class FullScreenWrapper extends StatelessWidget {
   final dynamic minScale;
   final dynamic maxScale;
   final dynamic initialScale;
+  final Alignment basePosition;
 
   @override
   Widget build(BuildContext context) {
@@ -182,7 +202,7 @@ class FullScreenWrapper extends StatelessWidget {
           minScale: minScale,
           maxScale: maxScale,
           initialScale: initialScale,
-          basePosition: Alignment.centerLeft,
+          basePosition: basePosition,
         ));
   }
 }

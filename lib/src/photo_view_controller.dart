@@ -30,11 +30,12 @@ abstract class PhotoViewControllerBase<T extends PhotoViewControllerValue> {
   /// Closes initial streams and remove eventual listeners.
   void dispose();
 
+  /// The position of the image in the screen given its offset after pan gestures.
   Offset position;
 
   /// The scale factor to transform the child (image or a customChild).
   ///
-  /// Important: Avoid setting this field without setting [scaleState] to [PhotoViewScaleState.zooming].
+  /// **Important**: Avoid setting this field without setting [scaleState] to [PhotoViewScaleState.zooming].
   double scale;
 
   /// The rotation factor to transform the child (image or a customChild).
@@ -43,7 +44,9 @@ abstract class PhotoViewControllerBase<T extends PhotoViewControllerValue> {
   /// The center of the rotation transformation. It is a coordinate referring to the absolute dimensions of the image.
   Offset rotationFocusPoint;
 
-  /// A way to represent the step of the "doubletap gesture cycle" in which PhotoView is. This fields is rarely externally set to a value different than [PhotoViewScaleState.zooming].
+  /// A way to represent the step of the "doubletap gesture cycle" in which PhotoView is.
+  ///
+  /// **Important**: This fields is rarely externally set to a value different than [PhotoViewScaleState.zooming] after setting a [scale].
   PhotoViewScaleState scaleState;
 
   /// Update multiple fields of the state with only one update streamed.
@@ -54,9 +57,6 @@ abstract class PhotoViewControllerBase<T extends PhotoViewControllerValue> {
     PhotoViewScaleState scaleState,
     Offset rotationFocusPoint,
   });
-
-  /// Defines de next [PhotoViewScaleState] given the actual one. It is used internally to walk in the "doubletap gesture cycle".
-  PhotoViewScaleState setNextScaleState(PhotoViewScaleState actual);
 }
 
 /// The state value stored and streamed by [PhotoViewController].
@@ -75,6 +75,26 @@ class PhotoViewControllerValue {
   final double rotation;
   final Offset rotationFocusPoint;
   final PhotoViewScaleState scaleState;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is PhotoViewControllerValue &&
+              runtimeType == other.runtimeType &&
+              position == other.position &&
+              scale == other.scale &&
+              rotation == other.rotation &&
+              rotationFocusPoint == other.rotationFocusPoint &&
+              scaleState == other.scaleState;
+
+  @override
+  int get hashCode =>
+      position.hashCode ^
+      scale.hashCode ^
+      rotation.hashCode ^
+      rotationFocusPoint.hashCode ^
+      scaleState.hashCode;
+
 }
 
 /// The default implementation of [PhotoViewControllerBase].
@@ -223,21 +243,5 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
         rotation: rotation ?? value.rotation,
         scaleState: scaleState ?? value.scaleState,
         rotationFocusPoint: rotationFocusPoint ?? value.rotationFocusPoint);
-  }
-
-  @override
-  PhotoViewScaleState setNextScaleState(PhotoViewScaleState actual) {
-    switch (actual) {
-      case PhotoViewScaleState.initial:
-        return PhotoViewScaleState.covering;
-      case PhotoViewScaleState.covering:
-        return PhotoViewScaleState.originalSize;
-      case PhotoViewScaleState.originalSize:
-        return PhotoViewScaleState.initial;
-      case PhotoViewScaleState.zooming:
-        return PhotoViewScaleState.initial;
-      default:
-        return PhotoViewScaleState.initial;
-    }
   }
 }

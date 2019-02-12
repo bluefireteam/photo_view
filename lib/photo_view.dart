@@ -7,16 +7,13 @@ import 'package:photo_view/src/photo_view_controller.dart';
 import 'package:photo_view/src/photo_view_image_wrapper.dart';
 import 'package:photo_view/src/photo_view_scale_state.dart';
 import 'package:after_layout/after_layout.dart';
+import 'package:photo_view/src/photo_view_typedefs.dart';
 import 'package:photo_view/src/photo_view_utils.dart';
 
 export 'package:photo_view/src/photo_view_computed_scale.dart';
 export 'package:photo_view/src/photo_view_scale_state.dart';
 export 'package:photo_view/src/photo_view_controller.dart';
-
-/// A type definition for a [Function] that receives a [PhotoViewScaleState]
-///
-typedef PhotoViewScaleStateChangedCallback = void Function(
-    PhotoViewScaleState scaleState);
+export 'package:photo_view/src/photo_view_typedefs.dart';
 
 /// A [StatefulWidget] that contains all the photo view rendering elements.
 ///
@@ -132,6 +129,7 @@ class PhotoView extends StatefulWidget {
     this.minScale,
     this.initialScale,
     this.basePosition,
+    this.scaleStateCycle,
   })  : child = null,
         childSize = null,
         super(key: key);
@@ -157,6 +155,7 @@ class PhotoView extends StatefulWidget {
     this.minScale,
     this.initialScale,
     this.basePosition,
+    this.scaleStateCycle,
   })  : loadingChild = null,
         imageProvider = null,
         gaplessPlayback = false,
@@ -220,8 +219,11 @@ class PhotoView extends StatefulWidget {
   /// A way to control PhotovVew transformation factors externally and listen to its updates
   final PhotoViewControllerBase controller;
 
-  /// The alignment of the scale origin in relation to the widget size
+  /// The alignment of the scale origin in relation to the widget size. Default is [Alignment.center]
   final Alignment basePosition;
+
+  /// Defines de next [PhotoViewScaleState] given the actual one. Default is [defaultScaleStateCycle]
+  final ScaleStateCycle scaleStateCycle;
 
   @override
   State<StatefulWidget> createState() {
@@ -339,6 +341,7 @@ class _PhotoViewState extends State<PhotoView>
       heroTag: widget.heroTag,
       controller: controller,
       basePosition: widget.basePosition ?? Alignment.center,
+      scaleStateCycle: widget.scaleStateCycle ?? defaultScaleStateCycle,
       scaleBoundaries: ScaleBoundaries(
         widget.minScale ?? 0.0,
         widget.maxScale ?? double.infinity,
@@ -384,6 +387,7 @@ class _PhotoViewState extends State<PhotoView>
       transitionOnUserGestures: widget.transitionOnUserGestures,
       controller: controller,
       basePosition: widget.basePosition ?? Alignment.center,
+      scaleStateCycle: widget.scaleStateCycle ?? defaultScaleStateCycle,
       scaleBoundaries: ScaleBoundaries(
         widget.minScale ?? 0.0,
         widget.maxScale ?? double.infinity,
@@ -408,4 +412,20 @@ class _PhotoViewState extends State<PhotoView>
 
   Size get _computedOuterSize =>
       widget.customSize ?? _outerSize ?? MediaQuery.of(context).size;
+}
+
+/// The default [ScaleStateCycle]
+PhotoViewScaleState defaultScaleStateCycle(PhotoViewScaleState actual) {
+  switch (actual) {
+    case PhotoViewScaleState.initial:
+      return PhotoViewScaleState.covering;
+    case PhotoViewScaleState.covering:
+      return PhotoViewScaleState.originalSize;
+    case PhotoViewScaleState.originalSize:
+      return PhotoViewScaleState.initial;
+    case PhotoViewScaleState.zooming:
+      return PhotoViewScaleState.initial;
+    default:
+      return PhotoViewScaleState.initial;
+  }
 }

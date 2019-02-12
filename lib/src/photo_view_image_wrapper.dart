@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:photo_view/src/photo_view_controller.dart';
 import 'package:photo_view/src/photo_view_scale_state.dart';
+import 'package:photo_view/src/photo_view_typedefs.dart';
 import 'package:photo_view/src/photo_view_utils.dart';
 
 /// Internal widget in which controls all animations lifecycles, core responses to user gestures, updates to  the controller state and mounts the entire PhotoView Layout
@@ -16,6 +17,7 @@ class PhotoViewImageWrapper extends StatefulWidget {
     this.transitionOnUserGestures = false,
     @required this.scaleBoundaries,
     @required this.basePosition,
+    @required this.scaleStateCycle,
   })  : customChild = null,
         super(key: key);
 
@@ -29,6 +31,7 @@ class PhotoViewImageWrapper extends StatefulWidget {
     this.transitionOnUserGestures = false,
     @required this.scaleBoundaries,
     @required this.basePosition,
+    @required this.scaleStateCycle,
   })  : imageProvider = null,
         gaplessPlayback = false,
         super(key: key);
@@ -43,6 +46,7 @@ class PhotoViewImageWrapper extends StatefulWidget {
   final bool transitionOnUserGestures;
   final ScaleBoundaries scaleBoundaries;
   final Alignment basePosition;
+  final ScaleStateCycle scaleStateCycle;
 
   @override
   State<StatefulWidget> createState() {
@@ -145,24 +149,34 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     final double _scale = scale ?? scaleStateAwareScale;
     final double x = offset.dx;
     final double y = offset.dy;
+    
     final double computedWidth =
         widget.scaleBoundaries.childSize.width * _scale;
     final double computedHeight =
         widget.scaleBoundaries.childSize.height * _scale;
+    
     final double screenWidth = widget.scaleBoundaries.outerSize.width;
     final double screenHeight = widget.scaleBoundaries.outerSize.height;
-    final double screenHalfX = screenWidth / 2;
-    final double screenHalfY = screenHeight / 2;
+    
+    final double positionX = widget.basePosition.x;
+    final double positionY = widget.basePosition.y;
+
+
+    final double widthDiff = computedWidth - screenWidth;
+    final double heightDiff = computedHeight - screenHeight;
+
+    final double minX = ((positionX-1).abs() / 2) * widthDiff * -1;
+    final double maxX = ((positionX+1).abs() / 2) * widthDiff;
+
+    final double minY = ((positionY-1).abs() / 2) * heightDiff * -1;
+    final double maxY = ((positionY+1).abs() / 2) * heightDiff;
+
 
     final double computedX = screenWidth < computedWidth
-        ? x.clamp(0 - (computedWidth / 2) + screenHalfX,
-            computedWidth / 2 - screenHalfX)
-        : 0.0;
+        ? x.clamp(minX,maxX) : 0.0;
 
     final double computedY = screenHeight < computedHeight
-        ? y.clamp(0 - (computedHeight / 2) + screenHalfY,
-            computedHeight / 2 - screenHalfY)
-        : 0.0;
+        ? y.clamp(minY,maxY) : 0.0;
 
     return Offset(computedX, computedY);
   }
@@ -244,7 +258,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     final PhotoViewControllerBase controller = widget.controller;
     final PhotoViewScaleState scaleState = controller.scaleState;
     if (scaleState == PhotoViewScaleState.zooming) {
-      controller.scaleState = controller.setNextScaleState(scaleState);
+      controller.scaleState = widget.scaleStateCycle(scaleState);
       return;
     }
 
@@ -259,7 +273,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     do {
       prevScale = nextScale;
       prevScaleState = nextScaleState;
-      nextScaleState = controller.setNextScaleState(prevScaleState);
+      nextScaleState = widget.scaleStateCycle(prevScaleState);
       nextScale = getScaleForScaleState(nextScaleState, scaleBoundaries);
     } while (prevScale == nextScale && scaleState != nextScaleState);
 
