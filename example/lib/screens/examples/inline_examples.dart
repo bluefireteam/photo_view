@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view_example/screens/app_bar.dart';
 
-class InlineExamples extends StatelessWidget {
+class InlineExample extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

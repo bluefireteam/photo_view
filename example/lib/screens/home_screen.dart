@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:photo_view_example/screens/examples/controller_example.dart';
 import 'package:photo_view_example/screens/examples/custom_child_examples.dart';
 import 'package:photo_view_example/screens/examples/full_screen_examples.dart';
 import 'package:photo_view_example/screens/examples/gallery_example.dart';
@@ -38,7 +39,15 @@ class HomeScreen extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => InlineExamples(),
+                    builder: (context) => ControllerExample(),
+                  ),
+                );
+              }, text: "Controller"),
+              _buildItem(context, onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => InlineExample(),
                   ),
                 );
               }, text: "Part of the screen"),
