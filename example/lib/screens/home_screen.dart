@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:photo_view_example/screens/examples/custom_child_examples.dart';
+import 'package:photo_view_example/screens/examples/full_screen_examples.dart';
+import 'package:photo_view_example/screens/examples/gallery_example.dart';
+import 'package:photo_view_example/screens/examples/hero_example.dart';
+import 'package:photo_view_example/screens/examples/inline_examples.dart';
+import 'package:photo_view_example/screens/examples/rotation_examples.dart';
 import './app_bar.dart';
-import './custom_child_examples.dart';
-import './full_screen_examples.dart';
-import './gallery_example.dart';
-import './hero_example.dart';
-import './inline_examples.dart';
-import './rotation_examples.dart';
 
 class HomeScreen extends StatelessWidget {
   @override

@@ -149,34 +149,32 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     final double _scale = scale ?? scaleStateAwareScale;
     final double x = offset.dx;
     final double y = offset.dy;
-    
+
     final double computedWidth =
         widget.scaleBoundaries.childSize.width * _scale;
     final double computedHeight =
         widget.scaleBoundaries.childSize.height * _scale;
-    
+
     final double screenWidth = widget.scaleBoundaries.outerSize.width;
     final double screenHeight = widget.scaleBoundaries.outerSize.height;
-    
+
     final double positionX = widget.basePosition.x;
     final double positionY = widget.basePosition.y;
-
 
     final double widthDiff = computedWidth - screenWidth;
     final double heightDiff = computedHeight - screenHeight;
 
-    final double minX = ((positionX-1).abs() / 2) * widthDiff * -1;
-    final double maxX = ((positionX+1).abs() / 2) * widthDiff;
+    final double minX = ((positionX - 1).abs() / 2) * widthDiff * -1;
+    final double maxX = ((positionX + 1).abs() / 2) * widthDiff;
 
-    final double minY = ((positionY-1).abs() / 2) * heightDiff * -1;
-    final double maxY = ((positionY+1).abs() / 2) * heightDiff;
+    final double minY = ((positionY - 1).abs() / 2) * heightDiff * -1;
+    final double maxY = ((positionY + 1).abs() / 2) * heightDiff;
 
+    final double computedX =
+        screenWidth < computedWidth ? x.clamp(minX, maxX) : 0.0;
 
-    final double computedX = screenWidth < computedWidth
-        ? x.clamp(minX,maxX) : 0.0;
-
-    final double computedY = screenHeight < computedHeight
-        ? y.clamp(minY,maxY) : 0.0;
+    final double computedY =
+        screenHeight < computedHeight ? y.clamp(minY, maxY) : 0.0;
 
     return Offset(computedX, computedY);
   }

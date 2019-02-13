@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
-
-import './app_bar.dart';
+import 'package:photo_view_example/screens/app_bar.dart';
 
 class HeroExample extends StatelessWidget {
   @override

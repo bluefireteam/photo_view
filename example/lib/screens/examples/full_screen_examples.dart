@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
-import './app_bar.dart';
+import 'package:photo_view_example/screens/app_bar.dart';
 
 class FullScreenExamples extends StatelessWidget {
   @override
@@ -23,9 +23,9 @@ class FullScreenExamples extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) => const FullScreenWrapper(
-                            imageProvider:
-                              const AssetImage("assets/large-image.jpg"),
-                          ),
+                                imageProvider:
+                                    const AssetImage("assets/large-image.jpg"),
+                              ),
                         ));
                   }),
               ExampleButtonNode(
@@ -53,14 +53,13 @@ class FullScreenExamples extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => const FullScreenWrapper(
-
-                          imageProvider:
-                          const AssetImage("assets/small-image.jpg"),
-                          backgroundDecoration: BoxDecoration(
-                            color: Colors.white,
-                          ),
-                          basePosition: Alignment(0.5, 0.0),
-                        ),
+                              imageProvider:
+                                  const AssetImage("assets/small-image.jpg"),
+                              backgroundDecoration: BoxDecoration(
+                                color: Colors.white,
+                              ),
+                              basePosition: Alignment(0.5, 0.0),
+                            ),
                       ),
                     );
                   }),
@@ -87,7 +86,7 @@ class FullScreenExamples extends StatelessWidget {
                               imageProvider:
                                   const AssetImage("assets/peanut.gif"),
                               //backgroundDecoration:
-                               //   BoxDecoration(color: Colors.white),
+                              //   BoxDecoration(color: Colors.white),
                               //axScale: 2.0,
                             ),
                       ),

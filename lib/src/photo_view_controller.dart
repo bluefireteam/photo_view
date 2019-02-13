@@ -79,13 +79,13 @@ class PhotoViewControllerValue {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is PhotoViewControllerValue &&
-              runtimeType == other.runtimeType &&
-              position == other.position &&
-              scale == other.scale &&
-              rotation == other.rotation &&
-              rotationFocusPoint == other.rotationFocusPoint &&
-              scaleState == other.scaleState;
+      other is PhotoViewControllerValue &&
+          runtimeType == other.runtimeType &&
+          position == other.position &&
+          scale == other.scale &&
+          rotation == other.rotation &&
+          rotationFocusPoint == other.rotationFocusPoint &&
+          scaleState == other.scaleState;
 
   @override
   int get hashCode =>
@@ -94,7 +94,6 @@ class PhotoViewControllerValue {
       rotation.hashCode ^
       rotationFocusPoint.hashCode ^
       scaleState.hashCode;
-
 }
 
 /// The default implementation of [PhotoViewControllerBase].
@@ -148,8 +147,7 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
 
   @override
   set position(Offset position) {
-    if (value.position == position)
-      return;
+    if (value.position == position) return;
     prevValue = value;
     value = PhotoViewControllerValue(
         position: position,
@@ -164,8 +162,7 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
 
   @override
   set scale(double scale) {
-    if (value.scale == scale)
-      return;
+    if (value.scale == scale) return;
     prevValue = value;
     value = PhotoViewControllerValue(
         position: position,
@@ -180,8 +177,7 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
 
   @override
   set rotation(double rotation) {
-    if (value.rotation == rotation)
-      return;
+    if (value.rotation == rotation) return;
     prevValue = value;
     value = PhotoViewControllerValue(
         position: position,
@@ -196,8 +192,7 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
 
   @override
   set scaleState(PhotoViewScaleState scaleState) {
-    if (value.scaleState == scaleState)
-      return;
+    if (value.scaleState == scaleState) return;
     prevValue = value;
     value = PhotoViewControllerValue(
         position: position,
@@ -212,8 +207,7 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
 
   @override
   set rotationFocusPoint(Offset rotationFocusPoint) {
-    if (value.rotationFocusPoint == rotationFocusPoint)
-      return;
+    if (value.rotationFocusPoint == rotationFocusPoint) return;
     prevValue = value;
     value = PhotoViewControllerValue(
         position: position,

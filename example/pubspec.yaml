@@ -1,5 +1,5 @@
-name: example
-description: A new Flutter project.
+name: photo_view_example
+description: Example of how to use Photo View
 
 dependencies:
   flutter_svg:
