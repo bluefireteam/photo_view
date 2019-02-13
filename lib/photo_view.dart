@@ -26,14 +26,18 @@ export 'package:photo_view/src/photo_view_typedefs.dart';
 ///  imageProvider: imageProvider,
 ///  loadingChild: LoadingText(),
 ///  backgroundDecoration: BoxDecoration(color: Colors.black),
-///  minScale: PhotoViewComputedScale.contained * 0.8,
-///  maxScale: PhotoViewComputedScale.covered * 1.8,
-///  initialScale: PhotoViewComputedScale.contained * 1.1,
 ///  gaplessPlayback: false,
 ///  customSize: MediaQuery.of(context).size,
 ///  heroTag: "someTag",
 ///  scaleStateChangedCallback: this.onScaleStateChanged,
 ///  enableRotation: true,
+///  transitionOnUserGestures: true,
+///  controller:  controller,
+///  minScale: PhotoViewComputedScale.contained * 0.8,
+///  maxScale: PhotoViewComputedScale.covered * 1.8,
+///  initialScale: PhotoViewComputedScale.contained,
+///  basePosition: Alignment.center,
+///  scaleStateCycle: scaleStateCycle
 /// );
 /// ```
 ///
@@ -50,14 +54,19 @@ export 'package:photo_view/src/photo_view_typedefs.dart';
 ///  ),
 ///  childSize: const Size(220.0, 250.0),
 ///  backgroundDecoration: BoxDecoration(color: Colors.black),
-///  minScale: PhotoViewComputedScale.contained * 0.8,
-///  maxScale: PhotoViewComputedScale.covered * 1.8,
-///  initialScale: 1.0,
 ///  gaplessPlayback: false,
 ///  customSize: MediaQuery.of(context).size,
 ///  heroTag: "someTag",
 ///  scaleStateChangedCallback: this.onScaleStateChanged,
 ///  enableRotation: true,
+///  transitionOnUserGestures: true,
+///  controller:  controller,
+///  minScale: PhotoViewComputedScale.contained * 0.8,
+///  maxScale: PhotoViewComputedScale.covered * 1.8,
+///  initialScale: PhotoViewComputedScale.contained,
+///  basePosition: Alignment.center,
+///  scaleStateCycle: scaleStateCycle
+/// );
 /// );
 /// ```
 /// The [maxScale], [minScale] and [initialScale] options may be [double] or a [PhotoViewComputedScale] constant

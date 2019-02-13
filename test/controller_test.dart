@@ -58,28 +58,28 @@ void main() {
   test('controller stream mutation', () {
     controller = PhotoViewController();
 
-    PhotoViewControllerValue value1 = const PhotoViewControllerValue(
+    const PhotoViewControllerValue value1 = const PhotoViewControllerValue(
         position: Offset.zero,
         scale: null,
         rotation: 0.0,
         rotationFocusPoint: null,
         scaleState: PhotoViewScaleState.zooming);
 
-    PhotoViewControllerValue value2 = const PhotoViewControllerValue(
+    const PhotoViewControllerValue value2 = const PhotoViewControllerValue(
         position: Offset.zero,
         scale: null,
         rotation: 1.0,
         rotationFocusPoint: null,
         scaleState: PhotoViewScaleState.zooming);
 
-    PhotoViewControllerValue value3 = const PhotoViewControllerValue(
+    const PhotoViewControllerValue value3 = const PhotoViewControllerValue(
         position: Offset.zero,
         scale: 3.0,
         rotation: 1.0,
         rotationFocusPoint: null,
         scaleState: PhotoViewScaleState.zooming);
 
-    PhotoViewControllerValue value4 = const PhotoViewControllerValue(
+    const PhotoViewControllerValue value4 = const PhotoViewControllerValue(
         position: const Offset(1, 1),
         scale: 3.0,
         rotation: 45.0,
