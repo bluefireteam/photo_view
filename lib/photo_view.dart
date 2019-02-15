@@ -330,7 +330,8 @@ class _PhotoViewState extends State<PhotoView>
   }
 
   void scaleStateListener(PhotoViewControllerValue value) {
-    if(widget.scaleStateChangedCallback != null && controller.scaleState != controller.prevValue.scaleState){
+    if (widget.scaleStateChangedCallback != null &&
+        controller.scaleState != controller.prevValue.scaleState) {
       widget.scaleStateChangedCallback(controller.scaleState);
     }
   }

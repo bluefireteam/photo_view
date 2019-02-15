@@ -10,7 +10,7 @@ class GalleryExample extends StatelessWidget {
         MaterialPageRoute(
           builder: (context) => GalleryPhotoViewWrapper(
                 backgroundDecoration: const BoxDecoration(
-                  color: Colors.black87,
+                  color: Colors.black,
                 ),
                 imageProvider: const AssetImage("assets/gallery1.jpeg"),
                 imageProvider2: const AssetImage("assets/gallery2.jpeg"),
@@ -122,6 +122,7 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
+          decoration: widget.backgroundDecoration,
           constraints: BoxConstraints.expand(
             height: MediaQuery.of(context).size.height,
           ),
@@ -129,6 +130,7 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
             alignment: Alignment.bottomRight,
             children: <Widget>[
               PhotoViewGallery(
+                scrollPhysics: const BouncingScrollPhysics(),
                 pageOptions: <PhotoViewGalleryPageOptions>[
                   PhotoViewGalleryPageOptions(
                     imageProvider: widget.imageProvider,
