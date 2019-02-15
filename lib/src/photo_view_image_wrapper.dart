@@ -99,10 +99,9 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   void onScaleUpdate(ScaleUpdateDetails details) {
     final double newScale = _scaleBefore * details.scale;
     final Offset delta = details.focalPoint - _normalizedPosition;
-    if (details.scale != 1.0) {
-      widget.controller.scaleState = PhotoViewScaleState.zooming;
-    }
+    final PhotoViewScaleState newScaleState = details.scale != 1.0 ? PhotoViewScaleState.zooming : widget.controller.scaleState;
     widget.controller.updateMultiple(
+        scaleState: newScaleState,
         scale: newScale,
         position: clampPosition(delta * details.scale),
         rotation: _rotationBefore + details.rotation,

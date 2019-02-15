@@ -108,9 +108,9 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
     setState(() {
       _locked = scaleState != PhotoViewScaleState.initial;
     });
-    widget.scaleStateChangedCallback != null
-        ? widget.scaleStateChangedCallback(scaleState)
-        : null;
+    if(widget.scaleStateChangedCallback != null){
+      widget.scaleStateChangedCallback(scaleState);
+    }
   }
 
   int get actualPage {
