@@ -55,10 +55,14 @@ class PhotoViewGallery extends StatefulWidget {
     this.scaleStateChangedCallback,
     this.enableRotation = false,
     this.transitionOnUserGestures = false,
+    this.scrollPhysics,
   }) : super(key: key);
 
   /// A list of options to describe the items in the gallery
   final List<PhotoViewGalleryPageOptions> pageOptions;
+
+  /// [ScrollPhysics] for the internal [PageView]
+  final ScrollPhysics scrollPhysics;
 
   /// Mirror to [PhotoView.loadingChild]
   final Widget loadingChild;
@@ -108,7 +112,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
     setState(() {
       _locked = scaleState != PhotoViewScaleState.initial;
     });
-    if(widget.scaleStateChangedCallback != null){
+    if (widget.scaleStateChangedCallback != null) {
       widget.scaleStateChangedCallback(scaleState);
     }
   }
@@ -124,7 +128,8 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
       onPageChanged: widget.onPageChanged,
       itemCount: widget.pageOptions.length,
       itemBuilder: _buildItem,
-      physics: _locked ? const NeverScrollableScrollPhysics() : null,
+      physics:
+          _locked ? const NeverScrollableScrollPhysics() : widget.scrollPhysics,
     );
   }
 
