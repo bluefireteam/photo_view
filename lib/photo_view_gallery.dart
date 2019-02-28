@@ -147,6 +147,9 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
       scaleStateChangedCallback: scaleStateChangedCallback,
       enableRotation: widget.enableRotation,
       transitionOnUserGestures: widget.transitionOnUserGestures,
+      initialScale: pageOption.initialScale,
+      minScale: pageOption.minScale,
+      maxScale: pageOption.maxScale,
     );
   }
 }
