@@ -14,7 +14,7 @@ before_script:
   - mv flutter $HOME/flutter
   - export PATH=$HOME/flutter/bin:$PATH
   - flutter doctor
-  - flutter analyze
+  - flutter analyze lib
 script:
   - set -e
   - ./format.sh
