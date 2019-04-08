@@ -2,22 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:photo_view_example/screens/app_bar.dart';
+import 'package:photo_view_example/screens/examples/gallery/gallery_example_item.dart';
 
 class GalleryExample extends StatelessWidget {
   void open(BuildContext context, final int index) {
     Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => GalleryPhotoViewWrapper(
-                backgroundDecoration: const BoxDecoration(
-                  color: Colors.black,
-                ),
-                imageProvider: const AssetImage("assets/gallery1.jpeg"),
-                imageProvider2: const AssetImage("assets/gallery2.jpeg"),
-                imageProvider3: const AssetImage("assets/gallery3.jpeg"),
-                index: index,
-              ),
-        ));
+      context,
+      MaterialPageRoute(
+        builder: (context) => GalleryPhotoViewWrapper(
+          galleryItems: galleryItems,
+          backgroundDecoration: const BoxDecoration(
+            color: Colors.black,
+          ),
+          initialIndex: index,
+        ),
+      )
+    );
   }
 
   @override
@@ -35,39 +35,24 @@ class GalleryExample extends StatelessWidget {
                   child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      open(context, 0);
-                    },
-                    child: Hero(
-                      tag: "tag1",
-                      child: Image.asset("assets/gallery1.jpeg", height: 80.0),
-                    ),
-                  )),
-              Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      open(context, 1);
-                    },
-                    child: Hero(
-                      tag: "tag2",
-                      child: Image.asset("assets/gallery2.jpeg", height: 80.0),
-                    ),
-                  )),
-              Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      open(context, 2);
-                    },
-                    child: Hero(
-                      tag: "tag3",
-                      child: Image.asset("assets/gallery3.jpeg", height: 80.0),
-                    ),
-                  )),
+              GalleryExampleItemThumbnail(
+                galleryExampleItem: galleryItems[0],
+                onTap: () {
+                  open(context, 0);
+                },
+              ),
+              GalleryExampleItemThumbnail(
+                galleryExampleItem: galleryItems[1],
+                onTap: () {
+                  open(context, 1);
+                },
+              ),
+              GalleryExampleItemThumbnail(
+                galleryExampleItem: galleryItems[2],
+                onTap: () {
+                  open(context, 2);
+                },
+              ),
             ],
           ))),
         ],
@@ -78,25 +63,21 @@ class GalleryExample extends StatelessWidget {
 
 class GalleryPhotoViewWrapper extends StatefulWidget {
   GalleryPhotoViewWrapper({
-    this.imageProvider,
-    this.imageProvider2,
-    this.imageProvider3,
     this.loadingChild,
     this.backgroundDecoration,
     this.minScale,
     this.maxScale,
-    this.index,
-  }) : pageController = PageController(initialPage: index);
+    this.initialIndex,
+    @required this.galleryItems
+  }) : pageController = PageController(initialPage: initialIndex);
 
-  final ImageProvider imageProvider;
-  final ImageProvider imageProvider2;
-  final ImageProvider imageProvider3;
   final Widget loadingChild;
   final Decoration backgroundDecoration;
   final dynamic minScale;
   final dynamic maxScale;
-  final int index;
+  final int initialIndex;
   final PageController pageController;
+  final List<GalleryExampleItem> galleryItems;
 
   @override
   State<StatefulWidget> createState() {
@@ -108,7 +89,7 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
   int currentIndex;
   @override
   void initState() {
-    currentIndex = widget.index;
+    currentIndex = widget.initialIndex;
     super.initState();
   }
 
@@ -129,25 +110,18 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
           child: Stack(
             alignment: Alignment.bottomRight,
             children: <Widget>[
-              PhotoViewGallery(
+              PhotoViewGallery.builder(
                 scrollPhysics: const BouncingScrollPhysics(),
-                pageOptions: <PhotoViewGalleryPageOptions>[
-                  PhotoViewGalleryPageOptions(
-                    imageProvider: widget.imageProvider,
-                    heroTag: "tag1",
-                  ),
-                  PhotoViewGalleryPageOptions(
-                      imageProvider: widget.imageProvider2,
-                      heroTag: "tag2",
-                      maxScale: PhotoViewComputedScale.contained * 0.3),
-                  PhotoViewGalleryPageOptions(
-                    imageProvider: widget.imageProvider3,
+                builder: (BuildContext context, int index) {
+                  return PhotoViewGalleryPageOptions(
+                    imageProvider: AssetImage(widget.galleryItems[index].image),
                     initialScale: PhotoViewComputedScale.contained * 0.8,
                     minScale: PhotoViewComputedScale.contained * 0.8,
                     maxScale: PhotoViewComputedScale.covered * 1.1,
-                    heroTag: "tag3",
-                  ),
-                ],
+                    heroTag: galleryItems[index].id,
+                  );
+                },
+                itemCount: galleryItems.length,
                 loadingChild: widget.loadingChild,
                 backgroundDecoration: widget.backgroundDecoration,
                 pageController: widget.pageController,

@@ -173,7 +173,8 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
         scale: scale,
         rotation: rotation,
         scaleState: scaleState,
-        rotationFocusPoint: rotationFocusPoint);
+        rotationFocusPoint: rotationFocusPoint
+    );
   }
 
   @override
@@ -190,7 +191,8 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
         scale: scale,
         rotation: rotation,
         scaleState: scaleState,
-        rotationFocusPoint: rotationFocusPoint);
+        rotationFocusPoint: rotationFocusPoint
+    );
   }
 
   @override
