@@ -11,10 +11,14 @@ addons:
       - fonts-droid
 before_script:
   - git clone https://github.com/flutter/flutter.git -b beta --depth 1
-  - ./flutter/bin/flutter doctor
+  - mv flutter $HOME/flutter
+  - export PATH=$HOME/flutter/bin:$PATH
+  - flutter doctor
 script:
+  - set -e
   - ./format.sh
-  - ./flutter/bin/flutter test
+  - set +e
+  - flutter test
 cache:
   directories:
     - $HOME/.pub-cache
