@@ -45,24 +45,45 @@ typedef PhotoViewGalleryBuilder = PhotoViewGalleryPageOptions Function(
 /// )
 /// ```
 ///
+/// Example of usage with builder pattern:
+/// ```
+/// PhotoViewGallery.builder(
+///   scrollPhysics: const BouncingScrollPhysics(),
+///   builder: (BuildContext context, int index) {
+///     return PhotoViewGalleryPageOptions(
+///       imageProvider: AssetImage(widget.galleryItems[index].image),
+///       initialScale: PhotoViewComputedScale.contained * 0.8,
+///       minScale: PhotoViewComputedScale.contained * 0.8,
+///       maxScale: PhotoViewComputedScale.covered * 1.1,
+///       heroTag: galleryItems[index].id,
+///     );
+///   },
+///   itemCount: galleryItems.length,
+///   loadingChild: widget.loadingChild,
+///   backgroundDecoration: widget.backgroundDecoration,
+///   pageController: widget.pageController,
+///   onPageChanged: onPageChanged,
+/// )
+/// ```
 class PhotoViewGallery extends StatefulWidget {
   const PhotoViewGallery({
-    Key key,
-    @required this.pageOptions,
-    this.loadingChild,
-    this.backgroundDecoration,
-    this.gaplessPlayback = false,
-    this.customSize,
-    this.pageController,
-    this.onPageChanged,
-    this.scaleStateChangedCallback,
-    this.enableRotation = false,
-    this.transitionOnUserGestures = false,
-    this.scrollPhysics,
-    this.scrollDirection = Axis.horizontal,
+      Key key,
+      @required this.pageOptions,
+      this.loadingChild,
+      this.backgroundDecoration,
+      this.gaplessPlayback = false,
+      this.customSize,
+      this.pageController,
+      this.onPageChanged,
+      this.scaleStateChangedCallback,
+      this.enableRotation = false,
+      this.transitionOnUserGestures = false,
+      this.scrollPhysics,
+      this.scrollDirection = Axis.horizontal,
   })  : _isBuilder = false,
         itemCount = null,
         builder = null,
+        assert(pageOptions != null),
         super(key: key);
 
   const PhotoViewGallery.builder({
@@ -82,6 +103,8 @@ class PhotoViewGallery extends StatefulWidget {
     this.scrollDirection = Axis.horizontal,
   })  : _isBuilder = true,
         pageOptions = null,
+        assert(itemCount != null),
+        assert(builder != null),
         super(key: key);
 
   /// A list of options to describe the items in the gallery
