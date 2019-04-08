@@ -9,6 +9,8 @@ import 'package:photo_view/src/photo_view_scale_state.dart';
 ///
 typedef PhotoViewGalleryPageChangedCallback = void Function(int index);
 
+typedef PhotoViewGalleryBuilder = PhotoViewGalleryPageOptions Function(BuildContext context, int index);
+
 /// A [StatefulWidget] that shows multiple [PhotoView] widgets in a [PageView]
 ///
 /// Some of [PhotoView] consturctor options are passed direct to [PhotoViewGallery] cosntructor. Those options will affect the gallery in a whole.
@@ -56,10 +58,34 @@ class PhotoViewGallery extends StatefulWidget {
     this.enableRotation = false,
     this.transitionOnUserGestures = false,
     this.scrollPhysics,
-  }) : super(key: key);
+    this.scrollDirection = Axis.horizontal,
+  }) : _isBuilder = false, itemCount = null, builder = null, super(key: key);
+
+  const PhotoViewGallery.builder({
+    Key key,
+    @required this.itemCount,
+    @required this.builder,
+    this.loadingChild,
+    this.backgroundDecoration,
+    this.gaplessPlayback = false,
+    this.customSize,
+    this.pageController,
+    this.onPageChanged,
+    this.scaleStateChangedCallback,
+    this.enableRotation = false,
+    this.transitionOnUserGestures = false,
+    this.scrollPhysics,
+    this.scrollDirection = Axis.horizontal,
+  }) : _isBuilder = true, pageOptions = null, super(key: key);
 
   /// A list of options to describe the items in the gallery
   final List<PhotoViewGalleryPageOptions> pageOptions;
+
+  /// The count of items in the gallery, only used when constructed via [PhotoViewGallery.builder]
+  final int itemCount;
+
+  /// Called to build items for the gallery when using [PhotoViewGallery.builder]
+  final PhotoViewGalleryBuilder builder;
 
   /// [ScrollPhysics] for the internal [PageView]
   final ScrollPhysics scrollPhysics;
@@ -91,6 +117,11 @@ class PhotoViewGallery extends StatefulWidget {
   /// Mirror to [PhotoView.transitionOnUserGestures]
   final bool transitionOnUserGestures;
 
+  /// The axis along which the [PageView] scrolls. Mirror to [PageView.scrollDirection]
+  final Axis scrollDirection;
+
+  final bool _isBuilder;
+
   @override
   State<StatefulWidget> createState() {
     return _PhotoViewGalleryState();
@@ -121,20 +152,28 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
     return _controller.hasClients ? _controller.page.floor() : 0;
   }
 
+  int get itemCount  {
+    if(widget._isBuilder){
+      return widget.itemCount;
+    }
+    return widget.pageOptions.length;
+  }
+
   @override
   Widget build(BuildContext context) {
     return PageView.builder(
       controller: _controller,
       onPageChanged: widget.onPageChanged,
-      itemCount: widget.pageOptions.length,
+      itemCount: itemCount,
       itemBuilder: _buildItem,
+      scrollDirection: widget.scrollDirection,
       physics:
           _locked ? const NeverScrollableScrollPhysics() : widget.scrollPhysics,
     );
   }
 
-  Widget _buildItem(context, int index) {
-    final pageOption = widget.pageOptions[index];
+  Widget _buildItem(BuildContext context, int index) {
+    final pageOption = _buildPageOption(context, index);
     return PhotoView(
       key: ObjectKey(index),
       imageProvider: pageOption.imageProvider,
@@ -151,6 +190,13 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
       minScale: pageOption.minScale,
       maxScale: pageOption.maxScale,
     );
+  }
+
+  PhotoViewGalleryPageOptions _buildPageOption(BuildContext context, int index) {
+    if(widget._isBuilder){
+      return widget.builder(context, index);
+    }
+    return widget.pageOptions[index];
   }
 }
 
