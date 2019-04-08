@@ -24,6 +24,9 @@ abstract class PhotoViewControllerBase<T extends PhotoViewControllerValue> {
   /// The state value before the last change or the initial state if trhe state has not been changed.
   T prevValue;
 
+  /// The actual state value=l
+  T value;
+
   /// Resets the state to the initial value;
   void reset();
 
@@ -102,24 +105,26 @@ class PhotoViewControllerValue {
 ///
 /// For details of fields and methods, check [PhotoViewControllerBase].
 ///
-class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
+class PhotoViewController
     implements PhotoViewControllerBase<PhotoViewControllerValue> {
   PhotoViewController(
       {Offset initialPosition = Offset.zero, double initialRotation = 0.0})
-      : super(PhotoViewControllerValue(
+      : _notifier = ValueNotifier(PhotoViewControllerValue(
             position: initialPosition,
             rotation: initialRotation,
             scale:
                 null, // initial  scale is obtained via PhotoViewScaleState, therefore will be computed via scaleStateAwareScale
             scaleState: PhotoViewScaleState.initial,
-            rotationFocusPoint: null)) {
+            rotationFocusPoint: null)),
+        super() {
     initial = value;
     prevValue = initial;
+    _notifier.addListener(_changeListener);
     _outputCtrl = StreamController<PhotoViewControllerValue>.broadcast();
     _outputCtrl.sink.add(initial);
-    super.addListener(_changeListener);
   }
 
+  ValueNotifier<PhotoViewControllerValue> _notifier;
   PhotoViewControllerValue initial;
 
   StreamController<PhotoViewControllerValue> _outputCtrl;
@@ -142,7 +147,7 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
   @override
   void dispose() {
     _outputCtrl.close();
-    super.dispose();
+    _notifier.dispose();
   }
 
   @override
@@ -247,5 +252,14 @@ class PhotoViewController extends ValueNotifier<PhotoViewControllerValue>
         rotation: rotation ?? value.rotation,
         scaleState: scaleState ?? value.scaleState,
         rotationFocusPoint: rotationFocusPoint ?? value.rotationFocusPoint);
+  }
+
+  @override
+  PhotoViewControllerValue get value => _notifier.value;
+
+  @override
+  set value(PhotoViewControllerValue newValue) {
+    if (_notifier.value == newValue) return;
+    _notifier.value = newValue;
   }
 }
