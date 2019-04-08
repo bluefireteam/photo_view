@@ -17,16 +17,25 @@ const double defScale = 0.1;
 const double maxScale = 0.2;
 
 class _ControllerExampleState extends State<ControllerExample> {
-  PhotoViewController controller;
+  PhotoViewControllerBase controller;
+
+  int calls = 0;
 
   @override
   void initState() {
     controller = PhotoViewController();
     controller
       ..scale = defScale
-      ..scaleState = PhotoViewScaleState.zooming;
-    // TODO: implement initState
+      ..scaleState = PhotoViewScaleState.zooming
+      ..outputStateStream.listen(onControllerState);
     super.initState();
+  }
+
+  void onControllerState(PhotoViewControllerValue value) {
+    setState(() {
+      calls += 1;
+      print("Update stream ${value.scaleState}");
+    });
   }
 
   @override
