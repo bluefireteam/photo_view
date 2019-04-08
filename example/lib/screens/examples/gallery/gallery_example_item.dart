@@ -1,18 +1,16 @@
 import 'package:flutter/widgets.dart';
 
 class GalleryExampleItem {
-
   GalleryExampleItem({this.id, this.image});
 
   String id;
   String image;
-
 }
 
-
 class GalleryExampleItemThumbnail extends StatelessWidget {
-
-  const GalleryExampleItemThumbnail({Key key, this.galleryExampleItem, this.onTap}) : super(key: key);
+  const GalleryExampleItemThumbnail(
+      {Key key, this.galleryExampleItem, this.onTap})
+      : super(key: key);
 
   final GalleryExampleItem galleryExampleItem;
 
@@ -30,9 +28,7 @@ class GalleryExampleItemThumbnail extends StatelessWidget {
           ),
         ));
   }
-
 }
-
 
 List<GalleryExampleItem> galleryItems = <GalleryExampleItem>[
   GalleryExampleItem(

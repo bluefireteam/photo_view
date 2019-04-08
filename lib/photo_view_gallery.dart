@@ -9,7 +9,8 @@ import 'package:photo_view/src/photo_view_scale_state.dart';
 ///
 typedef PhotoViewGalleryPageChangedCallback = void Function(int index);
 
-typedef PhotoViewGalleryBuilder = PhotoViewGalleryPageOptions Function(BuildContext context, int index);
+typedef PhotoViewGalleryBuilder = PhotoViewGalleryPageOptions Function(
+    BuildContext context, int index);
 
 /// A [StatefulWidget] that shows multiple [PhotoView] widgets in a [PageView]
 ///
@@ -59,7 +60,10 @@ class PhotoViewGallery extends StatefulWidget {
     this.transitionOnUserGestures = false,
     this.scrollPhysics,
     this.scrollDirection = Axis.horizontal,
-  }) : _isBuilder = false, itemCount = null, builder = null, super(key: key);
+  })  : _isBuilder = false,
+        itemCount = null,
+        builder = null,
+        super(key: key);
 
   const PhotoViewGallery.builder({
     Key key,
@@ -76,7 +80,9 @@ class PhotoViewGallery extends StatefulWidget {
     this.transitionOnUserGestures = false,
     this.scrollPhysics,
     this.scrollDirection = Axis.horizontal,
-  }) : _isBuilder = true, pageOptions = null, super(key: key);
+  })  : _isBuilder = true,
+        pageOptions = null,
+        super(key: key);
 
   /// A list of options to describe the items in the gallery
   final List<PhotoViewGalleryPageOptions> pageOptions;
@@ -152,8 +158,8 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
     return _controller.hasClients ? _controller.page.floor() : 0;
   }
 
-  int get itemCount  {
-    if(widget._isBuilder){
+  int get itemCount {
+    if (widget._isBuilder) {
       return widget.itemCount;
     }
     return widget.pageOptions.length;
@@ -192,8 +198,9 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
     );
   }
 
-  PhotoViewGalleryPageOptions _buildPageOption(BuildContext context, int index) {
-    if(widget._isBuilder){
+  PhotoViewGalleryPageOptions _buildPageOption(
+      BuildContext context, int index) {
+    if (widget._isBuilder) {
       return widget.builder(context, index);
     }
     return widget.pageOptions[index];
