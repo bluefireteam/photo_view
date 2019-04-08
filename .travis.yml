@@ -13,7 +13,9 @@ before_script:
   - git clone https://github.com/flutter/flutter.git -b beta --depth 1
   - ./flutter/bin/flutter doctor
 script:
+  - set -e
   - ./format.sh
+  - set +e
   - ./flutter/bin/flutter test
 cache:
   directories:
