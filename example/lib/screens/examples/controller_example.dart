@@ -28,8 +28,6 @@ class _ControllerExampleState extends State<ControllerExample> {
       ..scale = defScale
       ..scaleState = PhotoViewScaleState.zooming
       ..outputStateStream.listen(onControllerState);
-    // TODO: implement initState
-
     super.initState();
   }
 

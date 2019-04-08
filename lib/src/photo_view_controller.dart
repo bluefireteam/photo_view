@@ -101,7 +101,7 @@ class PhotoViewControllerValue {
 
 /// The default implementation of [PhotoViewControllerBase].
 ///
-/// Being a [ValueNotifier] it stores the state in the [value] fields (not externally accessible) and streams updates via [ValueNotifier.addListener].
+/// Containing a [ValueNotifier] it stores the state in the [value] field and streams updates via [outputStateStream].
 ///
 /// For details of fields and methods, check [PhotoViewControllerBase].
 ///
