@@ -124,7 +124,7 @@ class PhotoViewController
     _outputCtrl.sink.add(initial);
   }
 
-  ValueNotifier<PhotoViewControllerValue> _notifie
+  ValueNotifier<PhotoViewControllerValue> _notifier;
   PhotoViewControllerValue initial;
 
   StreamController<PhotoViewControllerValue> _outputCtrl;
