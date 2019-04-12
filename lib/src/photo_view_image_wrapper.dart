@@ -4,6 +4,11 @@ import 'package:photo_view/src/photo_view_scale_state.dart';
 import 'package:photo_view/src/photo_view_typedefs.dart';
 import 'package:photo_view/src/photo_view_utils.dart';
 
+typedef PhotoViewImageTapUpCallback = Function(BuildContext context,
+    TapUpDetails details, PhotoViewControllerValue controllerValue);
+typedef PhotoViewImageTapDownCallback = Function(BuildContext context,
+    TapDownDetails details, PhotoViewControllerValue controllerValue);
+
 /// Internal widget in which controls all animations lifecycles, core responses to user gestures, updates to  the controller state and mounts the entire PhotoView Layout
 class PhotoViewImageWrapper extends StatefulWidget {
   const PhotoViewImageWrapper({
@@ -18,6 +23,8 @@ class PhotoViewImageWrapper extends StatefulWidget {
     @required this.scaleBoundaries,
     @required this.basePosition,
     @required this.scaleStateCycle,
+    this.onTapUp,
+    this.onTapDown,
   })  : customChild = null,
         super(key: key);
 
@@ -32,6 +39,8 @@ class PhotoViewImageWrapper extends StatefulWidget {
     @required this.scaleBoundaries,
     @required this.basePosition,
     @required this.scaleStateCycle,
+    this.onTapUp,
+    this.onTapDown,
   })  : imageProvider = null,
         gaplessPlayback = false,
         super(key: key);
@@ -40,13 +49,15 @@ class PhotoViewImageWrapper extends StatefulWidget {
   final Decoration backgroundDecoration;
   final ImageProvider imageProvider;
   final bool gaplessPlayback;
-  final String heroTag;
+  final Object heroTag;
   final bool enableRotation;
   final Widget customChild;
   final bool transitionOnUserGestures;
   final ScaleBoundaries scaleBoundaries;
   final Alignment basePosition;
   final ScaleStateCycle scaleStateCycle;
+  final PhotoViewImageTapUpCallback onTapUp;
+  final PhotoViewImageTapDownCallback onTapDown;
 
   @override
   State<StatefulWidget> createState() {
@@ -333,6 +344,18 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
               onScaleStart: onScaleStart,
               onScaleUpdate: onScaleUpdate,
               onScaleEnd: onScaleEnd,
+              onTapUp: (TapUpDetails details) {
+                if (widget.onTapUp == null) {
+                  return;
+                }
+                widget.onTapUp(context, details, value);
+              },
+              onTapDown: (TapDownDetails details) {
+                if (widget.onTapDown == null) {
+                  return;
+                }
+                widget.onTapDown(context, details, value);
+              },
             );
           } else {
             return Container();

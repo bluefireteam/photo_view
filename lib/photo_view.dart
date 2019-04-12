@@ -139,6 +139,8 @@ class PhotoView extends StatefulWidget {
     this.initialScale,
     this.basePosition,
     this.scaleStateCycle,
+    this.onTapUp,
+    this.onTapDown,
   })  : child = null,
         childSize = null,
         super(key: key);
@@ -165,6 +167,8 @@ class PhotoView extends StatefulWidget {
     this.initialScale,
     this.basePosition,
     this.scaleStateCycle,
+    this.onTapUp,
+    this.onTapDown,
   })  : loadingChild = null,
         imageProvider = null,
         gaplessPlayback = false,
@@ -233,6 +237,14 @@ class PhotoView extends StatefulWidget {
 
   /// Defines de next [PhotoViewScaleState] given the actual one. Default is [defaultScaleStateCycle]
   final ScaleStateCycle scaleStateCycle;
+
+  /// A pointer that will trigger a tap has stopped contacting the screen at a
+  /// particular location.
+  final PhotoViewImageTapUpCallback onTapUp;
+
+  /// A pointer that might cause a tap has contacted the screen at a particular
+  /// location.
+  final PhotoViewImageTapDownCallback onTapDown;
 
   @override
   State<StatefulWidget> createState() {
@@ -359,6 +371,8 @@ class _PhotoViewState extends State<PhotoView>
         _computedOuterSize,
         _childSize,
       ),
+      onTapUp: widget.onTapUp,
+      onTapDown: widget.onTapDown,
     );
   }
 
@@ -405,6 +419,8 @@ class _PhotoViewState extends State<PhotoView>
         _computedOuterSize,
         _childSize,
       ),
+      onTapUp: widget.onTapUp,
+      onTapDown: widget.onTapDown,
     );
   }
 
