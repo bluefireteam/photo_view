@@ -170,7 +170,10 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
 
   void scaleStateChangedCallback(PhotoViewScaleState scaleState) {
     setState(() {
-      _locked = scaleState != PhotoViewScaleState.initial;
+      _locked = (scaleState == PhotoViewScaleState.initial ||
+              scaleState == PhotoViewScaleState.zoomedOut)
+          ? false
+          : true;
     });
     if (widget.scaleStateChangedCallback != null) {
       widget.scaleStateChangedCallback(scaleState);
