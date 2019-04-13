@@ -18,8 +18,11 @@ typedef ScaleStateListener = void Function(double prevScale, double nextScale);
 ///
 /// The default implementation used by [PhotoView] is [PhotoViewController].
 abstract class PhotoViewControllerBase<T extends PhotoViewControllerValue> {
-  /// The output for state updates. Usually a broadcast [Stream]
+  /// The output for state/value updates. Usually a broadcast [Stream]
   Stream<T> get outputStateStream;
+
+  /// The output for scaleState changes [Stream]
+  Stream<PhotoViewScaleState> get outputScaleStateStream;
 
   /// The state value before the last change or the initial state if trhe state has not been changed.
   T prevValue;
@@ -122,15 +125,22 @@ class PhotoViewController
     _notifier.addListener(_changeListener);
     _outputCtrl = StreamController<PhotoViewControllerValue>.broadcast();
     _outputCtrl.sink.add(initial);
+    _outputScaleStateCtrl = StreamController<PhotoViewScaleState>();
+    _outputScaleStateCtrl.sink.add(PhotoViewScaleState.initial);
   }
 
   ValueNotifier<PhotoViewControllerValue> _notifier;
   PhotoViewControllerValue initial;
 
   StreamController<PhotoViewControllerValue> _outputCtrl;
+  StreamController<PhotoViewScaleState> _outputScaleStateCtrl;
 
   @override
   Stream<PhotoViewControllerValue> get outputStateStream => _outputCtrl.stream;
+
+  @override
+  Stream<PhotoViewScaleState> get outputScaleStateStream =>
+      _outputScaleStateCtrl.stream;
 
   @override
   PhotoViewControllerValue prevValue;
@@ -138,6 +148,7 @@ class PhotoViewController
   @override
   void reset() {
     value = initial;
+    _outputScaleStateCtrl.sink.add(PhotoViewScaleState.initial);
   }
 
   void _changeListener() {
@@ -147,6 +158,7 @@ class PhotoViewController
   @override
   void dispose() {
     _outputCtrl.close();
+    _outputScaleStateCtrl.close();
     _notifier.dispose();
   }
 
@@ -213,6 +225,7 @@ class PhotoViewController
         rotation: rotation,
         scaleState: scaleState,
         rotationFocusPoint: rotationFocusPoint);
+    _outputScaleStateCtrl.sink.add(scaleState);
   }
 
   @override
@@ -245,6 +258,9 @@ class PhotoViewController
     Size outerSize,
     Size childSize,
   }) {
+    if (value.scaleState != scaleState) {
+      _outputScaleStateCtrl.sink.add(scaleState);
+    }
     prevValue = value;
     value = PhotoViewControllerValue(
         position: position ?? value.position,
