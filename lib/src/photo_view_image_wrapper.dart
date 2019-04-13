@@ -110,9 +110,17 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   void onScaleUpdate(ScaleUpdateDetails details) {
     final double newScale = _scaleBefore * details.scale;
     final Offset delta = details.focalPoint - _normalizedPosition;
+
+    final double _scale =
+        widget.controller.scale ?? widget.scaleBoundaries.initialScale;
+    final double _initialScale = widget.scaleBoundaries.initialScale;
+
     final PhotoViewScaleState newScaleState = details.scale != 1.0
-        ? PhotoViewScaleState.zooming
+        ? (_scale > _initialScale)
+            ? PhotoViewScaleState.zoomedIn
+            : PhotoViewScaleState.zoomedOut
         : widget.controller.scaleState;
+
     widget.controller.updateMultiple(
         scaleState: newScaleState,
         scale: newScale,
@@ -249,7 +257,8 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   void scaleStateListener(PhotoViewControllerValue value) {
     if (widget.controller.prevValue.scaleState !=
             widget.controller.scaleState &&
-        widget.controller.scaleState != PhotoViewScaleState.zooming) {
+        (widget.controller.scaleState != PhotoViewScaleState.zoomedIn &&
+            widget.controller.scaleState != PhotoViewScaleState.zoomedOut)) {
       final double prevScale = widget.controller.scale ??
           getScaleForScaleState(
               PhotoViewScaleState.initial, widget.scaleBoundaries);
@@ -267,11 +276,11 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     final ScaleBoundaries scaleBoundaries = widget.scaleBoundaries;
     final PhotoViewControllerBase controller = widget.controller;
     final PhotoViewScaleState scaleState = controller.scaleState;
-    if (scaleState == PhotoViewScaleState.zooming) {
-      controller.scaleState = widget.scaleStateCycle(scaleState);
+    if (scaleState == PhotoViewScaleState.zoomedIn ||
+        scaleState == PhotoViewScaleState.zoomedOut) {
+      widget.controller.scaleState = widget.scaleStateCycle(scaleState);
       return;
     }
-
     final double originalScale =
         getScaleForScaleState(scaleState, scaleBoundaries);
 
