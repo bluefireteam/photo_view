@@ -299,7 +299,7 @@ class _PhotoViewState extends State<PhotoView>
       _controlledController = false;
       controller = widget.controller;
     }
-    controller.outputStateStream.listen(scaleStateListener);
+    controller.outputScaleStateStream.listen(scaleStateListener);
   }
 
   @override
@@ -341,9 +341,8 @@ class _PhotoViewState extends State<PhotoView>
     }
   }
 
-  void scaleStateListener(PhotoViewControllerValue value) {
-    if (widget.scaleStateChangedCallback != null &&
-        controller.scaleState != controller.prevValue.scaleState) {
+  void scaleStateListener(PhotoViewScaleState scaleState) {
+    if (widget.scaleStateChangedCallback != null) {
       widget.scaleStateChangedCallback(controller.scaleState);
     }
   }
