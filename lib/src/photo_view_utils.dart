@@ -7,7 +7,8 @@ double getScaleForScaleState(
     PhotoViewScaleState scaleState, ScaleBoundaries scaleBoundaries) {
   switch (scaleState) {
     case PhotoViewScaleState.initial:
-    case PhotoViewScaleState.zooming:
+    case PhotoViewScaleState.zoomedIn:
+    case PhotoViewScaleState.zoomedOut:
       return _clampSize(scaleBoundaries.initialScale, scaleBoundaries);
     case PhotoViewScaleState.covering:
       return _clampSize(

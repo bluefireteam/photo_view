@@ -3,7 +3,6 @@ enum PhotoViewScaleState {
   initial,
   covering,
   originalSize,
-  zooming,
   zoomedIn,
   zoomedOut
-} // 'zooming' will get unnecessary
+}
