@@ -111,12 +111,10 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     final double newScale = _scaleBefore * details.scale;
     final Offset delta = details.focalPoint - _normalizedPosition;
 
-    final double _scale =
-        widget.controller.scale ?? widget.scaleBoundaries.initialScale;
     final double _initialScale = widget.scaleBoundaries.initialScale;
 
     final PhotoViewScaleState newScaleState = details.scale != 1.0
-        ? (_scale > _initialScale)
+        ? (newScale > _initialScale)
             ? PhotoViewScaleState.zoomedIn
             : PhotoViewScaleState.zoomedOut
         : widget.controller.scaleState;
