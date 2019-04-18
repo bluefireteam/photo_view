@@ -38,8 +38,11 @@ void main() {
     controller.rotationFocusPoint = Offset.zero;
     expect(controller.rotationFocusPoint, Offset.zero);
 
-    controller.scaleState = PhotoViewScaleState.zooming;
-    expect(controller.scaleState, PhotoViewScaleState.zooming);
+    controller.scaleState = PhotoViewScaleState.zoomedIn;
+    expect(controller.scaleState, PhotoViewScaleState.zoomedIn);
+
+    // controller.scaleState = PhotoViewScaleState.zoomedOut;
+    // expect(controller.scaleState, PhotoViewScaleState.zoomedOut);
 
     controller.updateMultiple(
         position: const Offset(1, 1), scaleState: PhotoViewScaleState.initial);
@@ -63,35 +66,36 @@ void main() {
         scale: null,
         rotation: 0.0,
         rotationFocusPoint: null,
-        scaleState: PhotoViewScaleState.zooming);
+        scaleState: PhotoViewScaleState.zoomedOut);
 
     const PhotoViewControllerValue value2 = const PhotoViewControllerValue(
         position: Offset.zero,
         scale: null,
         rotation: 1.0,
         rotationFocusPoint: null,
-        scaleState: PhotoViewScaleState.zooming);
+        scaleState: PhotoViewScaleState.zoomedOut);
 
     const PhotoViewControllerValue value3 = const PhotoViewControllerValue(
         position: Offset.zero,
         scale: 3.0,
         rotation: 1.0,
         rotationFocusPoint: null,
-        scaleState: PhotoViewScaleState.zooming);
+        scaleState: PhotoViewScaleState.zoomedOut);
 
     const PhotoViewControllerValue value4 = const PhotoViewControllerValue(
         position: const Offset(1, 1),
         scale: 3.0,
         rotation: 45.0,
         rotationFocusPoint: null,
-        scaleState: PhotoViewScaleState.zooming);
+        scaleState: PhotoViewScaleState.zoomedOut);
 
     expect(controller.outputStateStream,
         emitsInOrder([value1, value2, value3, value4]));
-    controller.scaleState = PhotoViewScaleState.zooming;
+    controller.scaleState = PhotoViewScaleState.zoomedOut;
     controller.rotation = 1.0;
     controller.scale = 3.0;
 
     controller.updateMultiple(position: const Offset(1, 1), rotation: 45.0);
+    //Testing with 'zoomedIn' and 'zoomedOut' will be diffcult as long as scaleState isn't changed in the controller's scale setter
   });
 }

@@ -18,8 +18,11 @@ typedef ScaleStateListener = void Function(double prevScale, double nextScale);
 ///
 /// The default implementation used by [PhotoView] is [PhotoViewController].
 abstract class PhotoViewControllerBase<T extends PhotoViewControllerValue> {
-  /// The output for state updates. Usually a broadcast [Stream]
+  /// The output for state/value updates. Usually a broadcast [Stream]
   Stream<T> get outputStateStream;
+
+  /// The output for scaleState changes [Stream]
+  Stream<PhotoViewScaleState> get outputScaleStateStream;
 
   /// The state value before the last change or the initial state if trhe state has not been changed.
   T prevValue;
@@ -38,7 +41,7 @@ abstract class PhotoViewControllerBase<T extends PhotoViewControllerValue> {
 
   /// The scale factor to transform the child (image or a customChild).
   ///
-  /// **Important**: Avoid setting this field without setting [scaleState] to [PhotoViewScaleState.zooming].
+  /// **Important**: Avoid setting this field without setting [scaleState] to [PhotoViewScaleState.zoomedIn] or [PhotoViewScaleState.zoomedOut].  <- this has to be chnaged in the future
   double scale;
 
   /// The rotation factor to transform the child (image or a customChild).
@@ -49,7 +52,8 @@ abstract class PhotoViewControllerBase<T extends PhotoViewControllerValue> {
 
   /// A way to represent the step of the "doubletap gesture cycle" in which PhotoView is.
   ///
-  /// **Important**: This fields is rarely externally set to a value different than [PhotoViewScaleState.zooming] after setting a [scale].
+  /// **Important**: This fields is rarely externally set to a value different than [PhotoViewScaleState.zoomedIn] or [PhotoViewScaleState.zoomedOut] after setting a [scale].
+  /// future TODO: setting the controller.scale should also set the scaleState to [PhotoViewScaleState.zoomedIn] or [PhotoViewScaleState.zoomedOut]
   PhotoViewScaleState scaleState;
 
   /// Update multiple fields of the state with only one update streamed.
@@ -122,15 +126,22 @@ class PhotoViewController
     _notifier.addListener(_changeListener);
     _outputCtrl = StreamController<PhotoViewControllerValue>.broadcast();
     _outputCtrl.sink.add(initial);
+    _outputScaleStateCtrl = StreamController<PhotoViewScaleState>();
+    _outputScaleStateCtrl.sink.add(PhotoViewScaleState.initial);
   }
 
   ValueNotifier<PhotoViewControllerValue> _notifier;
   PhotoViewControllerValue initial;
 
   StreamController<PhotoViewControllerValue> _outputCtrl;
+  StreamController<PhotoViewScaleState> _outputScaleStateCtrl;
 
   @override
   Stream<PhotoViewControllerValue> get outputStateStream => _outputCtrl.stream;
+
+  @override
+  Stream<PhotoViewScaleState> get outputScaleStateStream =>
+      _outputScaleStateCtrl.stream;
 
   @override
   PhotoViewControllerValue prevValue;
@@ -138,6 +149,7 @@ class PhotoViewController
   @override
   void reset() {
     value = initial;
+    _outputScaleStateCtrl.sink.add(PhotoViewScaleState.initial);
   }
 
   void _changeListener() {
@@ -147,6 +159,7 @@ class PhotoViewController
   @override
   void dispose() {
     _outputCtrl.close();
+    _outputScaleStateCtrl.close();
     _notifier.dispose();
   }
 
@@ -172,6 +185,7 @@ class PhotoViewController
     if (value.scale == scale) {
       return;
     }
+
     prevValue = value;
     value = PhotoViewControllerValue(
         position: position,
@@ -213,6 +227,7 @@ class PhotoViewController
         rotation: rotation,
         scaleState: scaleState,
         rotationFocusPoint: rotationFocusPoint);
+    _outputScaleStateCtrl.sink.add(scaleState);
   }
 
   @override
@@ -245,6 +260,9 @@ class PhotoViewController
     Size outerSize,
     Size childSize,
   }) {
+    if (value.scaleState != scaleState) {
+      _outputScaleStateCtrl.sink.add(scaleState);
+    }
     prevValue = value;
     value = PhotoViewControllerValue(
         position: position ?? value.position,

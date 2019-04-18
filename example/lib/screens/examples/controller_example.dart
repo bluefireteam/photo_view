@@ -26,7 +26,7 @@ class _ControllerExampleState extends State<ControllerExample> {
     controller = PhotoViewController();
     controller
       ..scale = defScale
-      ..scaleState = PhotoViewScaleState.zooming
+      ..scaleState = PhotoViewScaleState.initial
       ..outputStateStream.listen(onControllerState);
     super.initState();
   }
@@ -112,7 +112,6 @@ class _ControllerExampleState extends State<ControllerExample> {
                 max: max,
                 onChanged: (double newRotation) {
                   controller.rotation = newRotation;
-                  controller.scaleState = PhotoViewScaleState.zooming;
                 })),
         Text(
           "Scale ${value.scale}",
@@ -127,7 +126,9 @@ class _ControllerExampleState extends State<ControllerExample> {
                 max: maxScale,
                 onChanged: (double newScale) {
                   controller.scale = newScale;
-                  controller.scaleState = PhotoViewScaleState.zooming;
+                  controller.scaleState = newScale > defScale
+                      ? PhotoViewScaleState.zoomedIn
+                      : PhotoViewScaleState.zoomedOut;
                 })),
       ],
     );
