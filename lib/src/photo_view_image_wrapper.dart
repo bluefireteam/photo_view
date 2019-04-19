@@ -20,9 +20,7 @@ class PhotoViewImageWrapper extends StatefulWidget {
     this.heroTag,
     this.enableRotation,
     this.transitionOnUserGestures = false,
-    @required this.scaleBoundaries,
     @required this.basePosition,
-    @required this.scaleStateCycle,
     this.onTapUp,
     this.onTapDown,
   })  : customChild = null,
@@ -36,16 +34,13 @@ class PhotoViewImageWrapper extends StatefulWidget {
     this.heroTag,
     this.enableRotation,
     this.transitionOnUserGestures = false,
-    @required this.scaleBoundaries,
     @required this.basePosition,
-    @required this.scaleStateCycle,
     this.onTapUp,
     this.onTapDown,
   })  : imageProvider = null,
         gaplessPlayback = false,
         super(key: key);
 
-  final PhotoViewControllerBase controller;
   final Decoration backgroundDecoration;
   final ImageProvider imageProvider;
   final bool gaplessPlayback;
@@ -53,9 +48,8 @@ class PhotoViewImageWrapper extends StatefulWidget {
   final bool enableRotation;
   final Widget customChild;
   final bool transitionOnUserGestures;
-  final ScaleBoundaries scaleBoundaries;
   final Alignment basePosition;
-  final ScaleStateCycle scaleStateCycle;
+
   final PhotoViewImageTapUpCallback onTapUp;
   final PhotoViewImageTapDownCallback onTapDown;
 
@@ -87,7 +81,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   }
 
   void handleScaleAnimation() {
-    widget.controller.scale = _scaleAnimation.value;
+    widget.controller.scale = _scaleAnimation.value; // Todo: this update
   }
 
   void handlePositionAnimate() {
@@ -118,9 +112,9 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
             ? PhotoViewScaleState.zoomedIn
             : PhotoViewScaleState.zoomedOut
         : widget.controller.scaleState;
+    // Todo: figure out what to do with new scalestate
 
     widget.controller.updateMultiple(
-        scaleState: newScaleState,
         scale: newScale,
         position: clampPosition(delta * details.scale),
         rotation: _rotationBefore + details.rotation,
@@ -270,35 +264,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     }
   }
 
-  void nextScaleState() {
-    final ScaleBoundaries scaleBoundaries = widget.scaleBoundaries;
-    final PhotoViewControllerBase controller = widget.controller;
-    final PhotoViewScaleState scaleState = controller.scaleState;
-    if (scaleState == PhotoViewScaleState.zoomedIn ||
-        scaleState == PhotoViewScaleState.zoomedOut) {
-      widget.controller.scaleState = widget.scaleStateCycle(scaleState);
-      return;
-    }
-    final double originalScale =
-        getScaleForScaleState(scaleState, scaleBoundaries);
 
-    double prevScale = originalScale;
-    PhotoViewScaleState prevScaleState = scaleState;
-    double nextScale = originalScale;
-    PhotoViewScaleState nextScaleState = scaleState;
-
-    do {
-      prevScale = nextScale;
-      prevScaleState = nextScaleState;
-      nextScaleState = widget.scaleStateCycle(prevScaleState);
-      nextScale = getScaleForScaleState(nextScaleState, scaleBoundaries);
-    } while (prevScale == nextScale && scaleState != nextScaleState);
-
-    if (originalScale == nextScale) {
-      return;
-    }
-    controller.scaleState = nextScaleState;
-  }
 
   @override
   void dispose() {

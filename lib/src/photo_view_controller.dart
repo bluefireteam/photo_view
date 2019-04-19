@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/src/photo_view_scale_state.dart';
+import 'package:photo_view/src/photo_view_utils.dart';
 
 typedef ScaleStateListener = void Function(double prevScale, double nextScale);
 
@@ -17,17 +18,16 @@ typedef ScaleStateListener = void Function(double prevScale, double nextScale);
 /// The controller exposes value fields like [scale] or [rotationFocus]. Usually those fields will be only getters and setters serving as hooks to the internal [PhotoViewControllerValue].
 ///
 /// The default implementation used by [PhotoView] is [PhotoViewController].
+///
+/// This was created to allow customization (you can create your own controller class)
 abstract class PhotoViewControllerBase<T extends PhotoViewControllerValue> {
   /// The output for state/value updates. Usually a broadcast [Stream]
   Stream<T> get outputStateStream;
 
-  /// The output for scaleState changes [Stream]
-  Stream<PhotoViewScaleState> get outputScaleStateStream;
-
   /// The state value before the last change or the initial state if trhe state has not been changed.
   T prevValue;
 
-  /// The actual state value=l
+  /// The actual state value
   T value;
 
   /// Resets the state to the initial value;
@@ -50,18 +50,11 @@ abstract class PhotoViewControllerBase<T extends PhotoViewControllerValue> {
   /// The center of the rotation transformation. It is a coordinate referring to the absolute dimensions of the image.
   Offset rotationFocusPoint;
 
-  /// A way to represent the step of the "doubletap gesture cycle" in which PhotoView is.
-  ///
-  /// **Important**: This fields is rarely externally set to a value different than [PhotoViewScaleState.zoomedIn] or [PhotoViewScaleState.zoomedOut] after setting a [scale].
-  /// future TODO: setting the controller.scale should also set the scaleState to [PhotoViewScaleState.zoomedIn] or [PhotoViewScaleState.zoomedOut]
-  PhotoViewScaleState scaleState;
-
   /// Update multiple fields of the state with only one update streamed.
   void updateMultiple({
     Offset position,
     double scale,
     double rotation,
-    PhotoViewScaleState scaleState,
     Offset rotationFocusPoint,
   });
 }
@@ -74,14 +67,12 @@ class PhotoViewControllerValue {
     @required this.scale,
     @required this.rotation,
     @required this.rotationFocusPoint,
-    @required this.scaleState,
   });
 
   final Offset position;
   final double scale;
   final double rotation;
   final Offset rotationFocusPoint;
-  final PhotoViewScaleState scaleState;
 
   @override
   bool operator ==(Object other) =>
@@ -91,16 +82,14 @@ class PhotoViewControllerValue {
           position == other.position &&
           scale == other.scale &&
           rotation == other.rotation &&
-          rotationFocusPoint == other.rotationFocusPoint &&
-          scaleState == other.scaleState;
+          rotationFocusPoint == other.rotationFocusPoint;
 
   @override
   int get hashCode =>
       position.hashCode ^
       scale.hashCode ^
       rotation.hashCode ^
-      rotationFocusPoint.hashCode ^
-      scaleState.hashCode;
+      rotationFocusPoint.hashCode;
 }
 
 /// The default implementation of [PhotoViewControllerBase].
@@ -113,35 +102,33 @@ class PhotoViewController
     implements PhotoViewControllerBase<PhotoViewControllerValue> {
   PhotoViewController(
       {Offset initialPosition = Offset.zero, double initialRotation = 0.0})
-      : _notifier = ValueNotifier(PhotoViewControllerValue(
+      : _valueNotifier = ValueNotifier(PhotoViewControllerValue(
             position: initialPosition,
             rotation: initialRotation,
-            scale:
-                null, // initial  scale is obtained via PhotoViewScaleState, therefore will be computed via scaleStateAwareScale
-            scaleState: PhotoViewScaleState.initial,
+            scale: null, // initial  scale is obtained via PhotoViewScaleState, therefore will be computed via scaleStateAwareScale
             rotationFocusPoint: null)),
+  // Todo: when user set a scale, we should update to zooming in or out
         super() {
     initial = value;
     prevValue = initial;
-    _notifier.addListener(_changeListener);
+
+    _valueNotifier.addListener(_changeListener);
     _outputCtrl = StreamController<PhotoViewControllerValue>.broadcast();
     _outputCtrl.sink.add(initial);
-    _outputScaleStateCtrl = StreamController<PhotoViewScaleState>();
-    _outputScaleStateCtrl.sink.add(PhotoViewScaleState.initial);
+
+
   }
 
-  ValueNotifier<PhotoViewControllerValue> _notifier;
+  ValueNotifier<PhotoViewControllerValue> _valueNotifier;
+
+
   PhotoViewControllerValue initial;
 
   StreamController<PhotoViewControllerValue> _outputCtrl;
-  StreamController<PhotoViewScaleState> _outputScaleStateCtrl;
+
 
   @override
   Stream<PhotoViewControllerValue> get outputStateStream => _outputCtrl.stream;
-
-  @override
-  Stream<PhotoViewScaleState> get outputScaleStateStream =>
-      _outputScaleStateCtrl.stream;
 
   @override
   PhotoViewControllerValue prevValue;
@@ -156,11 +143,13 @@ class PhotoViewController
     _outputCtrl.sink.add(value);
   }
 
+
+
   @override
   void dispose() {
     _outputCtrl.close();
     _outputScaleStateCtrl.close();
-    _notifier.dispose();
+    _valueNotifier.dispose();
   }
 
   @override
@@ -173,7 +162,6 @@ class PhotoViewController
         position: position,
         scale: scale,
         rotation: rotation,
-        scaleState: scaleState,
         rotationFocusPoint: rotationFocusPoint);
   }
 
@@ -186,12 +174,13 @@ class PhotoViewController
       return;
     }
 
+    /// Todo: update scalestate
+
     prevValue = value;
     value = PhotoViewControllerValue(
         position: position,
         scale: scale,
         rotation: rotation,
-        scaleState: scaleState,
         rotationFocusPoint: rotationFocusPoint);
   }
 
@@ -208,30 +197,11 @@ class PhotoViewController
         position: position,
         scale: scale,
         rotation: rotation,
-        scaleState: scaleState,
         rotationFocusPoint: rotationFocusPoint);
   }
 
   @override
   double get rotation => value.rotation;
-
-  @override
-  set scaleState(PhotoViewScaleState scaleState) {
-    if (value.scaleState == scaleState) {
-      return;
-    }
-    prevValue = value;
-    value = PhotoViewControllerValue(
-        position: position,
-        scale: scale,
-        rotation: rotation,
-        scaleState: scaleState,
-        rotationFocusPoint: rotationFocusPoint);
-    _outputScaleStateCtrl.sink.add(scaleState);
-  }
-
-  @override
-  PhotoViewScaleState get scaleState => value.scaleState;
 
   @override
   set rotationFocusPoint(Offset rotationFocusPoint) {
@@ -243,7 +213,6 @@ class PhotoViewController
         position: position,
         scale: scale,
         rotation: rotation,
-        scaleState: scaleState,
         rotationFocusPoint: rotationFocusPoint);
   }
 
@@ -255,29 +224,58 @@ class PhotoViewController
     Offset position,
     double scale,
     double rotation,
-    PhotoViewScaleState scaleState,
     Offset rotationFocusPoint,
-    Size outerSize,
-    Size childSize,
   }) {
-    if (value.scaleState != scaleState) {
-      _outputScaleStateCtrl.sink.add(scaleState);
-    }
+
+    /// Todo: update scalestate
     prevValue = value;
     value = PhotoViewControllerValue(
         position: position ?? value.position,
         scale: scale ?? value.scale,
         rotation: rotation ?? value.rotation,
-        scaleState: scaleState ?? value.scaleState,
         rotationFocusPoint: rotationFocusPoint ?? value.rotationFocusPoint);
   }
 
   @override
-  PhotoViewControllerValue get value => _notifier.value;
+  PhotoViewControllerValue get value => _valueNotifier.value;
 
   @override
   set value(PhotoViewControllerValue newValue) {
-    if (_notifier.value == newValue) return;
-    _notifier.value = newValue;
+    if (_valueNotifier.value == newValue) return;
+    _valueNotifier.value = newValue;
+  }
+}
+
+
+class PhotoViewScaleStateController{
+  PhotoViewScaleStateController(){
+    _scaleStateNotifier = ValueNotifier(PhotoViewScaleState.initial);
+
+    _scaleStateNotifier.addListener(_scaleStateChangeListener);
+    _outputScaleStateCtrl = StreamController<PhotoViewScaleState>.broadcast();
+    _outputScaleStateCtrl.sink.add(PhotoViewScaleState.initial);
+  }
+
+  ValueNotifier<PhotoViewScaleState> _scaleStateNotifier;
+  StreamController<PhotoViewScaleState> _outputScaleStateCtrl;
+
+  Stream<PhotoViewScaleState> get outputScaleStateStream =>
+      _outputScaleStateCtrl.stream;
+
+  PhotoViewScaleState get scaleState => _scaleStateNotifier.value;
+
+  set scaleState(PhotoViewScaleState newValue) {
+    if (_scaleStateNotifier.value == newValue){
+      return;
+    }
+    _scaleStateNotifier.value = newValue;
+  }
+
+  void _scaleStateChangeListener() {
+    _outputScaleStateCtrl.sink.add(scaleState);
+  }
+
+  void reset() {
+    scaleState = PhotoViewScaleState.initial;
   }
 }
