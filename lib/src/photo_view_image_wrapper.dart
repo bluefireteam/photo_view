@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:photo_view/src/photo_view_controller.dart';
+import 'package:photo_view/src/photo_view_controller_delegate.dart';
 import 'package:photo_view/src/photo_view_scale_state.dart';
 import 'package:photo_view/src/photo_view_typedefs.dart';
 import 'package:photo_view/src/photo_view_utils.dart';
@@ -13,7 +14,6 @@ typedef PhotoViewImageTapDownCallback = Function(BuildContext context,
 class PhotoViewImageWrapper extends StatefulWidget {
   const PhotoViewImageWrapper({
     Key key,
-    @required this.controller,
     @required this.imageProvider,
     this.backgroundDecoration,
     this.gaplessPlayback = false,
@@ -23,12 +23,12 @@ class PhotoViewImageWrapper extends StatefulWidget {
     @required this.basePosition,
     this.onTapUp,
     this.onTapDown,
+    this.delegate,
   })  : customChild = null,
         super(key: key);
 
   const PhotoViewImageWrapper.customChild({
     Key key,
-    @required this.controller,
     @required this.customChild,
     this.backgroundDecoration,
     this.heroTag,
@@ -37,6 +37,7 @@ class PhotoViewImageWrapper extends StatefulWidget {
     @required this.basePosition,
     this.onTapUp,
     this.onTapDown,
+    this.delegate,
   })  : imageProvider = null,
         gaplessPlayback = false,
         super(key: key);
@@ -49,6 +50,8 @@ class PhotoViewImageWrapper extends StatefulWidget {
   final Widget customChild;
   final bool transitionOnUserGestures;
   final Alignment basePosition;
+
+  final PhotoViewControllerDelegate delegate;
 
   final PhotoViewImageTapUpCallback onTapUp;
   final PhotoViewImageTapDownCallback onTapDown;
@@ -74,28 +77,24 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   AnimationController _rotationAnimationController;
   Animation<double> _rotationAnimation;
 
-  double get scaleStateAwareScale {
-    return widget.controller.scale ??
-        getScaleForScaleState(
-            widget.controller.scaleState, widget.scaleBoundaries);
-  }
+
 
   void handleScaleAnimation() {
-    widget.controller.scale = _scaleAnimation.value; // Todo: this update
+    widget.delegate.scale = _scaleAnimation.value; // Todo: update silently
   }
 
   void handlePositionAnimate() {
-    widget.controller.position = _positionAnimation.value;
+    widget.delegate.position = _positionAnimation.value;
   }
 
   void handleRotationAnimation() {
-    widget.controller.rotation = _rotationAnimation.value;
+    widget.delegate.rotation = _rotationAnimation.value;
   }
 
   void onScaleStart(ScaleStartDetails details) {
-    _rotationBefore = widget.controller.rotation;
-    _scaleBefore = scaleStateAwareScale;
-    _normalizedPosition = details.focalPoint - widget.controller.position;
+    _rotationBefore = widget.delegate.rotation;
+    _scaleBefore = widget.delegate.scale;
+    _normalizedPosition = details.focalPoint - widget.delegate.position;
     _scaleAnimationController.stop();
     _positionAnimationController.stop();
     _rotationAnimationController.stop();
@@ -107,11 +106,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
 
     final double _initialScale = widget.scaleBoundaries.initialScale;
 
-    final PhotoViewScaleState newScaleState = details.scale != 1.0
-        ? (newScale > _initialScale)
-            ? PhotoViewScaleState.zoomedIn
-            : PhotoViewScaleState.zoomedOut
-        : widget.controller.scaleState;
+
     // Todo: figure out what to do with new scalestate
 
     widget.controller.updateMultiple(
