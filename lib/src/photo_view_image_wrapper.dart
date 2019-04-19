@@ -84,17 +84,17 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   }
 
   void handlePositionAnimate() {
-    widget.delegate.position = _positionAnimation.value;
+    widget.delegate.controller.position = _positionAnimation.value;
   }
 
   void handleRotationAnimation() {
-    widget.delegate.rotation = _rotationAnimation.value;
+    widget.delegate.controller.rotation = _rotationAnimation.value;
   }
 
   void onScaleStart(ScaleStartDetails details) {
-    _rotationBefore = widget.delegate.rotation;
+    _rotationBefore = widget.delegate.controller.rotation;
     _scaleBefore = widget.delegate.scale;
-    _normalizedPosition = details.focalPoint - widget.delegate.position;
+    _normalizedPosition = details.focalPoint - widget.delegate.controller.position;
     _scaleAnimationController.stop();
     _positionAnimationController.stop();
     _rotationAnimationController.stop();
@@ -104,30 +104,27 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     final double newScale = _scaleBefore * details.scale;
     final Offset delta = details.focalPoint - _normalizedPosition;
 
-    final double _initialScale = widget.scaleBoundaries.initialScale;
+    widget.delegate.updateScaleStateFromNewScale(details.scale, newScale);
 
-
-    // Todo: figure out what to do with new scalestate
-
-    widget.controller.updateMultiple(
+    widget.delegate.updateMultiple(
         scale: newScale,
-        position: clampPosition(delta * details.scale),
+        position: widget.delegate.clampPosition(delta * details.scale, widget.basePosition),
         rotation: _rotationBefore + details.rotation,
         rotationFocusPoint: details.focalPoint);
   }
 
   void onScaleEnd(ScaleEndDetails details) {
-    final double _scale = widget.controller.scale;
-    final Offset _position = widget.controller.position;
-    final double maxScale = widget.scaleBoundaries.maxScale;
-    final double minScale = widget.scaleBoundaries.minScale;
+    final double _scale = widget.delegate.scale;
+    final Offset _position = widget.delegate.controller.position;
+    final double maxScale = widget.delegate.scaleBoundaries.maxScale;
+    final double minScale = widget.delegate.scaleBoundaries.minScale;
 
     //animate back to maxScale if gesture exceeded the maxScale specified
     if (_scale > maxScale) {
       final double scaleComebackRatio = maxScale / _scale;
       animateScale(_scale, maxScale);
       final Offset clampedPosition =
-          clampPosition(_position * scaleComebackRatio, maxScale);
+          widget.delegate.clampPosition(_position * scaleComebackRatio, widget.basePosition, scale: maxScale);
       animatePosition(_position, clampedPosition);
       return;
     }
@@ -137,7 +134,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
       final double scaleComebackRatio = minScale / _scale;
       animateScale(_scale, minScale);
       animatePosition(
-          _position, clampPosition(_position * scaleComebackRatio, minScale));
+          _position, widget.delegate.clampPosition(_position * scaleComebackRatio, widget.basePosition, scale: minScale));
       return;
     }
     // get magnitude from gesture velocity
@@ -146,45 +143,13 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     // animate velocity only if there is no scale change and a significant magnitude
     if (_scaleBefore / _scale == 1.0 && magnitude >= 400.0) {
       final Offset direction = details.velocity.pixelsPerSecond / magnitude;
-      animatePosition(_position, clampPosition(_position + direction * 100.0));
+      animatePosition(_position, widget.delegate.clampPosition(_position + direction * 100.0, widget.basePosition));
     }
 
-    checkAndSetToInitialScaleState();
+    widget.delegate.checkAndSetToInitialScaleState();
   }
 
-  Offset clampPosition(Offset offset, [double scale]) {
-    final double _scale = scale ?? scaleStateAwareScale;
-    final double x = offset.dx;
-    final double y = offset.dy;
 
-    final double computedWidth =
-        widget.scaleBoundaries.childSize.width * _scale;
-    final double computedHeight =
-        widget.scaleBoundaries.childSize.height * _scale;
-
-    final double screenWidth = widget.scaleBoundaries.outerSize.width;
-    final double screenHeight = widget.scaleBoundaries.outerSize.height;
-
-    final double positionX = widget.basePosition.x;
-    final double positionY = widget.basePosition.y;
-
-    final double widthDiff = computedWidth - screenWidth;
-    final double heightDiff = computedHeight - screenHeight;
-
-    final double minX = ((positionX - 1).abs() / 2) * widthDiff * -1;
-    final double maxX = ((positionX + 1).abs() / 2) * widthDiff;
-
-    final double minY = ((positionY - 1).abs() / 2) * heightDiff * -1;
-    final double maxY = ((positionY + 1).abs() / 2) * heightDiff;
-
-    final double computedX =
-        screenWidth < computedWidth ? x.clamp(minX, maxX) : 0.0;
-
-    final double computedY =
-        screenHeight < computedHeight ? y.clamp(minY, maxY) : 0.0;
-
-    return Offset(computedX, computedY);
-  }
 
   void animateScale(double from, double to) {
     _scaleAnimation = Tween<double>(
@@ -214,16 +179,11 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
 
   void onAnimationStatus(AnimationStatus status) {
     if (status == AnimationStatus.completed) {
-      checkAndSetToInitialScaleState();
+      widget.delegate.checkAndSetToInitialScaleState();
     }
   }
 
-  void checkAndSetToInitialScaleState() {
-    if (widget.controller.scaleState != PhotoViewScaleState.initial &&
-        scaleStateAwareScale == widget.scaleBoundaries.initialScale) {
-      widget.controller.scaleState = PhotoViewScaleState.initial;
-    }
-  }
+
 
   @override
   void initState() {
@@ -238,25 +198,13 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     _rotationAnimationController = AnimationController(vsync: this)
       ..addListener(handleRotationAnimation);
 
-    widget.controller.outputStateStream.listen(scaleStateListener);
+    widget.delegate.animateOnScaleStateUpdate(scaleStateListener);
   }
 
-  void scaleStateListener(PhotoViewControllerValue value) {
-    if (widget.controller.prevValue.scaleState !=
-            widget.controller.scaleState &&
-        (widget.controller.scaleState != PhotoViewScaleState.zoomedIn &&
-            widget.controller.scaleState != PhotoViewScaleState.zoomedOut)) {
-      final double prevScale = widget.controller.scale ??
-          getScaleForScaleState(
-              PhotoViewScaleState.initial, widget.scaleBoundaries);
-
-      final double nextScale = getScaleForScaleState(
-          widget.controller.scaleState, widget.scaleBoundaries);
-
+  void scaleStateListener(double prevScale, double nextScale) {
       animateScale(prevScale, nextScale);
-      animatePosition(widget.controller.position, Offset.zero);
-      animateRotation(widget.controller.rotation, 0.0);
-    }
+      animatePosition(widget.delegate.controller.position, Offset.zero);
+      animateRotation(widget.delegate.controller.rotation, 0.0);
   }
 
 
@@ -273,20 +221,20 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: widget.controller.outputStateStream,
-        initialData: widget.controller.prevValue,
+        stream: widget.delegate.controller.outputStateStream,
+        initialData: widget.delegate.controller.prevValue,
         builder: (BuildContext context,
             AsyncSnapshot<PhotoViewControllerValue> snapshot) {
           if (snapshot.hasData) {
             final PhotoViewControllerValue value = snapshot.data;
             final matrix = Matrix4.identity()
               ..translate(value.position.dx, value.position.dy)
-              ..scale(scaleStateAwareScale);
+              ..scale(widget.delegate.scale);
 
             final rotationMatrix = Matrix4.identity()..rotateZ(value.rotation);
             final Widget customChildLayout = CustomSingleChildLayout(
               delegate: _CenterWithOriginalSizeDelegate(
-                  widget.scaleBoundaries.childSize, widget.basePosition),
+                  widget.delegate.scaleBoundaries.childSize, widget.basePosition),
               child: _buildHero(),
             );
             return GestureDetector(
@@ -308,7 +256,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
                     const BoxDecoration(
                         color: const Color.fromRGBO(0, 0, 0, 1.0)),
               ),
-              onDoubleTap: nextScaleState,
+              onDoubleTap: widget.delegate.nextScaleState,
               onScaleStart: onScaleStart,
               onScaleUpdate: onScaleUpdate,
               onScaleEnd: onScaleEnd,

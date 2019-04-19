@@ -173,9 +173,6 @@ class PhotoViewController
     if (value.scale == scale) {
       return;
     }
-
-    /// Todo: update scalestate
-
     prevValue = value;
     value = PhotoViewControllerValue(
         position: position,
@@ -226,8 +223,6 @@ class PhotoViewController
     double rotation,
     Offset rotationFocusPoint,
   }) {
-
-    /// Todo: update scalestate
     prevValue = value;
     value = PhotoViewControllerValue(
         position: position ?? value.position,
@@ -254,7 +249,11 @@ class PhotoViewScaleStateController{
     _scaleStateNotifier.addListener(_scaleStateChangeListener);
     _outputScaleStateCtrl = StreamController<PhotoViewScaleState>.broadcast();
     _outputScaleStateCtrl.sink.add(PhotoViewScaleState.initial);
+
+    prevScaleState = PhotoViewScaleState.initial;
   }
+
+  PhotoViewScaleState prevScaleState;
 
   ValueNotifier<PhotoViewScaleState> _scaleStateNotifier;
   StreamController<PhotoViewScaleState> _outputScaleStateCtrl;
@@ -268,6 +267,8 @@ class PhotoViewScaleStateController{
     if (_scaleStateNotifier.value == newValue){
       return;
     }
+
+    prevScaleState = _scaleStateNotifier.value;
     _scaleStateNotifier.value = newValue;
   }
 
