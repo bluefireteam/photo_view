@@ -20,8 +20,7 @@ void main() {
         position: initialPosition,
         scale: null,
         rotation: initialRotation,
-        rotationFocusPoint: null,
-        scaleState: PhotoViewScaleState.initial);
+        rotationFocusPoint: null);
 
     expect(controller.value, testValue);
   });
@@ -38,19 +37,11 @@ void main() {
     controller.rotationFocusPoint = Offset.zero;
     expect(controller.rotationFocusPoint, Offset.zero);
 
-    controller.scaleState = PhotoViewScaleState.zoomedIn;
-    expect(controller.scaleState, PhotoViewScaleState.zoomedIn);
-
-    // controller.scaleState = PhotoViewScaleState.zoomedOut;
-    // expect(controller.scaleState, PhotoViewScaleState.zoomedOut);
-
-    controller.updateMultiple(
-        position: const Offset(1, 1), scaleState: PhotoViewScaleState.initial);
+    controller.updateMultiple( position: const Offset(1, 1));
     expect(controller.scale, 0.1);
     expect(controller.position, const Offset(1, 1));
     expect(controller.rotation, 0.1);
     expect(controller.rotationFocusPoint, Offset.zero);
-    expect(controller.scaleState, PhotoViewScaleState.initial);
   });
   test('controller reset', () {
     controller.updateMultiple(position: const Offset(1, 1), rotation: 40);
@@ -66,32 +57,31 @@ void main() {
         scale: null,
         rotation: 0.0,
         rotationFocusPoint: null,
-        scaleState: PhotoViewScaleState.zoomedOut);
+    );
 
     const PhotoViewControllerValue value2 = const PhotoViewControllerValue(
         position: Offset.zero,
         scale: null,
         rotation: 1.0,
         rotationFocusPoint: null,
-        scaleState: PhotoViewScaleState.zoomedOut);
+    );
 
     const PhotoViewControllerValue value3 = const PhotoViewControllerValue(
         position: Offset.zero,
         scale: 3.0,
         rotation: 1.0,
         rotationFocusPoint: null,
-        scaleState: PhotoViewScaleState.zoomedOut);
+    );
 
     const PhotoViewControllerValue value4 = const PhotoViewControllerValue(
         position: const Offset(1, 1),
         scale: 3.0,
         rotation: 45.0,
         rotationFocusPoint: null,
-        scaleState: PhotoViewScaleState.zoomedOut);
+    );
 
     expect(controller.outputStateStream,
         emitsInOrder([value1, value2, value3, value4]));
-    controller.scaleState = PhotoViewScaleState.zoomedOut;
     controller.rotation = 1.0;
     controller.scale = 3.0;
 

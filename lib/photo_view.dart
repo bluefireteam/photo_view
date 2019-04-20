@@ -396,6 +396,7 @@ class _PhotoViewState extends State<PhotoView>
         controller: _controller,
         scaleStateController: _scaleStateController,
         scaleStateCycle: widget.scaleStateCycle ?? defaultScaleStateCycle,
+        basePosition: widget.basePosition ?? Alignment.center,
         scaleBoundaries: ScaleBoundaries(
           widget.minScale ?? 0.0,
           widget.maxScale ?? double.infinity,
@@ -404,7 +405,6 @@ class _PhotoViewState extends State<PhotoView>
           _childSize,
         ),
       ),
-      basePosition: widget.basePosition ?? Alignment.center,
       onTapUp: widget.onTapUp,
       onTapDown: widget.onTapDown,
     );
@@ -444,6 +444,7 @@ class _PhotoViewState extends State<PhotoView>
       heroTag: widget.heroTag,
       transitionOnUserGestures: widget.transitionOnUserGestures,
       delegate: PhotoViewControllerDelegate(
+        basePosition: widget.basePosition ?? Alignment.center,
         controller: _controller,
         scaleStateController: _scaleStateController,
         scaleStateCycle: widget.scaleStateCycle ?? defaultScaleStateCycle,
@@ -455,7 +456,6 @@ class _PhotoViewState extends State<PhotoView>
           _childSize,
         ),
       ),
-      basePosition: widget.basePosition ?? Alignment.center,
       onTapUp: widget.onTapUp,
       onTapDown: widget.onTapDown,
     );

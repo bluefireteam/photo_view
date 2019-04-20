@@ -39,6 +39,9 @@ abstract class PhotoViewControllerBase<T extends PhotoViewControllerValue> {
   // todo: docs
   void addBlindListener(VoidCallback callback);
 
+  // todo: docs
+  void removeBlindListener(VoidCallback callback);
+
   /// The position of the image in the screen given its offset after pan gestures.
   Offset position;
 
@@ -147,6 +150,11 @@ class PhotoViewController
   @override
   void addBlindListener(VoidCallback callback) {
     _valueNotifier.addBlindListener(callback);
+  }
+
+  @override
+  void removeBlindListener(VoidCallback callback) {
+    _valueNotifier.removeBlindListener(callback);
   }
 
   @override
@@ -288,6 +296,9 @@ class PhotoViewScaleStateController{
     _scaleStateNotifier.value = newValue;
   }
 
+  bool get hasChanged => prevScaleState != scaleState;
+  bool get isZooming => scaleState == PhotoViewScaleState.zoomedIn || scaleState == PhotoViewScaleState.zoomedOut;
+
   void setInvisibly(PhotoViewScaleState newValue){
     if (_scaleStateNotifier.value == newValue){
       return;
@@ -299,6 +310,14 @@ class PhotoViewScaleStateController{
 
   void _scaleStateChangeListener() {
     _outputScaleStateCtrl.sink.add(scaleState);
+  }
+
+  void addBlindListener(VoidCallback callback) {
+    _scaleStateNotifier.addBlindListener(callback);
+  }
+
+  void removeBlindListener(VoidCallback callback) {
+    _scaleStateNotifier.removeBlindListener(callback);
   }
 
   void reset() {
