@@ -104,7 +104,7 @@ class _ControllerExampleState extends State<ControllerExample> {
       children: <Widget>[
         Text(
           "Rotation ${value.rotation}",
-          style: TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.white),
         ),
         SliderTheme(
             data: SliderTheme.of(context).copyWith(
@@ -118,7 +118,7 @@ class _ControllerExampleState extends State<ControllerExample> {
                 })),
         Text(
           "Scale ${value.scale}",
-          style: TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.white),
         ),
         SliderTheme(
             data: SliderTheme.of(context).copyWith(
@@ -132,7 +132,7 @@ class _ControllerExampleState extends State<ControllerExample> {
                 })),
         Text(
           "ScaleState ${scaleStateController.scaleState}",
-          style: TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.white),
         ),
       ],
     );

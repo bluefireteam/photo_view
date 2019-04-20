@@ -37,10 +37,10 @@ abstract class PhotoViewControllerBase<T extends PhotoViewControllerValue> {
   void dispose();
 
   // todo: docs
-  void addBlindListener(VoidCallback callback);
+  void addIgnorableListener(VoidCallback callback);
 
   // todo: docs
-  void removeBlindListener(VoidCallback callback);
+  void removeIgnorableListener(VoidCallback callback);
 
   /// The position of the image in the screen given its offset after pan gestures.
   Offset position;
@@ -111,10 +111,11 @@ class PhotoViewController
     implements PhotoViewControllerBase<PhotoViewControllerValue> {
   PhotoViewController(
       {Offset initialPosition = Offset.zero, double initialRotation = 0.0})
-      : _valueNotifier = BlindeableValueNotifier(PhotoViewControllerValue(
+      : _valueNotifier = IgnorableValueNotifier(PhotoViewControllerValue(
             position: initialPosition,
             rotation: initialRotation,
-            scale: null, // initial  scale is obtained via PhotoViewScaleState, therefore will be computed via scaleStateAwareScale
+            scale:
+                null, // initial  scale is obtained via PhotoViewScaleState, therefore will be computed via scaleStateAwareScale
             rotationFocusPoint: null)),
         super() {
     initial = value;
@@ -125,12 +126,11 @@ class PhotoViewController
     _outputCtrl.sink.add(initial);
   }
 
-  BlindeableValueNotifier<PhotoViewControllerValue> _valueNotifier;
+  IgnorableValueNotifier<PhotoViewControllerValue> _valueNotifier;
 
   PhotoViewControllerValue initial;
 
   StreamController<PhotoViewControllerValue> _outputCtrl;
-
 
   @override
   Stream<PhotoViewControllerValue> get outputStateStream => _outputCtrl.stream;
@@ -148,13 +148,13 @@ class PhotoViewController
   }
 
   @override
-  void addBlindListener(VoidCallback callback) {
-    _valueNotifier.addBlindListener(callback);
+  void addIgnorableListener(VoidCallback callback) {
+    _valueNotifier.addIgnorableListener(callback);
   }
 
   @override
-  void removeBlindListener(VoidCallback callback) {
-    _valueNotifier.removeBlindListener(callback);
+  void removeIgnorableListener(VoidCallback callback) {
+    _valueNotifier.removeIgnorableListener(callback);
   }
 
   @override
@@ -196,12 +196,12 @@ class PhotoViewController
   double get scale => value.scale;
 
   @override
-  void setScaleInvisibly(double scale){
+  void setScaleInvisibly(double scale) {
     if (value.scale == scale) {
       return;
     }
     prevValue = value;
-    _valueNotifier.updateInvisibly(PhotoViewControllerValue(
+    _valueNotifier.updateIgnoring(PhotoViewControllerValue(
         position: position,
         scale: scale,
         rotation: rotation,
@@ -260,15 +260,16 @@ class PhotoViewController
 
   @override
   set value(PhotoViewControllerValue newValue) {
-    if (_valueNotifier.value == newValue) return;
+    if (_valueNotifier.value == newValue) {
+      return;
+    }
     _valueNotifier.value = newValue;
   }
 }
 
-
-class PhotoViewScaleStateController{
-  PhotoViewScaleStateController(){
-    _scaleStateNotifier = BlindeableValueNotifier(PhotoViewScaleState.initial);
+class PhotoViewScaleStateController {
+  PhotoViewScaleStateController() {
+    _scaleStateNotifier = IgnorableValueNotifier(PhotoViewScaleState.initial);
 
     _scaleStateNotifier.addListener(_scaleStateChangeListener);
     _outputScaleStateCtrl = StreamController<PhotoViewScaleState>.broadcast();
@@ -279,7 +280,7 @@ class PhotoViewScaleStateController{
 
   PhotoViewScaleState prevScaleState;
 
-  BlindeableValueNotifier<PhotoViewScaleState> _scaleStateNotifier;
+  IgnorableValueNotifier<PhotoViewScaleState> _scaleStateNotifier;
   StreamController<PhotoViewScaleState> _outputScaleStateCtrl;
 
   Stream<PhotoViewScaleState> get outputScaleStateStream =>
@@ -288,7 +289,7 @@ class PhotoViewScaleStateController{
   PhotoViewScaleState get scaleState => _scaleStateNotifier.value;
 
   set scaleState(PhotoViewScaleState newValue) {
-    if (_scaleStateNotifier.value == newValue){
+    if (_scaleStateNotifier.value == newValue) {
       return;
     }
 
@@ -297,27 +298,28 @@ class PhotoViewScaleStateController{
   }
 
   bool get hasChanged => prevScaleState != scaleState;
-  bool get isZooming => scaleState == PhotoViewScaleState.zoomedIn || scaleState == PhotoViewScaleState.zoomedOut;
+  bool get isZooming =>
+      scaleState == PhotoViewScaleState.zoomedIn ||
+      scaleState == PhotoViewScaleState.zoomedOut;
 
-  void setInvisibly(PhotoViewScaleState newValue){
-    if (_scaleStateNotifier.value == newValue){
+  void setInvisibly(PhotoViewScaleState newValue) {
+    if (_scaleStateNotifier.value == newValue) {
       return;
     }
     prevScaleState = _scaleStateNotifier.value;
-    _scaleStateNotifier.updateInvisibly(newValue);
+    _scaleStateNotifier.updateIgnoring(newValue);
   }
-
 
   void _scaleStateChangeListener() {
     _outputScaleStateCtrl.sink.add(scaleState);
   }
 
-  void addBlindListener(VoidCallback callback) {
-    _scaleStateNotifier.addBlindListener(callback);
+  void addIgnorableListener(VoidCallback callback) {
+    _scaleStateNotifier.addIgnorableListener(callback);
   }
 
-  void removeBlindListener(VoidCallback callback) {
-    _scaleStateNotifier.removeBlindListener(callback);
+  void removeIgnorableListener(VoidCallback callback) {
+    _scaleStateNotifier.removeIgnorableListener(callback);
   }
 
   void reset() {

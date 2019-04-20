@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:photo_view/src/photo_view_controller.dart';
 import 'package:photo_view/src/photo_view_controller_delegate.dart';
 
-
 typedef PhotoViewImageTapUpCallback = Function(BuildContext context,
     TapUpDetails details, PhotoViewControllerValue controllerValue);
 typedef PhotoViewImageTapDownCallback = Function(BuildContext context,
@@ -72,8 +71,6 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   AnimationController _rotationAnimationController;
   Animation<double> _rotationAnimation;
 
-
-
   void handleScaleAnimation() {
     widget.delegate.scale = _scaleAnimation.value;
   }
@@ -89,7 +86,8 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   void onScaleStart(ScaleStartDetails details) {
     _rotationBefore = widget.delegate.controller.rotation;
     _scaleBefore = widget.delegate.scale;
-    _normalizedPosition = details.focalPoint - widget.delegate.controller.position;
+    _normalizedPosition =
+        details.focalPoint - widget.delegate.controller.position;
     _scaleAnimationController.stop();
     _positionAnimationController.stop();
     _rotationAnimationController.stop();
@@ -118,8 +116,8 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     if (_scale > maxScale) {
       final double scaleComebackRatio = maxScale / _scale;
       animateScale(_scale, maxScale);
-      final Offset clampedPosition =
-          widget.delegate.clampPosition(_position * scaleComebackRatio, scale: maxScale);
+      final Offset clampedPosition = widget.delegate
+          .clampPosition(_position * scaleComebackRatio, scale: maxScale);
       animatePosition(_position, clampedPosition);
       return;
     }
@@ -129,7 +127,9 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
       final double scaleComebackRatio = minScale / _scale;
       animateScale(_scale, minScale);
       animatePosition(
-          _position, widget.delegate.clampPosition(_position * scaleComebackRatio, scale: minScale));
+          _position,
+          widget.delegate
+              .clampPosition(_position * scaleComebackRatio, scale: minScale));
       return;
     }
     // get magnitude from gesture velocity
@@ -138,13 +138,12 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     // animate velocity only if there is no scale change and a significant magnitude
     if (_scaleBefore / _scale == 1.0 && magnitude >= 400.0) {
       final Offset direction = details.velocity.pixelsPerSecond / magnitude;
-      animatePosition(_position, widget.delegate.clampPosition(_position + direction * 100.0));
+      animatePosition(_position,
+          widget.delegate.clampPosition(_position + direction * 100.0));
     }
 
     widget.delegate.checkAndSetToInitialScaleState();
   }
-
-
 
   void animateScale(double from, double to) {
     _scaleAnimation = Tween<double>(
@@ -226,7 +225,8 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
             final rotationMatrix = Matrix4.identity()..rotateZ(value.rotation);
             final Widget customChildLayout = CustomSingleChildLayout(
               delegate: _CenterWithOriginalSizeDelegate(
-                  widget.delegate.scaleBoundaries.childSize, widget.delegate.basePosition),
+                  widget.delegate.scaleBoundaries.childSize,
+                  widget.delegate.basePosition),
               child: _buildHero(),
             );
             return GestureDetector(

@@ -1,4 +1,3 @@
-
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -8,8 +7,6 @@ import '../photo_view.dart';
 
 /// A  class to hold internal layout logics to sync both controller states
 class PhotoViewControllerDelegate {
-
-
   PhotoViewControllerDelegate({
     @required this.controller,
     @required this.scaleBoundaries,
@@ -17,7 +14,6 @@ class PhotoViewControllerDelegate {
     @required this.scaleStateController,
     @required this.basePosition,
   });
-
 
   final PhotoViewControllerBase controller;
   final PhotoViewScaleStateController scaleStateController;
@@ -28,26 +24,28 @@ class PhotoViewControllerDelegate {
   Function(double prevScale, double nextScale) _animateScale;
 
   void startListeners() {
-    controller.addBlindListener(_blindScaleListener);
-    scaleStateController.addBlindListener(_blindScaleStateListener);
+    controller.addIgnorableListener(_blindScaleListener);
+    scaleStateController.addIgnorableListener(_blindScaleStateListener);
   }
-  
+
   void _blindScaleStateListener() {
     if (!scaleStateController.hasChanged) {
       return;
     }
-    if(_animateScale == null || scaleStateController.isZooming){
+    if (_animateScale == null || scaleStateController.isZooming) {
       controller.setScaleInvisibly(scale);
       return;
     }
     final double prevScale = scale;
 
-    final double nextScale = getScaleForScaleState(scaleStateController.scaleState, scaleBoundaries);
+    final double nextScale =
+        getScaleForScaleState(scaleStateController.scaleState, scaleBoundaries);
 
     _animateScale(prevScale, nextScale);
   }
 
-  void addAnimateOnScaleStateUpdate(void animateScale(double prevScale, double nextScale)) {
+  void addAnimateOnScaleStateUpdate(
+      void animateScale(double prevScale, double nextScale)) {
     _animateScale = animateScale;
   }
 
@@ -55,25 +53,23 @@ class PhotoViewControllerDelegate {
     if (controller.scale == controller.prevValue.scale) {
       return;
     }
-    final PhotoViewScaleState newScaleState = (scale > scaleBoundaries.initialScale)
-        ? PhotoViewScaleState.zoomedIn
-        : PhotoViewScaleState.zoomedOut;
+    final PhotoViewScaleState newScaleState =
+        (scale > scaleBoundaries.initialScale)
+            ? PhotoViewScaleState.zoomedIn
+            : PhotoViewScaleState.zoomedOut;
 
     scaleStateController.setInvisibly(newScaleState);
     controller.position = clampPosition(controller.position);
   }
 
-
   double get scale {
-    return controller.scale ?? getScaleForScaleState(
-        scaleStateController.scaleState,
-        scaleBoundaries
-    );
+    return controller.scale ??
+        getScaleForScaleState(scaleStateController.scaleState, scaleBoundaries);
   }
+
   set scale(double scale) {
     controller.setScaleInvisibly(scale);
   }
-
 
   void updateMultiple({
     Offset position,
@@ -82,22 +78,21 @@ class PhotoViewControllerDelegate {
     Offset rotationFocusPoint,
   }) {
     controller.updateMultiple(
-      position: position,
-      scale: scale,
-      rotation: rotation,
-      rotationFocusPoint: rotationFocusPoint
-    ); // todo:  update it silently
+        position: position,
+        scale: scale,
+        rotation: rotation,
+        rotationFocusPoint: rotationFocusPoint); // todo:  update it silently
   }
 
+  void updateScaleStateFromNewScale(double scaleFactor, double newScale) {
+    if (scaleFactor == 1.0) {
+      return;
+    }
 
-
-  void updateScaleStateFromNewScale(double scaleFactor, double newScale){
-
-    if(scaleFactor == 1.0) return;
-
-    final PhotoViewScaleState newScaleState = (newScale > scaleBoundaries.initialScale)
-        ? PhotoViewScaleState.zoomedIn
-        : PhotoViewScaleState.zoomedOut;
+    final PhotoViewScaleState newScaleState =
+        (newScale > scaleBoundaries.initialScale)
+            ? PhotoViewScaleState.zoomedIn
+            : PhotoViewScaleState.zoomedOut;
 
     scaleStateController.setInvisibly(newScaleState);
   }
@@ -116,7 +111,8 @@ class PhotoViewControllerDelegate {
       scaleStateController.scaleState = scaleStateCycle(scaleState);
       return;
     }
-    final double originalScale = getScaleForScaleState(scaleState, scaleBoundaries);
+    final double originalScale =
+        getScaleForScaleState(scaleState, scaleBoundaries);
 
     double prevScale = originalScale;
     PhotoViewScaleState prevScaleState = scaleState;
@@ -136,13 +132,12 @@ class PhotoViewControllerDelegate {
     scaleStateController.scaleState = nextScaleState;
   }
 
-  Offset clampPosition(Offset offset, { double scale }) {
+  Offset clampPosition(Offset offset, {double scale}) {
     final double _scale = scale ?? this.scale;
     final double x = offset.dx;
     final double y = offset.dy;
 
-    final double computedWidth =
-        scaleBoundaries.childSize.width * _scale;
+    final double computedWidth = scaleBoundaries.childSize.width * _scale;
     final double computedHeight = scaleBoundaries.childSize.height * _scale;
 
     final double screenWidth = scaleBoundaries.outerSize.width;
@@ -161,17 +156,17 @@ class PhotoViewControllerDelegate {
     final double maxY = ((positionY + 1).abs() / 2) * heightDiff;
 
     final double computedX =
-    screenWidth < computedWidth ? x.clamp(minX, maxX) : 0.0;
+        screenWidth < computedWidth ? x.clamp(minX, maxX) : 0.0;
 
     final double computedY =
-    screenHeight < computedHeight ? y.clamp(minY, maxY) : 0.0;
+        screenHeight < computedHeight ? y.clamp(minY, maxY) : 0.0;
 
     return Offset(computedX, computedY);
   }
 
   void dispose() {
     _animateScale = null;
-    controller.removeBlindListener(_blindScaleListener);
-    scaleStateController.removeBlindListener(_blindScaleStateListener);
+    controller.removeIgnorableListener(_blindScaleListener);
+    scaleStateController.removeIgnorableListener(_blindScaleStateListener);
   }
 }

@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:photo_view/src/photo_view_controller.dart';
-import 'package:photo_view/src/photo_view_scale_state.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -37,7 +36,7 @@ void main() {
     controller.rotationFocusPoint = Offset.zero;
     expect(controller.rotationFocusPoint, Offset.zero);
 
-    controller.updateMultiple( position: const Offset(1, 1));
+    controller.updateMultiple(position: const Offset(1, 1));
     expect(controller.scale, 0.1);
     expect(controller.position, const Offset(1, 1));
     expect(controller.rotation, 0.1);
@@ -53,31 +52,31 @@ void main() {
     controller = PhotoViewController();
 
     const PhotoViewControllerValue value1 = const PhotoViewControllerValue(
-        position: Offset.zero,
-        scale: null,
-        rotation: 0.0,
-        rotationFocusPoint: null,
+      position: Offset.zero,
+      scale: null,
+      rotation: 0.0,
+      rotationFocusPoint: null,
     );
 
     const PhotoViewControllerValue value2 = const PhotoViewControllerValue(
-        position: Offset.zero,
-        scale: null,
-        rotation: 1.0,
-        rotationFocusPoint: null,
+      position: Offset.zero,
+      scale: null,
+      rotation: 1.0,
+      rotationFocusPoint: null,
     );
 
     const PhotoViewControllerValue value3 = const PhotoViewControllerValue(
-        position: Offset.zero,
-        scale: 3.0,
-        rotation: 1.0,
-        rotationFocusPoint: null,
+      position: Offset.zero,
+      scale: 3.0,
+      rotation: 1.0,
+      rotationFocusPoint: null,
     );
 
     const PhotoViewControllerValue value4 = const PhotoViewControllerValue(
-        position: const Offset(1, 1),
-        scale: 3.0,
-        rotation: 45.0,
-        rotationFocusPoint: null,
+      position: const Offset(1, 1),
+      scale: 3.0,
+      rotation: 45.0,
+      rotationFocusPoint: null,
     );
 
     expect(controller.outputStateStream,

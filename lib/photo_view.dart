@@ -307,7 +307,7 @@ class _PhotoViewState extends State<PhotoView>
       _controller = PhotoViewController();
     } else {
       _controlledController = false;
-     _controller = widget.controller;
+      _controller = widget.controller;
     }
 
     if (widget.scaleStateController == null) {
