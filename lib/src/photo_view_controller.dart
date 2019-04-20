@@ -111,6 +111,13 @@ class PhotoViewControllerValue {
       scale.hashCode ^
       rotation.hashCode ^
       rotationFocusPoint.hashCode;
+
+  @override
+  String toString() {
+    return 'PhotoViewControllerValue{position: $position, scale: $scale, rotation: $rotation, rotationFocusPoint: $rotationFocusPoint}';
+  }
+
+
 }
 
 /// The default implementation of [PhotoViewControllerBase].
@@ -334,7 +341,7 @@ class PhotoViewScaleStateController {
   /// Check if is `zoomedIn` & `zoomedOut`
   bool get isZooming =>
       scaleState == PhotoViewScaleState.zoomedIn ||
-      scaleState == PhotoViewScaleState.;
+      scaleState == PhotoViewScaleState.zoomedOut;
 
   /// Resets the state to the initial value;
   void reset() {

@@ -51,28 +51,22 @@ void main() {
   test('controller stream mutation', () {
     controller = PhotoViewController();
 
-    const PhotoViewControllerValue value1 = const PhotoViewControllerValue(
-      position: Offset.zero,
-      scale: null,
-      rotation: 0.0,
-      rotationFocusPoint: null,
-    );
 
-    const PhotoViewControllerValue value2 = const PhotoViewControllerValue(
+    const PhotoViewControllerValue value1 = const PhotoViewControllerValue(
       position: Offset.zero,
       scale: null,
       rotation: 1.0,
       rotationFocusPoint: null,
     );
 
-    const PhotoViewControllerValue value3 = const PhotoViewControllerValue(
+    const PhotoViewControllerValue value2 = const PhotoViewControllerValue(
       position: Offset.zero,
       scale: 3.0,
       rotation: 1.0,
       rotationFocusPoint: null,
     );
 
-    const PhotoViewControllerValue value4 = const PhotoViewControllerValue(
+    const PhotoViewControllerValue value3 = const PhotoViewControllerValue(
       position: const Offset(1, 1),
       scale: 3.0,
       rotation: 45.0,
@@ -80,11 +74,11 @@ void main() {
     );
 
     expect(controller.outputStateStream,
-        emitsInOrder([value1, value2, value3, value4]));
+        emitsInOrder([value1, value2, value3]));
+
     controller.rotation = 1.0;
     controller.scale = 3.0;
 
     controller.updateMultiple(position: const Offset(1, 1), rotation: 45.0);
-    //Testing with 'zoomedIn' and 'zoomedOut' will be diffcult as long as scaleState isn't changed in the controller's scale setter
   });
 }
