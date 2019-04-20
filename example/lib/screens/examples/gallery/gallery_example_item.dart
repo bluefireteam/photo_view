@@ -33,14 +33,14 @@ class GalleryExampleItemThumbnail extends StatelessWidget {
 List<GalleryExampleItem> galleryItems = <GalleryExampleItem>[
   GalleryExampleItem(
     id: "tag1",
-    image: "assets/gallery1.jpeg",
+    image: "assets/gallery1.jpg",
   ),
   GalleryExampleItem(
     id: "tag2",
-    image: "assets/gallery2.jpeg",
+    image: "assets/gallery2.jpg",
   ),
   GalleryExampleItem(
     id: "tag3",
-    image: "assets/gallery3.jpeg",
+    image: "assets/gallery3.jpg",
   ),
 ];

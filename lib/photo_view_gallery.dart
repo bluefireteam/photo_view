@@ -6,9 +6,9 @@ import 'package:photo_view/src/photo_view_controller.dart';
 import 'package:photo_view/src/photo_view_scale_state.dart';
 
 /// A type definition for a [Function] that receives a index after a page change in [PhotoViewGallery]
-///
 typedef PhotoViewGalleryPageChangedCallback = void Function(int index);
 
+/// A type definition for a [Function] that defines a page in [PhotoViewGallery.build]
 typedef PhotoViewGalleryBuilder = PhotoViewGalleryPageOptions Function(
     BuildContext context, int index);
 
@@ -16,23 +16,23 @@ typedef PhotoViewGalleryBuilder = PhotoViewGalleryPageOptions Function(
 ///
 /// Some of [PhotoView] consturctor options are passed direct to [PhotoViewGallery] cosntructor. Those options will affect the gallery in a whole.
 ///
-/// Some of the options may be defined to each image individually, such as `initialScale` or `heroTag`. Those can be assed through a [List] of [PhotoViewGalleryPageOptions].
+/// Some of the options may be defined to each image individually, such as `initialScale` or `heroTag`. Those must be passed via each [PhotoViewGalleryPageOptions].
 ///
-/// Example of usage:
+/// Example of usage as a list of options:
 /// ```
 /// PhotoViewGallery(
 ///   pageOptions: <PhotoViewGalleryPageOptions>[
 ///     PhotoViewGalleryPageOptions(
-///       imageProvider: AssetImage("assets/gallery1.jpeg"),
+///       imageProvider: AssetImage("assets/gallery1.jpg"),
 ///       heroTag: "tag1",
 ///     ),
 ///     PhotoViewGalleryPageOptions(
-///       imageProvider: AssetImage("assets/gallery2.jpeg"),
+///       imageProvider: AssetImage("assets/gallery2.jpg"),
 ///       heroTag: "tag2",
 ///       maxScale: PhotoViewComputedScale.contained * 0.3
 ///     ),
 ///     PhotoViewGalleryPageOptions(
-///       imageProvider: AssetImage("assets/gallery3.jpeg"),
+///       imageProvider: AssetImage("assets/gallery3.jpg"),
 ///       minScale: PhotoViewComputedScale.contained * 0.8,
 ///       maxScale: PhotoViewComputedScale.covered * 1.1,
 ///       heroTag: "tag3",
@@ -66,6 +66,8 @@ typedef PhotoViewGalleryBuilder = PhotoViewGalleryPageOptions Function(
 /// )
 /// ```
 class PhotoViewGallery extends StatefulWidget {
+
+  /// Construct a gallery with static items through a list of [PhotoViewGalleryPageOptions].
   const PhotoViewGallery({
     Key key,
     @required this.pageOptions,
@@ -86,6 +88,10 @@ class PhotoViewGallery extends StatefulWidget {
         assert(pageOptions != null),
         super(key: key);
 
+
+  /// Construct a gallery with dynamic items.
+  ///
+  /// The builder must return a [PhotoViewGalleryPageOptions].
   const PhotoViewGallery.builder({
     Key key,
     @required this.itemCount,
@@ -235,7 +241,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
   }
 }
 
-/// A helper class that wraps individual options of a item in [PhotoViewGallery]
+/// A helper class that wraps individual options of a page in [PhotoViewGallery]
 ///
 /// The [maxScale], [minScale] and [initialScale] options may be [double] or a [PhotoViewComputedScale] constant
 ///
@@ -248,6 +254,7 @@ class PhotoViewGalleryPageOptions {
       this.maxScale,
       this.initialScale,
       this.controller,
+      this.scaleStateController,
       this.basePosition});
 
   /// Mirror to [PhotoView.imageProvider]
@@ -267,6 +274,9 @@ class PhotoViewGalleryPageOptions {
 
   /// Mirror to [PhotoView.controller]
   final PhotoViewController controller;
+
+  /// Mirror to [PhotoView.scaleStateController]
+  final PhotoViewScaleStateController scaleStateController;
 
   /// Mirror to [PhotoView.basePosition]
   final Alignment basePosition;

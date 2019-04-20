@@ -1,8 +1,4 @@
-# example
+# Example app
 
-A new Flutter project.
+The source code for the example app.
 
-## Getting Started
-
-For help getting started with Flutter, view our online
-[documentation](https://flutter.io/).

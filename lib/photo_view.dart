@@ -18,8 +18,6 @@ export 'package:photo_view/src/photo_view_typedefs.dart';
 
 /// A [StatefulWidget] that contains all the photo view rendering elements.
 ///
-/// To use the hero animation, provide [heroTag] param.
-///
 /// Sample code to use within an image:
 ///
 /// ```
@@ -93,7 +91,7 @@ export 'package:photo_view/src/photo_view_typedefs.dart';
 /// To use within an hero animation, specify [heroTag]. When [heroTag] is
 /// specified, the image provider retrieval process should be sync.
 ///
-/// Sample using hero animation
+/// Sample using hero animation:
 /// ```
 /// // screen1
 ///   ...
@@ -112,9 +110,16 @@ export 'package:photo_view/src/photo_view_typedefs.dart';
 /// )
 /// ```
 ///
-/// ### Controller
+/// **Note: If you don't want to the zoomed image do not overlaps the size of the container, use [ClipRect](https://docs.flutter.io/flutter/widgets/ClipRect-class.html)**
+///
+/// ### Controllers
 ///
 /// When the state of the transformations applied to the image (or the custom child) must be accessed, changed or listened for changes, you can use the [controller] property.
+/// Todo: add detaield controller tutorial
+///
+///
+///
+///
 ///
 class PhotoView extends StatefulWidget {
   /// Creates a widget that displays a zoomable image.
