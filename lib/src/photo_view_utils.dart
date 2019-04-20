@@ -104,16 +104,3 @@ double _scaleForCovering(Size size, Size childSize) {
 double _clampSize(double size, ScaleBoundaries scaleBoundaries) {
   return size.clamp(scaleBoundaries.minScale, scaleBoundaries.maxScale);
 }
-
-scale.silentlyListen()
-
-class SilenciableValueNotifier<T> extends ChangeNotifier implements ValueListenable<T> {
-
-  ValueNotifier(this._value);
-
-
-  @override
-  // TODO: implement value
-  T get value => null;
-
-}

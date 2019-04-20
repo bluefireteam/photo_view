@@ -107,7 +107,6 @@ class PhotoViewController
             rotation: initialRotation,
             scale: null, // initial  scale is obtained via PhotoViewScaleState, therefore will be computed via scaleStateAwareScale
             rotationFocusPoint: null)),
-  // Todo: when user set a scale, we should update to zooming in or out
         super() {
     initial = value;
     prevValue = initial;
@@ -115,12 +114,9 @@ class PhotoViewController
     _valueNotifier.addListener(_changeListener);
     _outputCtrl = StreamController<PhotoViewControllerValue>.broadcast();
     _outputCtrl.sink.add(initial);
-
-
   }
 
   ValueNotifier<PhotoViewControllerValue> _valueNotifier;
-
 
   PhotoViewControllerValue initial;
 
@@ -136,7 +132,6 @@ class PhotoViewController
   @override
   void reset() {
     value = initial;
-    _outputScaleStateCtrl.sink.add(PhotoViewScaleState.initial);
   }
 
   void _changeListener() {
@@ -148,7 +143,6 @@ class PhotoViewController
   @override
   void dispose() {
     _outputCtrl.close();
-    _outputScaleStateCtrl.close();
     _valueNotifier.dispose();
   }
 
@@ -278,5 +272,10 @@ class PhotoViewScaleStateController{
 
   void reset() {
     scaleState = PhotoViewScaleState.initial;
+  }
+
+  void dispose() {
+    _outputScaleStateCtrl.close();
+    _scaleStateNotifier.dispose();
   }
 }

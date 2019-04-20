@@ -12,10 +12,10 @@ class PhotoViewControllerDelegate {
 
 
   const PhotoViewControllerDelegate({
-    this.controller,
-    this.scaleBoundaries,
-    this.scaleStateCycle,
-    this.scaleStateController
+    @required this.controller,
+    @required this.scaleBoundaries,
+    @required this.scaleStateCycle,
+    @required this.scaleStateController
   });
 
 
