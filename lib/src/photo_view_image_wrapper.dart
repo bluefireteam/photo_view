@@ -7,7 +7,8 @@ typedef PhotoViewImageTapUpCallback = Function(BuildContext context,
 typedef PhotoViewImageTapDownCallback = Function(BuildContext context,
     TapDownDetails details, PhotoViewControllerValue controllerValue);
 
-/// Internal widget in which controls all animations lifecycles, core responses to user gestures, updates to  the controller state and mounts the entire PhotoView Layout
+/// Internal widget in which controls all animations lifecycles, core responses
+/// to user gestures, updates to  the controller state and mounts the entire PhotoView Layout
 class PhotoViewImageWrapper extends StatefulWidget {
   const PhotoViewImageWrapper({
     Key key,

@@ -36,7 +36,7 @@ class PhotoViewControllerDelegate {
       controller.setScaleInvisibly(scale);
       return;
     }
-    final double prevScale = scale;
+    final double prevScale = controller.scale ?? getScaleForScaleState(scaleStateController.prevScaleState, scaleBoundaries);
 
     final double nextScale =
         getScaleForScaleState(scaleStateController.scaleState, scaleBoundaries);
