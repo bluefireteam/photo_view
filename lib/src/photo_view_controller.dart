@@ -27,6 +27,7 @@ typedef ScaleStateListener = void Function(double prevScale, double nextScale);
 /// As it is a controller, whoever instantiates it, should [dispose] it afterwards.
 ///
 abstract class PhotoViewControllerBase<T extends PhotoViewControllerValue> {
+
   /// The output for state/value updates. Usually a broadcast [Stream]
   Stream<T> get outputStateStream;
 
@@ -58,8 +59,6 @@ abstract class PhotoViewControllerBase<T extends PhotoViewControllerValue> {
   Offset position;
 
   /// The scale factor to transform the child (image or a customChild).
-  ///
-  /// **Important**: Avoid setting this field without setting [scaleState] to [PhotoViewScaleState.zoomedIn] or [PhotoViewScaleState.zoomedOut].  <- this has to be chnaged in the future
   double scale;
 
   /// Nevermind this method :D, look away
