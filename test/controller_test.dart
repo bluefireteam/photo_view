@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:photo_view/src/photo_view_controller.dart';
-import 'package:photo_view/src/photo_view_scale_state.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -20,8 +19,7 @@ void main() {
         position: initialPosition,
         scale: null,
         rotation: initialRotation,
-        rotationFocusPoint: null,
-        scaleState: PhotoViewScaleState.initial);
+        rotationFocusPoint: null);
 
     expect(controller.value, testValue);
   });
@@ -38,19 +36,14 @@ void main() {
     controller.rotationFocusPoint = Offset.zero;
     expect(controller.rotationFocusPoint, Offset.zero);
 
-    controller.scaleState = PhotoViewScaleState.zoomedIn;
-    expect(controller.scaleState, PhotoViewScaleState.zoomedIn);
-
-    // controller.scaleState = PhotoViewScaleState.zoomedOut;
-    // expect(controller.scaleState, PhotoViewScaleState.zoomedOut);
-
-    controller.updateMultiple(
-        position: const Offset(1, 1), scaleState: PhotoViewScaleState.initial);
+    controller.updateMultiple(position: const Offset(1, 1));
     expect(controller.scale, 0.1);
     expect(controller.position, const Offset(1, 1));
     expect(controller.rotation, 0.1);
     expect(controller.rotationFocusPoint, Offset.zero);
-    expect(controller.scaleState, PhotoViewScaleState.initial);
+
+    controller.setScaleInvisibly(2.0);
+    expect(controller.scale, 2.0);
   });
   test('controller reset', () {
     controller.updateMultiple(position: const Offset(1, 1), rotation: 40);
@@ -59,43 +52,42 @@ void main() {
     expect(controller.rotation, 0.0);
   });
   test('controller stream mutation', () {
-    controller = PhotoViewController();
-
     const PhotoViewControllerValue value1 = const PhotoViewControllerValue(
-        position: Offset.zero,
-        scale: null,
-        rotation: 0.0,
-        rotationFocusPoint: null,
-        scaleState: PhotoViewScaleState.zoomedOut);
+      position: Offset.zero,
+      scale: null,
+      rotation: 1.0,
+      rotationFocusPoint: null,
+    );
 
     const PhotoViewControllerValue value2 = const PhotoViewControllerValue(
-        position: Offset.zero,
-        scale: null,
-        rotation: 1.0,
-        rotationFocusPoint: null,
-        scaleState: PhotoViewScaleState.zoomedOut);
+      position: Offset.zero,
+      scale: 3.0,
+      rotation: 1.0,
+      rotationFocusPoint: null,
+    );
 
     const PhotoViewControllerValue value3 = const PhotoViewControllerValue(
-        position: Offset.zero,
-        scale: 3.0,
-        rotation: 1.0,
-        rotationFocusPoint: null,
-        scaleState: PhotoViewScaleState.zoomedOut);
+      position: const Offset(1, 1),
+      scale: 3.0,
+      rotation: 45.0,
+      rotationFocusPoint: null,
+    );
 
     const PhotoViewControllerValue value4 = const PhotoViewControllerValue(
-        position: const Offset(1, 1),
-        scale: 3.0,
-        rotation: 45.0,
-        rotationFocusPoint: null,
-        scaleState: PhotoViewScaleState.zoomedOut);
+      position: const Offset(1, 1),
+      scale: 5.0,
+      rotation: 45.0,
+      rotationFocusPoint: null,
+    );
 
     expect(controller.outputStateStream,
         emitsInOrder([value1, value2, value3, value4]));
-    controller.scaleState = PhotoViewScaleState.zoomedOut;
+
     controller.rotation = 1.0;
     controller.scale = 3.0;
 
     controller.updateMultiple(position: const Offset(1, 1), rotation: 45.0);
-    //Testing with 'zoomedIn' and 'zoomedOut' will be diffcult as long as scaleState isn't changed in the controller's scale setter
+
+    controller.setScaleInvisibly(5.0);
   });
 }

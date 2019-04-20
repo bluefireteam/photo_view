@@ -12,35 +12,37 @@ class ControllerExample extends StatefulWidget {
 const double min = pi * -2;
 const double max = pi * 2;
 
-const double minScale = 0.05;
+const double minScale = 0.03;
 const double defScale = 0.1;
-const double maxScale = 0.2;
+const double maxScale = 0.6;
 
 class _ControllerExampleState extends State<ControllerExample> {
   PhotoViewControllerBase controller;
+  PhotoViewScaleStateController scaleStateController;
 
   int calls = 0;
 
   @override
   void initState() {
-    controller = PhotoViewController();
-    controller
+    controller = PhotoViewController()
       ..scale = defScale
-      ..scaleState = PhotoViewScaleState.initial
       ..outputStateStream.listen(onControllerState);
+
+    scaleStateController = PhotoViewScaleStateController();
     super.initState();
   }
 
   void onControllerState(PhotoViewControllerValue value) {
     setState(() {
       calls += 1;
-      print("Update stream ${value.scaleState}");
+      print("Update stream ${scaleStateController.scaleState}");
     });
   }
 
   @override
   void dispose() {
     controller.dispose();
+    scaleStateController.dispose();
     super.dispose();
   }
 
@@ -66,6 +68,7 @@ class _ControllerExampleState extends State<ControllerExample> {
                             imageProvider:
                                 const AssetImage("assets/large-image.jpg"),
                             controller: controller,
+                            scaleStateController: scaleStateController,
                             enableRotation: true,
                             initialScale: defScale,
                             minScale: minScale,
@@ -74,7 +77,7 @@ class _ControllerExampleState extends State<ControllerExample> {
                         ),
                         Positioned(
                           bottom: 0,
-                          height: 180,
+                          height: 220,
                           left: 0,
                           right: 0,
                           child: Container(
@@ -101,7 +104,7 @@ class _ControllerExampleState extends State<ControllerExample> {
       children: <Widget>[
         Text(
           "Rotation ${value.rotation}",
-          style: TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.white),
         ),
         SliderTheme(
             data: SliderTheme.of(context).copyWith(
@@ -115,7 +118,7 @@ class _ControllerExampleState extends State<ControllerExample> {
                 })),
         Text(
           "Scale ${value.scale}",
-          style: TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.white),
         ),
         SliderTheme(
             data: SliderTheme.of(context).copyWith(
@@ -126,10 +129,11 @@ class _ControllerExampleState extends State<ControllerExample> {
                 max: maxScale,
                 onChanged: (double newScale) {
                   controller.scale = newScale;
-                  controller.scaleState = newScale > defScale
-                      ? PhotoViewScaleState.zoomedIn
-                      : PhotoViewScaleState.zoomedOut;
                 })),
+        Text(
+          "ScaleState ${scaleStateController.scaleState}",
+          style: const TextStyle(color: Colors.white),
+        ),
       ],
     );
   }

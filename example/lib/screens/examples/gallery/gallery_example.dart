@@ -114,8 +114,10 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
                 builder: (BuildContext context, int index) {
                   return PhotoViewGalleryPageOptions(
                     imageProvider: AssetImage(widget.galleryItems[index].image),
-                    initialScale: PhotoViewComputedScale.contained * 0.8,
-                    minScale: PhotoViewComputedScale.contained * 0.8,
+                    initialScale:
+                        PhotoViewComputedScale.contained * (0.8 + index / 2),
+                    minScale:
+                        PhotoViewComputedScale.contained * (0.5 + index / 10),
                     maxScale: PhotoViewComputedScale.covered * 1.1,
                     heroTag: galleryItems[index].id,
                   );
