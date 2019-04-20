@@ -198,13 +198,27 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     _rotationAnimationController = AnimationController(vsync: this)
       ..addListener(handleRotationAnimation);
 
-    widget.delegate.animateOnScaleStateUpdate(scaleStateListener);
+    widget.delegate.scaleStateController.outputScaleStateStream.listen(animateOnScaleStateUpdate);
   }
 
-  void scaleStateListener(double prevScale, double nextScale) {
+  void animateOnScaleStateUpdate(PhotoViewScaleState scaleState) { // Todo: linten silently
+    final PhotoViewControllerDelegate delegate = widget.delegate;
+    final PhotoViewScaleStateController scaleStateController = delegate.scaleStateController;
+    final ScaleBoundaries scaleBoundaries = delegate.scaleBoundaries;
+    if (scaleStateController.prevScaleState !=
+        scaleStateController.scaleState &&
+        (scaleStateController.scaleState != PhotoViewScaleState.zoomedIn &&
+            scaleStateController.scaleState != PhotoViewScaleState.zoomedOut)) {
+      final double prevScale = delegate.scale ??
+          getScaleForScaleState(PhotoViewScaleState.initial, scaleBoundaries);
+
+      final double nextScale = getScaleForScaleState(scaleStateController.scaleState, scaleBoundaries);
+
       animateScale(prevScale, nextScale);
       animatePosition(widget.delegate.controller.position, Offset.zero);
       animateRotation(widget.delegate.controller.rotation, 0.0);
+    }
+
   }
 
 

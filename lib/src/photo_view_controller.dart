@@ -36,6 +36,9 @@ abstract class PhotoViewControllerBase<T extends PhotoViewControllerValue> {
   /// Closes initial streams and remove eventual listeners.
   void dispose();
 
+  // todo: docs
+  void addBlindListener(VoidCallback callback);
+
   /// The position of the image in the screen given its offset after pan gestures.
   Offset position;
 
@@ -43,6 +46,9 @@ abstract class PhotoViewControllerBase<T extends PhotoViewControllerValue> {
   ///
   /// **Important**: Avoid setting this field without setting [scaleState] to [PhotoViewScaleState.zoomedIn] or [PhotoViewScaleState.zoomedOut].  <- this has to be chnaged in the future
   double scale;
+
+  // todo: docs
+  void setScaleInvisibly(double scale);
 
   /// The rotation factor to transform the child (image or a customChild).
   double rotation;
@@ -102,7 +108,7 @@ class PhotoViewController
     implements PhotoViewControllerBase<PhotoViewControllerValue> {
   PhotoViewController(
       {Offset initialPosition = Offset.zero, double initialRotation = 0.0})
-      : _valueNotifier = ValueNotifier(PhotoViewControllerValue(
+      : _valueNotifier = BlindeableValueNotifier(PhotoViewControllerValue(
             position: initialPosition,
             rotation: initialRotation,
             scale: null, // initial  scale is obtained via PhotoViewScaleState, therefore will be computed via scaleStateAwareScale
@@ -116,7 +122,7 @@ class PhotoViewController
     _outputCtrl.sink.add(initial);
   }
 
-  ValueNotifier<PhotoViewControllerValue> _valueNotifier;
+  BlindeableValueNotifier<PhotoViewControllerValue> _valueNotifier;
 
   PhotoViewControllerValue initial;
 
@@ -138,7 +144,10 @@ class PhotoViewController
     _outputCtrl.sink.add(value);
   }
 
-
+  @override
+  void addBlindListener(VoidCallback callback) {
+    _valueNotifier.addBlindListener(callback);
+  }
 
   @override
   void dispose() {
@@ -177,6 +186,19 @@ class PhotoViewController
 
   @override
   double get scale => value.scale;
+
+  @override
+  void setScaleInvisibly(double scale){
+    if (value.scale == scale) {
+      return;
+    }
+    prevValue = value;
+    _valueNotifier.updateInvisibly(PhotoViewControllerValue(
+        position: position,
+        scale: scale,
+        rotation: rotation,
+        rotationFocusPoint: rotationFocusPoint));
+  }
 
   @override
   set rotation(double rotation) {
@@ -238,7 +260,7 @@ class PhotoViewController
 
 class PhotoViewScaleStateController{
   PhotoViewScaleStateController(){
-    _scaleStateNotifier = ValueNotifier(PhotoViewScaleState.initial);
+    _scaleStateNotifier = BlindeableValueNotifier(PhotoViewScaleState.initial);
 
     _scaleStateNotifier.addListener(_scaleStateChangeListener);
     _outputScaleStateCtrl = StreamController<PhotoViewScaleState>.broadcast();
@@ -249,7 +271,7 @@ class PhotoViewScaleStateController{
 
   PhotoViewScaleState prevScaleState;
 
-  ValueNotifier<PhotoViewScaleState> _scaleStateNotifier;
+  BlindeableValueNotifier<PhotoViewScaleState> _scaleStateNotifier;
   StreamController<PhotoViewScaleState> _outputScaleStateCtrl;
 
   Stream<PhotoViewScaleState> get outputScaleStateStream =>
@@ -265,6 +287,15 @@ class PhotoViewScaleStateController{
     prevScaleState = _scaleStateNotifier.value;
     _scaleStateNotifier.value = newValue;
   }
+
+  void setInvisibly(PhotoViewScaleState newValue){
+    if (_scaleStateNotifier.value == newValue){
+      return;
+    }
+    prevScaleState = _scaleStateNotifier.value;
+    _scaleStateNotifier.updateInvisibly(newValue);
+  }
+
 
   void _scaleStateChangeListener() {
     _outputScaleStateCtrl.sink.add(scaleState);

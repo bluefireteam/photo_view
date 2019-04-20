@@ -104,3 +104,100 @@ double _scaleForCovering(Size size, Size childSize) {
 double _clampSize(double size, ScaleBoundaries scaleBoundaries) {
   return size.clamp(scaleBoundaries.minScale, scaleBoundaries.maxScale);
 }
+
+
+class BlindeableChangeNotifier extends ChangeNotifier{
+  ObserverList<VoidCallback> _blindListeners = ObserverList<VoidCallback>();
+
+  bool _debugAssertNotDisposed() {
+    assert(() {
+      if (_blindListeners == null) {
+        throw FlutterError(
+            'A $runtimeType was used after being disposed.\n'
+                'Once you have called dispose() on a $runtimeType, it can no longer be used.'
+        );
+      }
+      return true;
+    }());
+    return true;
+  }
+
+  @override
+  bool get hasListeners {
+    return super.hasListeners || _blindListeners.isNotEmpty;
+  }
+  
+  
+  void addBlindListener(listener) {
+    assert(_debugAssertNotDisposed());
+    _blindListeners.add(listener);
+  }
+  
+  void removeBlindListener(listener) {
+    assert(_debugAssertNotDisposed());
+    _blindListeners.remove(listener);
+  }
+
+  @override
+  void dispose() {
+    _blindListeners = null;
+    super.dispose();
+  }
+
+  @protected
+  @override
+  @visibleForTesting
+  void notifyListeners() {
+    super.notifyListeners();
+
+    if (_blindListeners != null) {
+      final List<VoidCallback> localListeners = List<VoidCallback>.from(_blindListeners);
+      for (VoidCallback listener in localListeners) {
+        try {
+          if (_blindListeners.contains(listener))
+            listener();
+        } catch (exception, stack) {
+          FlutterError.reportError(FlutterErrorDetails(
+            exception: exception,
+            stack: stack,
+            library: 'Photoview library',
+            context: 'while dispatching notifications for $runtimeType',
+            informationCollector: (StringBuffer information) {
+              information.writeln('The $runtimeType sending notification was:');
+              information.write('  $this');
+            },
+          ));
+        }
+      }
+    }
+  }
+
+  @protected
+  void notifySightedListeners() {
+    super.notifyListeners();
+  }
+}
+
+class BlindeableValueNotifier<T> extends BlindeableChangeNotifier implements ValueListenable<T> {
+  BlindeableValueNotifier(this._value);
+
+  @override
+  T get value => _value;
+  T _value;
+  set value(T newValue) {
+    if (_value == newValue)
+      return;
+    _value = newValue;
+    notifyListeners();
+  }
+  
+  void updateInvisibly(T newValue){
+    if (_value == newValue)
+      return;
+    _value = newValue;
+    notifySightedListeners();
+  }
+
+  @override
+  String toString() => '${describeIdentity(this)}($value)';
+}

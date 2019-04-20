@@ -9,7 +9,7 @@ import '../photo_view.dart';
 /// A  class to hold internal layout logics
 class PhotoViewControllerDelegate {
 
-
+  // Todo: update scale afetr scalestate change externally
 
   const PhotoViewControllerDelegate({
     @required this.controller,
@@ -24,6 +24,29 @@ class PhotoViewControllerDelegate {
   final ScaleBoundaries scaleBoundaries;
   final ScaleStateCycle scaleStateCycle;
 
+  void startListeners() {
+    controller.addBlindListener(_blindScaleListener);
+    controller.addBlindListener(_blindScaleStateListener);
+  }
+  
+  void _blindScaleStateListener() {
+    if (scaleStateController.scaleState == scaleStateController.prevScaleState) {
+      return;
+    }
+    controller.setScaleInvisibly(scale);
+  }
+
+  void _blindScaleListener() {
+    if (controller.scale == controller.prevValue.scale) {
+      return;
+    }
+    final PhotoViewScaleState newScaleState = (scale > scaleBoundaries.initialScale)
+        ? PhotoViewScaleState.zoomedIn
+        : PhotoViewScaleState.zoomedOut;
+
+    scaleStateController.setInvisibly(newScaleState);
+  }
+
 
   double get scale {
     return controller.scale ?? getScaleForScaleState(
@@ -32,8 +55,7 @@ class PhotoViewControllerDelegate {
     );
   }
   set scale(double scale) {
-    // Todo: silently update scale to prevent futher reaction in scalestate
-    controller.scale = scale;
+    controller.setScaleInvisibly(scale);
   }
 
 
@@ -43,27 +65,12 @@ class PhotoViewControllerDelegate {
     double rotation,
     Offset rotationFocusPoint,
   }) {
-
     controller.updateMultiple(
       position: position,
       scale: scale,
       rotation: rotation,
       rotationFocusPoint: rotationFocusPoint
-    );
-  }
-
-  void animateOnScaleStateUpdate(void listener(double prevScale, double nextScale)){ // todo: put this to listen silently
-    if (scaleStateController.prevScaleState !=
-        scaleStateController.scaleState &&
-        (scaleStateController.scaleState != PhotoViewScaleState.zoomedIn &&
-            scaleStateController.scaleState != PhotoViewScaleState.zoomedOut)) {
-      final double prevScale = controller.scale ??
-          getScaleForScaleState(PhotoViewScaleState.initial, scaleBoundaries);
-
-      final double nextScale = getScaleForScaleState(scaleStateController.scaleState, scaleBoundaries);
-
-      listener(prevScale, nextScale);
-    }
+    ); // todo:  update it silently
   }
 
 
@@ -76,13 +83,13 @@ class PhotoViewControllerDelegate {
         ? PhotoViewScaleState.zoomedIn
         : PhotoViewScaleState.zoomedOut;
 
-    scaleStateController.scaleState = newScaleState; // Todo: update it silently
+    scaleStateController.setInvisibly(newScaleState);
   }
 
   void checkAndSetToInitialScaleState() {
     if (scaleStateController.scaleState != PhotoViewScaleState.initial &&
         scale == scaleBoundaries.initialScale) {
-      scaleStateController.scaleState = PhotoViewScaleState.initial; // Todo: update silently
+      scaleStateController.setInvisibly(PhotoViewScaleState.initial);
     }
   }
 
@@ -90,8 +97,7 @@ class PhotoViewControllerDelegate {
     final PhotoViewScaleState scaleState = scaleStateController.scaleState;
     if (scaleState == PhotoViewScaleState.zoomedIn ||
         scaleState == PhotoViewScaleState.zoomedOut) {
-      scaleStateController.scaleState =
-          scaleStateCycle(scaleState);
+      scaleStateController.scaleState = scaleStateCycle(scaleState);
       return;
     }
     final double originalScale =
