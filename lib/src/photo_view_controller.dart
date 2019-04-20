@@ -116,8 +116,6 @@ class PhotoViewControllerValue {
   String toString() {
     return 'PhotoViewControllerValue{position: $position, scale: $scale, rotation: $rotation, rotationFocusPoint: $rotationFocusPoint}';
   }
-
-
 }
 
 /// The default implementation of [PhotoViewControllerBase].
@@ -299,7 +297,6 @@ class PhotoViewController
 /// The updates should be done via [scaleState] setter and the updated lintened via [outputScaleStateStream]
 ///
 class PhotoViewScaleStateController {
-
   PhotoViewScaleStateController() {
     _scaleStateNotifier = IgnorableValueNotifier(PhotoViewScaleState.initial);
 
@@ -309,8 +306,6 @@ class PhotoViewScaleStateController {
 
     prevScaleState = PhotoViewScaleState.initial;
   }
-
-
 
   IgnorableValueNotifier<PhotoViewScaleState> _scaleStateNotifier;
   StreamController<PhotoViewScaleState> _outputScaleStateCtrl;
@@ -383,6 +378,4 @@ class PhotoViewScaleStateController {
   void removeIgnorableListener(VoidCallback callback) {
     _scaleStateNotifier.removeIgnorableListener(callback);
   }
-
-
 }

@@ -41,6 +41,9 @@ void main() {
     expect(controller.position, const Offset(1, 1));
     expect(controller.rotation, 0.1);
     expect(controller.rotationFocusPoint, Offset.zero);
+
+    controller.setScaleInvisibly(2.0);
+    expect(controller.scale, 2.0);
   });
   test('controller reset', () {
     controller.updateMultiple(position: const Offset(1, 1), rotation: 40);
@@ -49,9 +52,6 @@ void main() {
     expect(controller.rotation, 0.0);
   });
   test('controller stream mutation', () {
-    controller = PhotoViewController();
-
-
     const PhotoViewControllerValue value1 = const PhotoViewControllerValue(
       position: Offset.zero,
       scale: null,
@@ -73,12 +73,21 @@ void main() {
       rotationFocusPoint: null,
     );
 
+    const PhotoViewControllerValue value4 = const PhotoViewControllerValue(
+      position: const Offset(1, 1),
+      scale: 5.0,
+      rotation: 45.0,
+      rotationFocusPoint: null,
+    );
+
     expect(controller.outputStateStream,
-        emitsInOrder([value1, value2, value3]));
+        emitsInOrder([value1, value2, value3, value4]));
 
     controller.rotation = 1.0;
     controller.scale = 3.0;
 
     controller.updateMultiple(position: const Offset(1, 1), rotation: 45.0);
+
+    controller.setScaleInvisibly(5.0);
   });
 }
