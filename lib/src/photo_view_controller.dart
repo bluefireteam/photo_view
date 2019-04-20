@@ -27,7 +27,6 @@ typedef ScaleStateListener = void Function(double prevScale, double nextScale);
 /// As it is a controller, whoever instantiates it, should [dispose] it afterwards.
 ///
 abstract class PhotoViewControllerBase<T extends PhotoViewControllerValue> {
-
   /// The output for state/value updates. Usually a broadcast [Stream]
   Stream<T> get outputStateStream;
 
