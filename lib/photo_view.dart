@@ -17,7 +17,6 @@ export 'package:photo_view/src/photo_view_scale_state.dart';
 export 'package:photo_view/src/photo_view_controller.dart';
 export 'package:photo_view/src/photo_view_typedefs.dart';
 
-
 /// A [StatefulWidget] that contains all the photo view rendering elements.
 ///
 /// Sample code to use within an image:

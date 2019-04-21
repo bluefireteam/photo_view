@@ -108,8 +108,8 @@ In the example app, we can see what can be achieved with controllers:
 ### More screenshots
 
 
-| Custom background small image nd custom alignemnt | Limited scale | Hero animation | Part of the screen | Custom child  |
+| Custom background, <br>small image <br>and custom alignment | Limited scale | Hero animation | Part of the screen | Custom child  |
 | ------------- | ------------- | ------------- | ------------- | ------------- |
-| ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen2.gif) | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen3.gif) | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen4.gif) | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen6.gif) |
+| ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen2.gif) | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen3.gif) | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen4.gif) | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen6.gif) | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen3.gif) |
 
 

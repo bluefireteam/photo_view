@@ -1,4 +1,3 @@
-
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/src/photo_view_controller.dart';
 import 'package:test/test.dart';

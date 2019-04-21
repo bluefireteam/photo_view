@@ -66,7 +66,6 @@ typedef PhotoViewGalleryBuilder = PhotoViewGalleryPageOptions Function(
 /// )
 /// ```
 class PhotoViewGallery extends StatefulWidget {
-
   /// Construct a gallery with static items through a list of [PhotoViewGalleryPageOptions].
   const PhotoViewGallery({
     Key key,
@@ -87,7 +86,6 @@ class PhotoViewGallery extends StatefulWidget {
         builder = null,
         assert(pageOptions != null),
         super(key: key);
-
 
   /// Construct a gallery with dynamic items.
   ///
