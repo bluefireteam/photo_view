@@ -2,6 +2,7 @@ library photo_view;
 
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:photo_view/src/photo_view_computed_scale.dart';
 import 'package:photo_view/src/photo_view_controller.dart';
 import 'package:photo_view/src/photo_view_controller_delegate.dart';
@@ -17,8 +18,6 @@ export 'package:photo_view/src/photo_view_controller.dart';
 export 'package:photo_view/src/photo_view_typedefs.dart';
 
 /// A [StatefulWidget] that contains all the photo view rendering elements.
-///
-/// To use the hero animation, provide [heroTag] param.
 ///
 /// Sample code to use within an image:
 ///
@@ -93,7 +92,7 @@ export 'package:photo_view/src/photo_view_typedefs.dart';
 /// To use within an hero animation, specify [heroTag]. When [heroTag] is
 /// specified, the image provider retrieval process should be sync.
 ///
-/// Sample using hero animation
+/// Sample using hero animation:
 /// ```
 /// // screen1
 ///   ...
@@ -112,9 +111,101 @@ export 'package:photo_view/src/photo_view_typedefs.dart';
 /// )
 /// ```
 ///
-/// ### Controller
+/// **Note: If you don't want to the zoomed image do not overlaps the size of the container, use [ClipRect](https://docs.flutter.io/flutter/widgets/ClipRect-class.html)**
 ///
-/// When the state of the transformations applied to the image (or the custom child) must be accessed, changed or listened for changes, you can use the [controller] property.
+/// ## Controllers
+///
+/// Controllers, when specified to PhotoView widget, enables the author(you) to listen for state updates through a `Stream` and change those values externally.
+///
+/// While [PhotoViewScaleStateController] is only responsible for the `scaleState`, [PhotoViewController] is responsible for all fields os [PhotoViewControllerValue].
+///
+/// To use them, pass a instance of those items on [controller] or [scaleStateController];
+///
+/// Since those follows the standard controller pattern found in widgets like [PageView] and [ScrollView], whoever instantiates it, should [dispose] it afterwards.
+///
+/// Example of [controller] usage, only listening for state changes:
+///
+/// ```
+/// class _ExampleWidgetState extends State<ExampleWidget> {
+///
+///   PhotoViewController controller;
+///   double scaleCopy;
+///
+///   @override
+///   void initState() {
+///     super.initState();
+///     controller = PhotoViewController()
+///       ..outputStateStream.listen(listener);
+///   }
+///
+///   @override
+///   void dispose() {
+///     controller.dispose();
+///     super.dispose();
+///   }
+///
+///   void listener(PhotoViewControllerValue value){
+///     scaleCopy = value.scale;
+///   }
+///
+///   @override
+///   Widget build(BuildContext context) {
+///     return Stack(
+///       children: <Widget>[
+///         Positioned.fill(
+///             child: PhotoView(
+///               imageProvider: AssetImage("assets/pudim.png"),
+///               controller: controller,
+///             );
+///         ),
+///         Text("Scale applied: $scaleCopy")
+///       ],
+///     );
+///   }
+/// }
+/// ```
+///
+/// An example of [scaleStateController] with state changes:
+/// ```
+/// class _ExampleWidgetState extends State<ExampleWidget> {
+///
+///   PhotoViewScaleStateController scaleStateController;
+///
+///   @override
+///   void initState() {
+///     super.initState();
+///     scaleStateController = PhotoViewScaleStateController();
+///   }
+///
+///   @override
+///   void dispose() {
+///     scaleStateController.dispose();
+///     super.dispose();
+///   }
+///
+///   void goBack(){
+///     scaleStateController.scaleState = PhotoViewScaleState.originalSize;
+///   }
+///
+///   @override
+///   Widget build(BuildContext context) {
+///     return Stack(
+///       children: <Widget>[
+///         Positioned.fill(
+///             child: PhotoView(
+///               imageProvider: AssetImage("assets/pudim.png"),
+///               scaleStateController: scaleStateController,
+///               );
+///         ),
+///         FlatButton(
+///           child: Text("Go to original size"),
+///           onPressed: goBack,
+///         );
+///       ],
+///     );
+///   }
+/// }
+/// ```
 ///
 class PhotoView extends StatefulWidget {
   /// Creates a widget that displays a zoomable image.
@@ -232,10 +323,10 @@ class PhotoView extends StatefulWidget {
   /// [PhotoViewComputedScale], that can be multiplied by a double
   final dynamic initialScale;
 
-  /// A way to control PhotovVew transformation factors externally and listen to its updates
+  /// A way to control PhotoView transformation factors externally and listen to its updates
   final PhotoViewControllerBase controller;
 
-  // Todo: docs
+  /// A way to control PhotoViewScaleState value externally and listen to its updates
   final PhotoViewScaleStateController scaleStateController;
 
   /// The alignment of the scale origin in relation to the widget size. Default is [Alignment.center]

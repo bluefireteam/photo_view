@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:photo_view/src/photo_view_utils.dart';
 
 import '../photo_view.dart';
@@ -83,7 +83,7 @@ class PhotoViewControllerDelegate {
         position: position,
         scale: scale,
         rotation: rotation,
-        rotationFocusPoint: rotationFocusPoint); // todo:  update it silently
+        rotationFocusPoint: rotationFocusPoint);
   }
 
   void updateScaleStateFromNewScale(double scaleFactor, double newScale) {
