@@ -95,13 +95,21 @@ See the code [here](https://github.com/renancaraujo/photo_view/blob/master/examp
 
 ## Usage with controllers
 
-// Todo: document controllers
+When you need to interact with PhotoView's internal state values, `PhotoViewController` and `PhotoViewScaleStateController` are the way to.
+
+Controllers, when specified to PhotoView widget, enables the author(you) to listen for state updates through a `Stream` and change those values externally.
+
+Read more about controllers [here](https://pub.dartlang.org/documentation/photo_view/latest/photo_view/PhotoView-class.html#controllers).
+
+In the example app, we can see what can be achieved with controllers: 
+
+![In action](https://user-images.githubusercontent.com/6718144/56464051-3328fd00-63b7-11e9-9c4d-73b04f72a81e.gif)
 
 ### More screenshots
 
 
-| Small image | Base position  | Limited scale | Hero animation | Part of the screen | Custom child  |
-| ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
+| Custom background small image nd custom alignemnt | Limited scale | Hero animation | Part of the screen | Custom child  |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
 | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen2.gif) | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen3.gif) | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen4.gif) | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen6.gif) |
 
 
