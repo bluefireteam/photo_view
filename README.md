@@ -110,6 +110,6 @@ In the example app, we can see what can be achieved with controllers:
 
 | Custom background, <br>small image <br>and custom alignment | Limited scale | Hero animation | Part of the screen | Custom child  |
 | ------------- | ------------- | ------------- | ------------- | ------------- |
-| ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen2.gif) | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen3.gif) | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen4.gif) | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen6.gif) | ![In action](https://github.com/renancaraujo/photo_view/blob/master/screen3.gif) |
+| ![In action](https://user-images.githubusercontent.com/6718144/56464128-ff4ed700-63b8-11e9-802e-a933b3e79ea3.gif) | ![In action](https://user-images.githubusercontent.com/6718144/56464182-23f77e80-63ba-11e9-87a9-4838ef20af7e.gif) | ![In action](https://user-images.githubusercontent.com/6718144/56464202-9700f500-63ba-11e9-9f47-14e8bf441958.gif) | ![In action](https://user-images.githubusercontent.com/6718144/56464215-d92a3680-63ba-11e9-9c37-d4796e992123.gif) | ![In action](https://user-images.githubusercontent.com/6718144/56464225-1b537800-63bb-11e9-9c5b-ea8632c99969.gif) |
 
 
