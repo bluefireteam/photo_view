@@ -45,13 +45,10 @@ Widget build(BuildContext context) {
 
 Result: 
 
-![In action](https://github.com/renancaraujo/photo_view/blob/master/screen1.gif)
+![In action](https://user-images.githubusercontent.com/6718144/56463745-45ec0380-63b0-11e9-8e56-0dba5deabb1a.gif)
 
 
 Read more about the `PhotoView` widget [here](https://pub.dartlang.org/documentation/photo_view/latest/photo_view/PhotoView-class.html).
-
-
-## Usage with controllers
 
 
 ## Gallery
@@ -90,10 +87,15 @@ Widget build(BuildContext context) {
 
 Gallery sample in the example app: 
 
-![In action](https://user-images.githubusercontent.com/6718144/46573612-2e967d00-c96e-11e8-9b9f-a70d5a62861d.gif)
+![In action](https://user-images.githubusercontent.com/6718144/56463769-e93d1880-63b0-11e9-8586-55827c95b89c.gif)
 
 See the code [here](https://github.com/renancaraujo/photo_view/blob/master/example/lib/screens/examples/gallery/gallery_example.dart).
 
+
+
+## Usage with controllers
+
+// Todo: document controllers
 
 ### More screenshots
 
