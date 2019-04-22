@@ -35,7 +35,6 @@ class _ControllerExampleState extends State<ControllerExample> {
   void onControllerState(PhotoViewControllerValue value) {
     setState(() {
       calls += 1;
-      print("Update stream ${scaleStateController.scaleState}");
     });
   }
 
