@@ -1,10 +1,11 @@
 import 'package:flutter/widgets.dart';
 
 class GalleryExampleItem {
-  GalleryExampleItem({this.id, this.image});
+  GalleryExampleItem({this.id, this.resource, this.isSvg = false});
 
-  String id;
-  String image;
+  final String id;
+  final String resource;
+  final bool isSvg;
 }
 
 class GalleryExampleItemThumbnail extends StatelessWidget {
@@ -24,7 +25,7 @@ class GalleryExampleItemThumbnail extends StatelessWidget {
           onTap: onTap,
           child: Hero(
             tag: galleryExampleItem.id,
-            child: Image.asset(galleryExampleItem.image, height: 80.0),
+            child: Image.asset(galleryExampleItem.resource, height: 80.0),
           ),
         ));
   }
@@ -33,14 +34,15 @@ class GalleryExampleItemThumbnail extends StatelessWidget {
 List<GalleryExampleItem> galleryItems = <GalleryExampleItem>[
   GalleryExampleItem(
     id: "tag1",
-    image: "assets/gallery1.jpg",
+    resource: "assets/gallery1.jpg",
   ),
-  GalleryExampleItem(
-    id: "tag2",
-    image: "assets/gallery2.jpg",
-  ),
+  GalleryExampleItem(id: "tag2", resource: "assets/firefox.svg", isSvg: true),
   GalleryExampleItem(
     id: "tag3",
-    image: "assets/gallery3.jpg",
+    resource: "assets/gallery2.jpg",
+  ),
+  GalleryExampleItem(
+    id: "tag4",
+    resource: "assets/gallery3.jpg",
   ),
 ];

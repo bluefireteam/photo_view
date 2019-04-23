@@ -210,23 +210,43 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
 
   Widget _buildItem(BuildContext context, int index) {
     final pageOption = _buildPageOption(context, index);
+    final isCustomChild = pageOption.child != null;
+
+    final PhotoView photoView = isCustomChild
+        ? PhotoView.customChild(
+            key: ObjectKey(index),
+            child: pageOption.child,
+            childSize: pageOption.childSize,
+            backgroundDecoration: widget.backgroundDecoration,
+            controller: pageOption.controller,
+            customSize: widget.customSize,
+            heroTag: pageOption.heroTag,
+            scaleStateChangedCallback: scaleStateChangedCallback,
+            enableRotation: widget.enableRotation,
+            transitionOnUserGestures: widget.transitionOnUserGestures,
+            initialScale: pageOption.initialScale,
+            minScale: pageOption.minScale,
+            maxScale: pageOption.maxScale,
+          )
+        : PhotoView(
+            key: ObjectKey(index),
+            imageProvider: pageOption.imageProvider,
+            loadingChild: widget.loadingChild,
+            backgroundDecoration: widget.backgroundDecoration,
+            controller: pageOption.controller,
+            gaplessPlayback: widget.gaplessPlayback,
+            customSize: widget.customSize,
+            heroTag: pageOption.heroTag,
+            scaleStateChangedCallback: scaleStateChangedCallback,
+            enableRotation: widget.enableRotation,
+            transitionOnUserGestures: widget.transitionOnUserGestures,
+            initialScale: pageOption.initialScale,
+            minScale: pageOption.minScale,
+            maxScale: pageOption.maxScale,
+          );
+
     return ClipRect(
-      child: PhotoView(
-        key: ObjectKey(index),
-        imageProvider: pageOption.imageProvider,
-        loadingChild: widget.loadingChild,
-        backgroundDecoration: widget.backgroundDecoration,
-        controller: pageOption.controller,
-        gaplessPlayback: widget.gaplessPlayback,
-        customSize: widget.customSize,
-        heroTag: pageOption.heroTag,
-        scaleStateChangedCallback: scaleStateChangedCallback,
-        enableRotation: widget.enableRotation,
-        transitionOnUserGestures: widget.transitionOnUserGestures,
-        initialScale: pageOption.initialScale,
-        minScale: pageOption.minScale,
-        maxScale: pageOption.maxScale,
-      ),
+      child: photoView,
     );
   }
 
@@ -253,7 +273,24 @@ class PhotoViewGalleryPageOptions {
       this.initialScale,
       this.controller,
       this.scaleStateController,
-      this.basePosition});
+      this.basePosition})
+      : child = null,
+        childSize = null,
+        assert(imageProvider != null);
+
+  PhotoViewGalleryPageOptions.customChild(
+      {@required this.child,
+      @required this.childSize,
+      this.heroTag,
+      this.minScale,
+      this.maxScale,
+      this.initialScale,
+      this.controller,
+      this.scaleStateController,
+      this.basePosition})
+      : imageProvider = null,
+        assert(child != null),
+        assert(childSize != null);
 
   /// Mirror to [PhotoView.imageProvider]
   final ImageProvider imageProvider;
@@ -278,4 +315,10 @@ class PhotoViewGalleryPageOptions {
 
   /// Mirror to [PhotoView.basePosition]
   final Alignment basePosition;
+
+  /// Mirror to [PhotoView.child]
+  final Widget child;
+
+  /// Mirror to [PhotoView.childSize]
+  final Size childSize;
 }
