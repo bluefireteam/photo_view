@@ -20,7 +20,7 @@ class CustomChildExample extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(20.0),
                 child: const Text(
-                  "Example of usage in a contained context",
+                  "Example of usage with something different than a image",
                   style: const TextStyle(fontSize: 18.0),
                 ),
               ),
@@ -38,7 +38,7 @@ class CustomChildExample extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             const Text(
-                              "Hello there, this is a text, that is a svg",
+                              "Hello there, this is a text, that is a svg:",
                               style: const TextStyle(fontSize: 10.0),
                               textAlign: TextAlign.center,
                             ),
