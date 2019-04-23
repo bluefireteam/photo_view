@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:photo_view_example/screens/app_bar.dart';
@@ -41,15 +42,15 @@ class GalleryExample extends StatelessWidget {
                 },
               ),
               GalleryExampleItemThumbnail(
-                galleryExampleItem: galleryItems[1],
-                onTap: () {
-                  open(context, 1);
-                },
-              ),
-              GalleryExampleItemThumbnail(
                 galleryExampleItem: galleryItems[2],
                 onTap: () {
                   open(context, 2);
+                },
+              ),
+              GalleryExampleItemThumbnail(
+                galleryExampleItem: galleryItems[3],
+                onTap: () {
+                  open(context, 3);
                 },
               ),
             ],
@@ -111,16 +112,7 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
             children: <Widget>[
               PhotoViewGallery.builder(
                 scrollPhysics: const BouncingScrollPhysics(),
-                builder: (BuildContext context, int index) {
-                  return PhotoViewGalleryPageOptions(
-                    imageProvider: AssetImage(widget.galleryItems[index].image),
-                    initialScale: PhotoViewComputedScale.contained,
-                    minScale:
-                        PhotoViewComputedScale.contained * (0.5 + index / 10),
-                    maxScale: PhotoViewComputedScale.covered * 1.1,
-                    heroTag: galleryItems[index].id,
-                  );
-                },
+                builder: _buildItem,
                 itemCount: galleryItems.length,
                 loadingChild: widget.loadingChild,
                 backgroundDecoration: widget.backgroundDecoration,
@@ -138,5 +130,32 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
             ],
           )),
     );
+  }
+
+  PhotoViewGalleryPageOptions _buildItem(BuildContext context, int index) {
+    GalleryExampleItem item = widget.galleryItems[index];
+    return item.isSvg
+        ? PhotoViewGalleryPageOptions.customChild(
+            child: Container(
+              width: 300,
+              height: 300,
+              child: SvgPicture.asset(
+                item.resource,
+                height: 200.0,
+              ),
+            ),
+            childSize: const Size(300, 300),
+            initialScale: PhotoViewComputedScale.contained,
+            minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
+            maxScale: PhotoViewComputedScale.covered * 1.1,
+            heroTag: item.id,
+          )
+        : PhotoViewGalleryPageOptions(
+            imageProvider: AssetImage(item.resource),
+            initialScale: PhotoViewComputedScale.contained,
+            minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
+            maxScale: PhotoViewComputedScale.covered * 1.1,
+            heroTag: item.id,
+          );
   }
 }
