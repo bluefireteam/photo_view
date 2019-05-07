@@ -5,7 +5,8 @@ author: Renan C. Araújo <renan@caraujo.me>
 homepage: https://github.com/renancaraujo/photo_view
 
 environment:
-  sdk: ">=2.0.0 <3.0.0"
+  sdk: ">=2.2.0 <3.0.0"
+  flutter: ">=1.5.9-pre.94 <2.0.0"
 
 dependencies:
   after_layout: ^1.0.7
