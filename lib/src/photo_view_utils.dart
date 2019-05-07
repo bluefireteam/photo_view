@@ -1,8 +1,8 @@
 import 'dart:math' as math;
 import 'dart:ui';
 
-import 'package:flutter/widgets.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:photo_view/photo_view.dart';
 
 double getScaleForScaleState(
@@ -118,8 +118,13 @@ class IgnorableChangeNotifier extends ChangeNotifier {
   bool _debugAssertNotDisposed() {
     assert(() {
       if (_ignorableListeners == null) {
-        throw FlutterError('A $runtimeType was used after being disposed.\n'
-            'Once you have called dispose() on a $runtimeType, it can no longer be used.');
+        throw FlutterError.fromParts(
+          <DiagnosticsNode>[
+            ErrorSummary('A $runtimeType was used after being disposed.'),
+            ErrorDescription(
+                'Once you have called dispose() on a $runtimeType, it can no longer be used.'),
+          ],
+        );
       }
       return true;
     }());
@@ -162,16 +167,19 @@ class IgnorableChangeNotifier extends ChangeNotifier {
             listener();
           }
         } catch (exception, stack) {
-          FlutterError.reportError(FlutterErrorDetails(
-            exception: exception,
-            stack: stack,
-            library: 'Photoview library',
-            context: 'while dispatching notifications for $runtimeType',
-            informationCollector: (StringBuffer information) {
-              information.writeln('The $runtimeType sending notification was:');
-              information.write('  $this');
-            },
-          ));
+          FlutterError.reportError(
+            FlutterErrorDetails(
+              exception: exception,
+              stack: stack,
+              library: 'Photoview library',
+              context: ErrorDescription(
+                  'while dispatching notifications for $runtimeType'),
+              informationCollector: () sync* {
+                yield DiagnosticsProperty<IgnorableChangeNotifier>(
+                    '$runtimeType sending notification', this);
+              },
+            ),
+          );
         }
       }
     }
@@ -193,6 +201,7 @@ class IgnorableValueNotifier<T> extends IgnorableChangeNotifier
   @override
   T get value => _value;
   T _value;
+
   set value(T newValue) {
     if (_value == newValue) {
       return;
