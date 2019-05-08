@@ -118,13 +118,7 @@ class IgnorableChangeNotifier extends ChangeNotifier {
   bool _debugAssertNotDisposed() {
     assert(() {
       if (_ignorableListeners == null) {
-        throw FlutterError.fromParts(
-          <DiagnosticsNode>[
-            ErrorSummary('A $runtimeType was used after being disposed.'),
-            ErrorDescription(
-                'Once you have called dispose() on a $runtimeType, it can no longer be used.'),
-          ],
-        );
+        AssertionError(['A $runtimeType was used after being disposed.', 'Once you have called dispose() on a $runtimeType, it can no longer be used.']);
       }
       return true;
     }());
@@ -157,7 +151,6 @@ class IgnorableChangeNotifier extends ChangeNotifier {
   @visibleForTesting
   void notifyListeners() {
     super.notifyListeners();
-
     if (_ignorableListeners != null) {
       final List<VoidCallback> localListeners =
           List<VoidCallback>.from(_ignorableListeners);
@@ -172,12 +165,6 @@ class IgnorableChangeNotifier extends ChangeNotifier {
               exception: exception,
               stack: stack,
               library: 'Photoview library',
-              context: ErrorDescription(
-                  'while dispatching notifications for $runtimeType'),
-              informationCollector: () sync* {
-                yield DiagnosticsProperty<IgnorableChangeNotifier>(
-                    '$runtimeType sending notification', this);
-              },
             ),
           );
         }
