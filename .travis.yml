@@ -1,18 +1,29 @@
 os:
 - linux
-sudo: false
+sudo: required
 language: android
+
+env:
+  global:
+  - ANDROID_API_LEVEL=28
+  - ANDROID_BUILD_TOOLS_VERSION=28.0.3
+  - ANDROID_ABI=armeabi-v7a
+
 android:
   components:
-    - build-tools-28.0.3
-    - android-28
-    - extra-android-m2repository
+    - tools
+    - build-tools-$ANDROID_BUILD_TOOLS_VERSION
+    - android-$ANDROID_API_LEVEL
+    - extra-android-m2repositoryy
     - extra-google-google_play_services
     - extra-google-m2repository
   licenses:
-    - android-sdk-preview-license-52d11cd2
-    - android-sdk-license-.+
-    - google-gdk-license-.+
+    - 'android-sdk-license-.+'
+    - 'google-gdk-license-.+'
+    - 'android-sdk-preview-license-.+'
+
+dist: trusty
+
 addons:
   apt:
     sources:
@@ -20,26 +31,41 @@ addons:
     packages:
       - libstdc++6
       - fonts-droid
+
 before_install:
-  - yes | sdkmanager "platforms;android-28"
-  - yes | sdkmanager "platforms;android-27"
+  - touch $HOME/.android/repositories.cfg
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
+cache:
+  directories:
+    - $HOME/.pub-cache
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+    - $HOME/.android/build-cache
+
 before_script:
   - git clone https://github.com/flutter/flutter.git -b beta --depth 1
   - mv flutter $HOME/flutter
   - export PATH=$HOME/flutter/bin:$PATH
   - flutter doctor
+
 script:
   - set -e
   - "./format.sh"
   - set +e
   - flutter test
+
 before_deploy:
+  - yes | sdkmanager "platforms;android-28"
+  - yes | sdkmanager "platforms;android-27"
   - flutter doctor
   - cd example
   - flutter packages get
   - flutter build apk
-  - cd ..
-  - ls example/build/app/outputs/apk/release/
+
 deploy:
   provider: releases
   api_key:
@@ -48,12 +74,4 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
-before_cache:
-  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
-cache:
-  directories:
-  - "$HOME/.pub-cache"
-  - "$HOME/.gradle/caches/"
-  - "$HOME/.gradle/wrapper/"
-  - "$HOME/.android/build-cache"
+

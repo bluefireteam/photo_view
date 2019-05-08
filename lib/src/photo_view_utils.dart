@@ -118,7 +118,10 @@ class IgnorableChangeNotifier extends ChangeNotifier {
   bool _debugAssertNotDisposed() {
     assert(() {
       if (_ignorableListeners == null) {
-        AssertionError(['A $runtimeType was used after being disposed.', 'Once you have called dispose() on a $runtimeType, it can no longer be used.']);
+        AssertionError([
+          'A $runtimeType was used after being disposed.',
+          'Once you have called dispose() on a $runtimeType, it can no longer be used.'
+        ]);
       }
       return true;
     }());
