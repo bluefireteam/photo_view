@@ -210,6 +210,14 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     super.dispose();
   }
 
+  void onTapUp(TapUpDetails details) {
+    widget.onTapUp(context, details, widget.delegate.controller.value);
+  }
+
+  void onTapDown(TapDownDetails details) {
+    widget.onTapDown(context, details, widget.delegate.controller.value);
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
@@ -253,18 +261,8 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
               onScaleStart: onScaleStart,
               onScaleUpdate: onScaleUpdate,
               onScaleEnd: onScaleEnd,
-              onTapUp: (TapUpDetails details) {
-                if (widget.onTapUp == null) {
-                  return;
-                }
-                widget.onTapUp(context, details, value);
-              },
-              onTapDown: (TapDownDetails details) {
-                if (widget.onTapDown == null) {
-                  return;
-                }
-                widget.onTapDown(context, details, value);
-              },
+              onTapUp: widget.onTapUp == null ? null : onTapUp,
+              onTapDown: widget.onTapDown == null ? null : onTapDown,
             );
           } else {
             return Container();
