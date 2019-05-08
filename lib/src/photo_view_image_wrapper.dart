@@ -263,7 +263,6 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
               onScaleEnd: onScaleEnd,
               onTapUp: widget.onTapUp == null ? null : onTapUp,
               onTapDown: widget.onTapDown == null ? null : onTapDown,
-
             );
           } else {
             return Container();
