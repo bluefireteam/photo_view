@@ -365,7 +365,9 @@ class _PhotoViewState extends State<PhotoView>
     final Completer completer = Completer<ImageInfo>();
     final ImageStream stream =
         widget.imageProvider.resolve(const ImageConfiguration());
-    final listener = (ImageInfo info, bool synchronousCall) {
+
+    final ImageStreamListener listener =
+        ImageStreamListener((ImageInfo info, bool synchronousCall) {
       if (!completer.isCompleted) {
         completer.complete(info);
         if (mounted) {
@@ -376,7 +378,7 @@ class _PhotoViewState extends State<PhotoView>
           });
         }
       }
-    };
+    });
     stream.addListener(listener);
     completer.future.then((_) {
       stream.removeListener(listener);
