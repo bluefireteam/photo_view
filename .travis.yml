@@ -47,11 +47,11 @@ cache:
     - $HOME/.android/build-cache
 
 before_script:
-  - git clone https://github.com/flutter/flutter.git -b master --depth 1
+  - git clone https://github.com/flutter/flutter.git --depth 1
   - mv flutter $HOME/flutter
   - export PATH=$HOME/flutter/bin:$PATH
   - flutter channel master
-  - flutter doctor
+  - flutter doctor -v
 
 script:
   - set -e
@@ -62,7 +62,7 @@ script:
 before_deploy:
   - yes | sdkmanager "platforms;android-28"
   - yes | sdkmanager "platforms;android-27"
-  - flutter doctor
+  - flutter doctor -v
   - cd example
   - flutter packages get
   - flutter build apk
