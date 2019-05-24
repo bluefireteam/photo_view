@@ -377,9 +377,9 @@ class _PhotoViewState extends State<PhotoView>
         }
       }
     };
-    stream.addListener(listener);
+    stream.addListener(ImageStreamListener(listener));
     completer.future.then((_) {
-      stream.removeListener(listener);
+      stream.removeListener(ImageStreamListener(listener));
     });
     return completer.future;
   }
