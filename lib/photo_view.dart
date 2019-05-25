@@ -365,7 +365,8 @@ class _PhotoViewState extends State<PhotoView>
     final Completer completer = Completer<ImageInfo>();
     final ImageStream stream =
         widget.imageProvider.resolve(const ImageConfiguration());
-    final listener = ImageStreamListener((ImageInfo info, bool synchronousCall) {
+    final listener =
+        ImageStreamListener((ImageInfo info, bool synchronousCall) {
       if (!completer.isCompleted) {
         completer.complete(info);
         if (mounted) {
