@@ -15,13 +15,8 @@ cache:
 
 before_script:
   - git clone https://github.com/flutter/flutter.git -b dev --depth 1
-  - cd flutter
-  - git clean -xfd
-  - git pull
-  - cd ..
   - mv flutter $HOME/flutter
   - export PATH=$HOME/flutter/bin:$PATH
-  - flutter channel master
   - flutter doctor -v
 
 script:
