@@ -1,77 +1,27 @@
 os:
 - linux
 sudo: required
-language: android
-
-env:
-  global:
-  - ANDROID_API_LEVEL=28
-  - ANDROID_BUILD_TOOLS_VERSION=28.0.3
-  - ANDROID_ABI=armeabi-v7a
-
-android:
-  components:
-    - tools
-    - build-tools-$ANDROID_BUILD_TOOLS_VERSION
-    - android-$ANDROID_API_LEVEL
-    - extra-android-m2repositoryy
-    - extra-google-google_play_services
-    - extra-google-m2repository
-  licenses:
-    - 'android-sdk-license-.+'
-    - 'google-gdk-license-.+'
-    - 'android-sdk-preview-license-.+'
-
-dist: trusty
-
+dist: xenial
 addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
     packages:
       - libstdc++6
-      - fonts-droid
-
-before_install:
-  - touch $HOME/.android/repositories.cfg
-
-before_cache:
-  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 
 cache:
   directories:
     - $HOME/.pub-cache
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
-    - $HOME/.android/build-cache
 
 before_script:
-  - git clone https://github.com/flutter/flutter.git -b master --depth 1
+  - git clone https://github.com/flutter/flutter.git -b dev --depth 1
   - mv flutter $HOME/flutter
   - export PATH=$HOME/flutter/bin:$PATH
-  - flutter doctor
+  - flutter doctor -v
 
 script:
   - set -e
   - "./format.sh"
   - set +e
   - flutter test
-
-before_deploy:
-  - yes | sdkmanager "platforms;android-28"
-  - yes | sdkmanager "platforms;android-27"
-  - flutter doctor
-  - cd example
-  - flutter packages get
-  - flutter build apk
-
-deploy:
-  provider: releases
-  api_key:
-    secure: QJJ9u1bdSRC42cQ3CNuRHU8PomAKIQlKkxld7z+EVC46sdTPJb/b3S2XR7NjCxXpx3brwVSYY/23mcgyX3OfUaKsbZ5EILobBIGsBnLFWdAvWK2OsXF64vNStF8zf1GLCTYfU5+DX1rl+e9+iEd6TZJ8MO+4x/tx2sidVs+Uo1wDqQwcTifuyLWw0sR5dO6i6EWeN2nejNi7zWImHW51KjIS3wjiOfepLGwhiQj4Xtt1qPy0vWIBDypLYeUo3xfE4pydZjsozv74RoTdmDD9nrKOXbBA/Gj4a1SIxmaBZJr4ADZ8/kqTrdTDKpdSuVzHdr7XnJv3lLNbz0aCjB+IUh+X7fyqtGMFvJfPZIo2m9o93DTgHlD0+tCQ+pdmJ6nlDFQOWnOoBHxsEmlUKttIzamdILKHrL6SvyxXtT0AehYPTPT4w2fk2qqPLCwZOLgd7aIg/Qfzqneke2qWXy4OF/85pIo+wJeAXQXKtN61bFtFCiP0YeKKhZ2U4GYN7LsduWwi9xDX22UOe6y2VgKQNmhbBtKctGaPZQGuP49H2nGEAX//fbO1ucUuKTDVeOVDTqVXYVtjAAiTKgD14IK3NnCA81vJGtCEwtLEZHh6BDCF+RhPHneqo/20AFjXHobuUCMTCPq1UNwuEoYlh2ECwltO/rvVIJ8EcINKAO70d6U=
-  file: example/build/app/outputs/apk/release/app-release.apk
-  skip_cleanup: true
-  on:
-    tags: true
 
