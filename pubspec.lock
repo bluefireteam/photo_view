@@ -7,14 +7,14 @@ packages:
       name: after_layout
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.7"
+    version: "1.0.7+1"
   analyzer:
     dependency: transitive
     description:
       name: analyzer
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.36.0"
+    version: "0.36.3"
   args:
     dependency: transitive
     description:
@@ -64,6 +64,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.6"
+  csslib:
+    dependency: transitive
+    description:
+      name: csslib
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.16.0"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -80,7 +87,7 @@ packages:
       name: front_end
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.15"
+    version: "0.1.18"
   glob:
     dependency: transitive
     description:
@@ -88,6 +95,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.7"
+  html:
+    dependency: transitive
+    description:
+      name: html
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.14.0+2"
   http:
     dependency: transitive
     description:
@@ -101,7 +115,7 @@ packages:
       name: http_multi_server
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.5"
+    version: "2.0.6"
   http_parser:
     dependency: transitive
     description:
@@ -129,14 +143,14 @@ packages:
       name: json_rpc_2
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.10"
+    version: "2.1.0"
   kernel:
     dependency: transitive
     description:
       name: kernel
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.15"
+    version: "0.3.18"
   matcher:
     dependency: transitive
     description:
@@ -248,7 +262,7 @@ packages:
       name: shelf_web_socket
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.2+5"
+    version: "0.2.3"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -344,7 +358,7 @@ packages:
       name: vm_service_client
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.6+1"
+    version: "0.2.6+2"
   watcher:
     dependency: transitive
     description:
@@ -358,7 +372,7 @@ packages:
       name: web_socket_channel
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.12"
+    version: "1.0.13"
   yaml:
     dependency: transitive
     description:
@@ -368,4 +382,4 @@ packages:
     version: "2.1.15"
 sdks:
   dart: ">=2.2.0 <3.0.0"
-  flutter: ">=1.4.7 <2.0.0"
+  flutter: ">=1.5.9-pre.94 <2.0.0"

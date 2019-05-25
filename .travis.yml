@@ -47,7 +47,7 @@ cache:
     - $HOME/.android/build-cache
 
 before_script:
-  - git clone https://github.com/flutter/flutter.git -b beta --depth 1
+  - git clone https://github.com/flutter/flutter.git -b master --depth 1
   - mv flutter $HOME/flutter
   - export PATH=$HOME/flutter/bin:$PATH
   - flutter doctor
