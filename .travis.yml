@@ -15,6 +15,13 @@ cache:
 
 before_script:
   - git clone https://github.com/flutter/flutter.git --depth 1
+  - cd flutter
+  - git clean -xfd
+  - git stash save --keep-index
+  - git stash drop
+  - git pull
+  - cd ..
+  - flutter doctor
   - mv flutter $HOME/flutter
   - export PATH=$HOME/flutter/bin:$PATH
   - flutter channel master
