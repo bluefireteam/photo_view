@@ -3,6 +3,7 @@ library photo_view_gallery;
 import 'package:flutter/widgets.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/src/photo_view_controller.dart';
+import 'package:photo_view/src/photo_view_image_wrapper.dart';
 import 'package:photo_view/src/photo_view_scale_state.dart';
 
 /// A type definition for a [Function] that receives a index after a page change in [PhotoViewGallery]
@@ -219,6 +220,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             childSize: pageOption.childSize,
             backgroundDecoration: widget.backgroundDecoration,
             controller: pageOption.controller,
+            scaleStateController: pageOption.scaleStateController,
             customSize: widget.customSize,
             heroTag: pageOption.heroTag,
             scaleStateChangedCallback: scaleStateChangedCallback,
@@ -234,6 +236,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             loadingChild: widget.loadingChild,
             backgroundDecoration: widget.backgroundDecoration,
             controller: pageOption.controller,
+            scaleStateController: pageOption.scaleStateController,
             gaplessPlayback: widget.gaplessPlayback,
             customSize: widget.customSize,
             heroTag: pageOption.heroTag,
@@ -273,7 +276,9 @@ class PhotoViewGalleryPageOptions {
       this.initialScale,
       this.controller,
       this.scaleStateController,
-      this.basePosition})
+      this.basePosition,
+      this.onTapUp,
+      this.onTapDown})
       : child = null,
         childSize = null,
         assert(imageProvider != null);
@@ -287,7 +292,9 @@ class PhotoViewGalleryPageOptions {
       this.initialScale,
       this.controller,
       this.scaleStateController,
-      this.basePosition})
+      this.basePosition,
+      this.onTapUp,
+      this.onTapDown})
       : imageProvider = null,
         assert(child != null),
         assert(childSize != null);
@@ -321,4 +328,10 @@ class PhotoViewGalleryPageOptions {
 
   /// Mirror to [PhotoView.childSize]
   final Size childSize;
+
+  /// Mirror to [PhotoView.onTapUp]
+  final PhotoViewImageTapUpCallback onTapUp;
+
+  /// Mirror to [PhotoView.onTapDown]
+  final PhotoViewImageTapDownCallback onTapDown;
 }
