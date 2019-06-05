@@ -349,8 +349,7 @@ class PhotoView extends StatefulWidget {
   }
 }
 
-class _PhotoViewState extends State<PhotoView>
-    with AfterLayoutMixin<PhotoView> {
+class _PhotoViewState extends State<PhotoView> with AfterLayoutMixin<PhotoView> {
   bool _loading;
   Size _childSize;
   Size _outerSize;
@@ -363,21 +362,18 @@ class _PhotoViewState extends State<PhotoView>
 
   Future<ImageInfo> _getImage() {
     final Completer completer = Completer<ImageInfo>();
-    final ImageStream stream =
-        widget.imageProvider.resolve(const ImageConfiguration());
-    final listener =
-        ImageStreamListener((ImageInfo info, bool synchronousCall) {
+    final ImageStream stream = widget.imageProvider.resolve(const ImageConfiguration());
+    final listener = (ImageInfo info, bool synchronousCall) {
       if (!completer.isCompleted) {
         completer.complete(info);
         if (mounted) {
           setState(() {
-            _childSize =
-                Size(info.image.width.toDouble(), info.image.height.toDouble());
+            _childSize = Size(info.image.width.toDouble(), info.image.height.toDouble());
             _loading = false;
           });
         }
       }
-    });
+    };
     stream.addListener(listener);
     completer.future.then((_) {
       stream.removeListener(listener);
@@ -473,9 +469,7 @@ class _PhotoViewState extends State<PhotoView>
 
   @override
   Widget build(BuildContext context) {
-    return widget.child == null
-        ? _buildImage(context)
-        : _buildCustomChild(context);
+    return widget.child == null ? _buildImage(context) : _buildCustomChild(context);
   }
 
   Widget _buildCustomChild(BuildContext context) {
@@ -503,9 +497,7 @@ class _PhotoViewState extends State<PhotoView>
   }
 
   Widget _buildImage(BuildContext context) {
-    return widget.heroTag == null
-        ? _buildWithFuture(context)
-        : _buildSync(context);
+    return widget.heroTag == null ? _buildWithFuture(context) : _buildSync(context);
   }
 
   Widget _buildWithFuture(BuildContext context) {
@@ -565,8 +557,7 @@ class _PhotoViewState extends State<PhotoView>
           );
   }
 
-  Size get _computedOuterSize =>
-      widget.customSize ?? _outerSize ?? MediaQuery.of(context).size;
+  Size get _computedOuterSize => widget.customSize ?? _outerSize ?? MediaQuery.of(context).size;
 }
 
 /// The default [ScaleStateCycle]
