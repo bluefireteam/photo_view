@@ -74,6 +74,7 @@ class PhotoViewGallery extends StatefulWidget {
     this.backgroundDecoration,
     this.gaplessPlayback = false,
     this.customSize,
+    this.reverse = false,
     this.pageController,
     this.onPageChanged,
     this.scaleStateChangedCallback,
@@ -98,6 +99,7 @@ class PhotoViewGallery extends StatefulWidget {
     this.backgroundDecoration,
     this.gaplessPlayback = false,
     this.customSize,
+    this.reverse = false,
     this.pageController,
     this.onPageChanged,
     this.scaleStateChangedCallback,
@@ -131,6 +133,9 @@ class PhotoViewGallery extends StatefulWidget {
 
   /// Mirror to [PhotoView.gaplessPlayback]
   final bool gaplessPlayback;
+
+  /// Mirror to [PageView.reverse]
+  final bool reverse;
 
   /// An object that controls the [PageView] inside [PhotoViewGallery]
   final PageController pageController;
@@ -198,6 +203,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
   @override
   Widget build(BuildContext context) {
     return PageView.builder(
+      reverse: widget.reverse,
       controller: _controller,
       onPageChanged: widget.onPageChanged,
       itemCount: itemCount,
