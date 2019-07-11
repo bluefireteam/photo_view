@@ -23,9 +23,9 @@ class FullScreenExamples extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) => const FullScreenWrapper(
-                                imageProvider:
-                                    const AssetImage("assets/large-image.jpg"),
-                              ),
+                            imageProvider:
+                                const AssetImage("assets/large-image.jpg"),
+                          ),
                         ));
                   }),
               ExampleButtonNode(
@@ -35,14 +35,14 @@ class FullScreenExamples extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => const FullScreenWrapper(
-                              imageProvider:
-                                  const AssetImage("assets/small-image.jpg"),
-                              backgroundDecoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                colors: <Color>[Colors.white, Colors.grey],
-                                stops: [0.1, 1.0],
-                              )),
-                            ),
+                          imageProvider:
+                              const AssetImage("assets/small-image.jpg"),
+                          backgroundDecoration: BoxDecoration(
+                              gradient: LinearGradient(
+                            colors: <Color>[Colors.white, Colors.grey],
+                            stops: [0.1, 1.0],
+                          )),
+                        ),
                       ),
                     );
                   }),
@@ -53,13 +53,13 @@ class FullScreenExamples extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => const FullScreenWrapper(
-                              imageProvider:
-                                  const AssetImage("assets/small-image.jpg"),
-                              backgroundDecoration: BoxDecoration(
-                                color: Colors.white,
-                              ),
-                              basePosition: Alignment(0.5, 0.0),
-                            ),
+                          imageProvider:
+                              const AssetImage("assets/small-image.jpg"),
+                          backgroundDecoration: BoxDecoration(
+                            color: Colors.white,
+                          ),
+                          basePosition: Alignment(0.5, 0.0),
+                        ),
                       ),
                     );
                   }),
@@ -70,9 +70,9 @@ class FullScreenExamples extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => const FullScreenWrapper(
-                              imageProvider: const NetworkImage(
-                                  "https://source.unsplash.com/900x1600/?camera,paper"),
-                            ),
+                          imageProvider: const NetworkImage(
+                              "https://source.unsplash.com/900x1600/?camera,paper"),
+                        ),
                       ),
                     );
                   }),
@@ -83,12 +83,11 @@ class FullScreenExamples extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => const FullScreenWrapper(
-                              imageProvider:
-                                  const AssetImage("assets/peanut.gif"),
-                              //backgroundDecoration:
-                              //   BoxDecoration(color: Colors.white),
-                              //axScale: 2.0,
-                            ),
+                          imageProvider: const AssetImage("assets/peanut.gif"),
+                          //backgroundDecoration:
+                          //   BoxDecoration(color: Colors.white),
+                          //axScale: 2.0,
+                        ),
                       ),
                     );
                   }),
@@ -99,13 +98,12 @@ class FullScreenExamples extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => FullScreenWrapper(
-                              imageProvider:
-                                  const AssetImage("assets/large-image.jpg"),
-                              minScale: PhotoViewComputedScale.contained * 0.8,
-                              maxScale: PhotoViewComputedScale.covered * 1.1,
-                              initialScale:
-                                  PhotoViewComputedScale.covered * 1.1,
-                            ),
+                          imageProvider:
+                              const AssetImage("assets/large-image.jpg"),
+                          minScale: PhotoViewComputedScale.contained * 0.8,
+                          maxScale: PhotoViewComputedScale.covered * 1.1,
+                          initialScale: PhotoViewComputedScale.covered * 1.1,
+                        ),
                       ),
                     );
                   }),
@@ -116,11 +114,10 @@ class FullScreenExamples extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => FullScreenWrapper(
-                              imageProvider:
-                                  const AssetImage("assets/large-image.jpg"),
-                              initialScale:
-                                  PhotoViewComputedScale.contained * 0.7,
-                            ),
+                          imageProvider:
+                              const AssetImage("assets/large-image.jpg"),
+                          initialScale: PhotoViewComputedScale.contained * 0.7,
+                        ),
                       ),
                     );
                   }),

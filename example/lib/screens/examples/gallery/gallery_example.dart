@@ -11,12 +11,12 @@ class GalleryExample extends StatelessWidget {
         context,
         MaterialPageRoute(
           builder: (context) => GalleryPhotoViewWrapper(
-                galleryItems: galleryItems,
-                backgroundDecoration: const BoxDecoration(
-                  color: Colors.black,
-                ),
-                initialIndex: index,
-              ),
+            galleryItems: galleryItems,
+            backgroundDecoration: const BoxDecoration(
+              color: Colors.black,
+            ),
+            initialIndex: index,
+          ),
         ));
   }
 

@@ -21,8 +21,8 @@ class HeroExample extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => const HeroPhotoViewWrapper(
-                            imageProvider: AssetImage("assets/large-image.jpg"),
-                          ),
+                        imageProvider: AssetImage("assets/large-image.jpg"),
+                      ),
                     ));
               },
               child: Container(
