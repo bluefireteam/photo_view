@@ -235,6 +235,8 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             initialScale: pageOption.initialScale,
             minScale: pageOption.minScale,
             maxScale: pageOption.maxScale,
+            onTapUp: pageOption.onTapUp,
+            onTapDown: pageOption.onTapDown,
           )
         : PhotoView(
             key: ObjectKey(index),
@@ -252,6 +254,8 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             initialScale: pageOption.initialScale,
             minScale: pageOption.minScale,
             maxScale: pageOption.maxScale,
+            onTapUp: pageOption.onTapUp,
+            onTapDown: pageOption.onTapDown,
           );
 
     return ClipRect(
