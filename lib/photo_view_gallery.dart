@@ -235,6 +235,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             initialScale: pageOption.initialScale,
             minScale: pageOption.minScale,
             maxScale: pageOption.maxScale,
+            scaleStateCycle: pageOption.scaleStateCycle,
             onTapUp: pageOption.onTapUp,
             onTapDown: pageOption.onTapDown,
           )
@@ -254,6 +255,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             initialScale: pageOption.initialScale,
             minScale: pageOption.minScale,
             maxScale: pageOption.maxScale,
+            scaleStateCycle: pageOption.scaleStateCycle,
             onTapUp: pageOption.onTapUp,
             onTapDown: pageOption.onTapDown,
           );
@@ -287,6 +289,7 @@ class PhotoViewGalleryPageOptions {
       this.controller,
       this.scaleStateController,
       this.basePosition,
+      this.scaleStateCycle,
       this.onTapUp,
       this.onTapDown})
       : child = null,
@@ -303,6 +306,7 @@ class PhotoViewGalleryPageOptions {
       this.controller,
       this.scaleStateController,
       this.basePosition,
+      this.scaleStateCycle,
       this.onTapUp,
       this.onTapDown})
       : imageProvider = null,
@@ -338,6 +342,9 @@ class PhotoViewGalleryPageOptions {
 
   /// Mirror to [PhotoView.childSize]
   final Size childSize;
+
+  /// Mirror to [PhotoView.scaleStateCycle]
+  final ScaleStateCycle scaleStateCycle;
 
   /// Mirror to [PhotoView.onTapUp]
   final PhotoViewImageTapUpCallback onTapUp;
