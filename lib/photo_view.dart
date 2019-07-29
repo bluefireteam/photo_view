@@ -303,7 +303,7 @@ class PhotoView extends StatefulWidget {
   /// The size of the custom [child]. [PhotoView] uses this value to compute the relation between the child and the container's size to calculate the scale value.
   final Size childSize;
 
-  /// The value specified to homonimous option givento to [Hero]. Sets [Hero.transitionOnUserGestures] in teh internal hero.
+  /// The value specified to homonimous option givento to [Hero]. Sets [Hero.transitionOnUserGestures] in the internal hero.
   ///
   /// Should only be set when [PhotoView.heroTag] is set
   final bool transitionOnUserGestures;
