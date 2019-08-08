@@ -62,7 +62,8 @@ class PhotoViewImageWrapper extends StatefulWidget {
 }
 
 class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
-    with TickerProviderStateMixin implements GestureDetectorCallback {
+    with TickerProviderStateMixin
+    implements GestureDetectorCallback {
   Offset _normalizedPosition;
   double _scaleBefore;
   double _rotationBefore;
@@ -235,7 +236,8 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     _rotationAnimationController.dispose();
     widget.delegate.dispose();
     if (_customViewPager != null && widget.index != null) {
-      _customViewPager.controller.removeChildGestureCallback(widget.index, this);
+      _customViewPager.controller
+          .removeChildGestureCallback(widget.index, this);
     }
     super.dispose();
   }

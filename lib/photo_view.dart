@@ -271,6 +271,7 @@ class PhotoView extends StatefulWidget {
         super(key: key);
 
   int index;
+
   /// Given a [imageProvider] it resolves into an zoomable image widget using. It
   /// is required
   final ImageProvider imageProvider;

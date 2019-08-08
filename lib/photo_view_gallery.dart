@@ -188,7 +188,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
     if (!widget.usePageViewWrapper) {
       setState(() {
         _locked = (scaleState == PhotoViewScaleState.initial ||
-            scaleState == PhotoViewScaleState.zoomedOut)
+                scaleState == PhotoViewScaleState.zoomedOut)
             ? false
             : true;
       });
@@ -212,7 +212,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.usePageViewWrapper? _getPageViewWrapper(): _getPageView();
+    return widget.usePageViewWrapper ? _getPageViewWrapper() : _getPageView();
   }
 
   PageViewWrapper _getPageViewWrapper() {
@@ -250,7 +250,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
       itemBuilder: _buildItem,
       scrollDirection: widget.scrollDirection,
       physics:
-      _locked ? const NeverScrollableScrollPhysics() : widget.scrollPhysics,
+          _locked ? const NeverScrollableScrollPhysics() : widget.scrollPhysics,
     );
   }
 
@@ -261,7 +261,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
     final PhotoView photoView = isCustomChild
         ? PhotoView.customChild(
             key: ObjectKey(index),
-            index:index,
+            index: index,
             child: pageOption.child,
             childSize: pageOption.childSize,
             backgroundDecoration: widget.backgroundDecoration,
@@ -281,7 +281,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
           )
         : PhotoView(
             key: ObjectKey(index),
-            index:index,
+            index: index,
             imageProvider: pageOption.imageProvider,
             loadingChild: widget.loadingChild,
             backgroundDecoration: widget.backgroundDecoration,

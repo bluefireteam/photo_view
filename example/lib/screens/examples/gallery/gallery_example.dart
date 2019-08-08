@@ -125,7 +125,7 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
   }
 
   void onPageChanged(int index) {
-    if(!widget.usePageViewWrapper){
+    if (!widget.usePageViewWrapper) {
       setState(() {
         currentIndex = index;
       });

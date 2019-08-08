@@ -170,7 +170,7 @@ class PhotoViewControllerDelegate {
   }
 
   bool canMove(double scale, Offset delta) {
-    if(scale!=1.0) {
+    if (scale != 1.0) {
       //when child is zooming
       return true;
     }
@@ -183,7 +183,7 @@ class PhotoViewControllerDelegate {
       }
     }
 
-    return scaleStateController.scaleState!=PhotoViewScaleState.initial;
+    return scaleStateController.scaleState != PhotoViewScaleState.initial;
   }
 
   void dispose() {
@@ -194,8 +194,7 @@ class PhotoViewControllerDelegate {
 }
 
 class OffsetWrapper {
-  OffsetWrapper(
-      this.position, this.reachRightBound, this.reachLeftBound);
+  OffsetWrapper(this.position, this.reachRightBound, this.reachLeftBound);
   final bool reachLeftBound;
   final bool reachRightBound;
   final Offset position;
@@ -205,4 +204,3 @@ class OffsetWrapper {
     return "reachLeftBound=$reachRightBound, reachRightBound=$reachLeftBound, offset=$position";
   }
 }
-

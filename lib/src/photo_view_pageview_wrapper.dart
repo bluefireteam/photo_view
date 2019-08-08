@@ -15,7 +15,6 @@ class PageViewWrapper extends StatefulWidget {
 }
 
 class _PageViewWrapperState extends State<PageViewWrapper> {
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -59,8 +58,6 @@ class PageViewWrapperController implements GestureDetectorCallback {
     onPageChangedWrapper.addListener(onPageChange);
     _currentSelectPage = pageViewController.initialPage;
   }
-  final String tag = 'PageViewGestureController';
-  final bool verbose = true;
   final int durationMs = 400;
   final double pi = 3.14;
   final OnPageChangedWrapper onPageChangedWrapper;
@@ -79,19 +76,16 @@ class PageViewWrapperController implements GestureDetectorCallback {
 
   void onPageChange(int value) {
     _currentSelectPage = value;
-    if(verbose){ debugPrint('$tag onPageChange $value'); }
   }
 
   void addChildGestureCallback(
       int index, GestureDetectorCallback childCallback) {
-    if(verbose){ debugPrint('$tag addChildGestureCallback $index=>$childCallback'); }
     childCallbacks.add(childCallback);
     callbackIntMap[childCallback] = index;
   }
 
   void removeChildGestureCallback(
       int index, GestureDetectorCallback childCallback) {
-    if(verbose){ debugPrint('$tag removeChildGestureCallback $index=>$childCallback'); }
     childCallbacks.remove(childCallback);
     callbackIntMap.remove(childCallback);
   }
@@ -108,7 +102,6 @@ class PageViewWrapperController implements GestureDetectorCallback {
 
   @override
   void onScaleEnd(ScaleEndDetails details) {
-    if(verbose){ debugPrint('$tag onScaleEnd'); }
     _startPosition = null;
     _scaleStartDetail = null;
     final direction = details.velocity.pixelsPerSecond.direction;
@@ -157,7 +150,6 @@ class PageViewWrapperController implements GestureDetectorCallback {
 
   @override
   void onScaleStart(ScaleStartDetails detail) {
-    if(verbose){ debugPrint('$tag onScaleStart $_startPosition'); }
     _startPosition = detail.focalPoint;
     _lastScrollPixels =
         pageViewController.position.pixels ?? _freshScrollPixels;
@@ -174,14 +166,12 @@ class PageViewWrapperController implements GestureDetectorCallback {
         if (callbackIndex != null && callbackIndex == _currentSelectPage) {
           if (needNotifyChildEnd) {
             callback.onScaleUpdate(detail);
-//            if(verbose){ debugPrint('$tag child onScaleUpdate'); }
           } else {
             final bool childCanMove = callback.canMove(detail.scale, delta);
             if (childCanMove != null && childCanMove) {
               needNotifyChildEnd = true;
               callbackStartMap[callback] = childCanMove;
               callback.onScaleStart(_scaleStartDetail);
-//              if(verbose){ debugPrint('$tag child onScaleStart'); }
             } else {
               pageViewShouldMove = true;
             }
@@ -190,11 +180,9 @@ class PageViewWrapperController implements GestureDetectorCallback {
       }
 
       if (pageViewShouldMove) {
-//        if(verbose){ debugPrint('$tag move pageview 1'); }
         movePageViewSelf(detail);
       }
     } else {
-//      if(verbose){ debugPrint('$tag move pageview 2'); }
       movePageViewSelf(detail);
     }
   }
@@ -241,9 +229,6 @@ class PageViewWrapperController implements GestureDetectorCallback {
   void movePageViewSelf(ScaleUpdateDetails detail) {
     final ScrollPositionWithSingleContext scrollPosition =
         pageViewController.position;
-    if(verbose){
-      debugPrint('$tag$hashCode movePageViewSelf _startPosition $_startPosition');
-    }
     final Offset delta = detail.focalPoint - _startPosition;
     final value = _lastScrollPixels - delta.dx;
     _lastDelta = delta;
