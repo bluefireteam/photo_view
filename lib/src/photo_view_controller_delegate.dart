@@ -20,7 +20,7 @@ class PhotoViewControllerDelegate {
   final ScaleBoundaries scaleBoundaries;
   final ScaleStateCycle scaleStateCycle;
   final Alignment basePosition;
-
+  OffsetWrapper _lastOffsetWrapper;
   Function(double prevScale, double nextScale) _animateScale;
 
   void startListeners() {
@@ -163,7 +163,27 @@ class PhotoViewControllerDelegate {
     final double computedY =
         screenHeight < computedHeight ? y.clamp(minY, maxY) : 0.0;
 
-    return Offset(computedX, computedY);
+    final position = Offset(computedX, computedY);
+    final result = OffsetWrapper(position, x < minX, x > maxX);
+    _lastOffsetWrapper = result;
+    return position;
+  }
+
+  bool canMove(double scale, Offset delta) {
+    if(scale!=1.0) {
+      //when child is zooming
+      return true;
+    }
+    if (_lastOffsetWrapper != null) {
+      final moveRight = delta.dx < 0;
+      if (_lastOffsetWrapper.reachLeftBound) {
+        return moveRight;
+      } else if (_lastOffsetWrapper.reachRightBound) {
+        return !moveRight;
+      }
+    }
+
+    return scaleStateController.scaleState!=PhotoViewScaleState.initial;
   }
 
   void dispose() {
@@ -172,3 +192,17 @@ class PhotoViewControllerDelegate {
     scaleStateController.removeIgnorableListener(_blindScaleStateListener);
   }
 }
+
+class OffsetWrapper {
+  OffsetWrapper(
+      this.position, this.reachRightBound, this.reachLeftBound);
+  final bool reachLeftBound;
+  final bool reachRightBound;
+  final Offset position;
+
+  @override
+  String toString() {
+    return "reachLeftBound=$reachRightBound, reachRightBound=$reachLeftBound, offset=$position";
+  }
+}
+
