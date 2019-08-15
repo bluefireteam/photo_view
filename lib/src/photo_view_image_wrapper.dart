@@ -102,7 +102,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
 
     widget.delegate.updateMultiple(
         scale: newScale,
-        position: widget.delegate.clampPosition(delta * details.scale),
+        position: widget.delegate.clampPosition(delta),
         rotation: _rotationBefore + details.rotation,
         rotationFocusPoint: details.focalPoint);
   }
