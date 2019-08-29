@@ -3,6 +3,7 @@ library photo_view_gallery;
 import 'package:flutter/widgets.dart';
 
 import 'photo_view.dart';
+import 'src/hero_attributes.dart';
 import 'src/photo_view_controller.dart';
 import 'src/photo_view_image_wrapper.dart';
 import 'src/photo_view_scale_state.dart';
@@ -19,7 +20,7 @@ typedef PhotoViewGalleryBuilder = PhotoViewGalleryPageOptions Function(
 ///
 /// Some of [PhotoView] consturctor options are passed direct to [PhotoViewGallery] cosntructor. Those options will affect the gallery in a whole.
 ///
-/// Some of the options may be defined to each image individually, such as `initialScale` or `heroTag`. Those must be passed via each [PhotoViewGalleryPageOptions].
+/// Some of the options may be defined to each image individually, such as `initialScale` or `heroAttributes`. Those must be passed via each [PhotoViewGalleryPageOptions].
 ///
 /// Example of usage as a list of options:
 /// ```
@@ -27,18 +28,18 @@ typedef PhotoViewGalleryBuilder = PhotoViewGalleryPageOptions Function(
 ///   pageOptions: <PhotoViewGalleryPageOptions>[
 ///     PhotoViewGalleryPageOptions(
 ///       imageProvider: AssetImage("assets/gallery1.jpg"),
-///       heroTag: "tag1",
+///       heroAttributes: const HeroAttributes(tag: "tag1"),
 ///     ),
 ///     PhotoViewGalleryPageOptions(
 ///       imageProvider: AssetImage("assets/gallery2.jpg"),
-///       heroTag: "tag2",
+///       heroAttributes: const HeroAttributes(tag: "tag2"),
 ///       maxScale: PhotoViewComputedScale.contained * 0.3
 ///     ),
 ///     PhotoViewGalleryPageOptions(
 ///       imageProvider: AssetImage("assets/gallery3.jpg"),
 ///       minScale: PhotoViewComputedScale.contained * 0.8,
 ///       maxScale: PhotoViewComputedScale.covered * 1.1,
-///       heroTag: "tag3",
+///       heroAttributes: const HeroAttributes(tag: "tag3"),
 ///     ),
 ///   ],
 ///   loadingChild: widget.loadingChild,
@@ -58,7 +59,7 @@ typedef PhotoViewGalleryBuilder = PhotoViewGalleryPageOptions Function(
 ///       initialScale: PhotoViewComputedScale.contained * 0.8,
 ///       minScale: PhotoViewComputedScale.contained * 0.8,
 ///       maxScale: PhotoViewComputedScale.covered * 1.1,
-///       heroTag: galleryItems[index].id,
+///       heroAttributes: HeroAttributes(tag: galleryItems[index].id),
 ///     );
 ///   },
 ///   itemCount: galleryItems.length,
@@ -82,7 +83,6 @@ class PhotoViewGallery extends StatefulWidget {
     this.onPageChanged,
     this.scaleStateChangedCallback,
     this.enableRotation = false,
-    this.transitionOnUserGestures = false,
     this.scrollPhysics,
     this.scrollDirection = Axis.horizontal,
   })  : _isBuilder = false,
@@ -107,7 +107,6 @@ class PhotoViewGallery extends StatefulWidget {
     this.onPageChanged,
     this.scaleStateChangedCallback,
     this.enableRotation = false,
-    this.transitionOnUserGestures = false,
     this.scrollPhysics,
     this.scrollDirection = Axis.horizontal,
   })  : _isBuilder = true,
@@ -154,9 +153,6 @@ class PhotoViewGallery extends StatefulWidget {
 
   /// Mirror to [PhotoView.enableRotation]
   final bool enableRotation;
-
-  /// Mirror to [PhotoView.transitionOnUserGestures]
-  final bool transitionOnUserGestures;
 
   /// The axis along which the [PageView] scrolls. Mirror to [PageView.scrollDirection]
   final Axis scrollDirection;
@@ -230,10 +226,9 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             controller: pageOption.controller,
             scaleStateController: pageOption.scaleStateController,
             customSize: widget.customSize,
-            heroTag: pageOption.heroTag,
+            heroAttributes: pageOption.heroAttributes,
             scaleStateChangedCallback: scaleStateChangedCallback,
             enableRotation: widget.enableRotation,
-            transitionOnUserGestures: widget.transitionOnUserGestures,
             initialScale: pageOption.initialScale,
             minScale: pageOption.minScale,
             maxScale: pageOption.maxScale,
@@ -250,10 +245,9 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             scaleStateController: pageOption.scaleStateController,
             gaplessPlayback: widget.gaplessPlayback,
             customSize: widget.customSize,
-            heroTag: pageOption.heroTag,
+            heroAttributes: pageOption.heroAttributes,
             scaleStateChangedCallback: scaleStateChangedCallback,
             enableRotation: widget.enableRotation,
-            transitionOnUserGestures: widget.transitionOnUserGestures,
             initialScale: pageOption.initialScale,
             minScale: pageOption.minScale,
             maxScale: pageOption.maxScale,
@@ -284,7 +278,7 @@ class PhotoViewGalleryPageOptions {
   PhotoViewGalleryPageOptions(
       {Key key,
       @required this.imageProvider,
-      this.heroTag,
+      this.heroAttributes,
       this.minScale,
       this.maxScale,
       this.initialScale,
@@ -301,7 +295,7 @@ class PhotoViewGalleryPageOptions {
   PhotoViewGalleryPageOptions.customChild(
       {@required this.child,
       @required this.childSize,
-      this.heroTag,
+      this.heroAttributes,
       this.minScale,
       this.maxScale,
       this.initialScale,
@@ -318,8 +312,8 @@ class PhotoViewGalleryPageOptions {
   /// Mirror to [PhotoView.imageProvider]
   final ImageProvider imageProvider;
 
-  /// Mirror to [PhotoView.heroTag
-  final Object heroTag;
+  /// Mirror to [PhotoView.heroAttributes]
+  final HeroAttributes heroAttributes;
 
   /// Mirror to [PhotoView.minScale]
   final dynamic minScale;

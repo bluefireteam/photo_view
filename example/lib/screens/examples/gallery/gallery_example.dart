@@ -148,14 +148,14 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
             initialScale: PhotoViewComputedScale.contained,
             minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
             maxScale: PhotoViewComputedScale.covered * 1.1,
-            heroTag: item.id,
+            heroAttributes: HeroAttributes(tag: item.id),
           )
         : PhotoViewGalleryPageOptions(
             imageProvider: AssetImage(item.resource),
             initialScale: PhotoViewComputedScale.contained,
             minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
             maxScale: PhotoViewComputedScale.covered * 1.1,
-            heroTag: item.id,
+            heroAttributes: HeroAttributes(tag: item.id),
           );
   }
 }
