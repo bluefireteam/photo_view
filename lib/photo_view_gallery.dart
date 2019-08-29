@@ -1,10 +1,12 @@
 library photo_view_gallery;
 
 import 'package:flutter/widgets.dart';
-import 'package:photo_view/photo_view.dart';
-import 'package:photo_view/src/photo_view_controller.dart';
-import 'package:photo_view/src/photo_view_image_wrapper.dart';
-import 'package:photo_view/src/photo_view_scale_state.dart';
+
+import 'photo_view.dart';
+import 'src/photo_view_controller.dart';
+import 'src/photo_view_image_wrapper.dart';
+import 'src/photo_view_scale_state.dart';
+import 'src/photo_view_typedefs.dart';
 
 /// A type definition for a [Function] that receives a index after a page change in [PhotoViewGallery]
 typedef PhotoViewGalleryPageChangedCallback = void Function(int index);

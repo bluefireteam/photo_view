@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
-import 'package:photo_view/src/photo_view_controller.dart';
-import 'package:photo_view/src/photo_view_controller_delegate.dart';
+
+import 'photo_view_controller.dart';
+import 'photo_view_controller_delegate.dart';
 
 typedef PhotoViewImageTapUpCallback = Function(BuildContext context,
     TapUpDetails details, PhotoViewControllerValue controllerValue);

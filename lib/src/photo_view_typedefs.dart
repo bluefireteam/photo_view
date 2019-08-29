@@ -1,4 +1,4 @@
-import 'package:photo_view/photo_view.dart';
+import 'photo_view_scale_state.dart';
 
 /// A type definition for a [Function] that receives a [PhotoViewScaleState]
 typedef PhotoViewScaleStateChangedCallback = void Function(
