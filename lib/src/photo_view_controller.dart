@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/widgets.dart';
-import 'package:photo_view/photo_view.dart';
-import 'package:photo_view/src/photo_view_scale_state.dart';
-import 'package:photo_view/src/photo_view_utils.dart';
+
+import 'photo_view_scale_state.dart';
+import 'photo_view_utils.dart';
 
 typedef ScaleStateListener = void Function(double prevScale, double nextScale);
 

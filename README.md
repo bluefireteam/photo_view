@@ -72,7 +72,7 @@ Widget build(BuildContext context) {
         return PhotoViewGalleryPageOptions(
           imageProvider: AssetImage(widget.galleryItems[index].image),
           initialScale: PhotoViewComputedScale.contained * 0.8,
-          heroTag: galleryItems[index].id,
+          heroAttributes: HeroAttributes(tag: galleryItems[index].id),
         );
       },
       itemCount: galleryItems.length,

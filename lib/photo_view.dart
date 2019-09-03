@@ -3,19 +3,22 @@ library photo_view;
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:photo_view/src/photo_view_computed_scale.dart';
-import 'package:photo_view/src/photo_view_controller.dart';
-import 'package:photo_view/src/photo_view_controller_delegate.dart';
-import 'package:photo_view/src/photo_view_image_wrapper.dart';
-import 'package:photo_view/src/photo_view_scale_state.dart';
 import 'package:after_layout/after_layout.dart';
-import 'package:photo_view/src/photo_view_typedefs.dart';
-import 'package:photo_view/src/photo_view_utils.dart';
 
-export 'package:photo_view/src/photo_view_computed_scale.dart';
-export 'package:photo_view/src/photo_view_scale_state.dart';
-export 'package:photo_view/src/photo_view_controller.dart';
-export 'package:photo_view/src/photo_view_typedefs.dart';
+import 'src/hero_attributes.dart';
+import 'src/photo_view_computed_scale.dart';
+import 'src/photo_view_controller.dart';
+import 'src/photo_view_controller_delegate.dart';
+import 'src/photo_view_image_wrapper.dart';
+import 'src/photo_view_scale_state.dart';
+import 'src/photo_view_typedefs.dart';
+import 'src/photo_view_utils.dart';
+
+export 'src/hero_attributes.dart';
+export 'src/photo_view_computed_scale.dart';
+export 'src/photo_view_controller.dart';
+export 'src/photo_view_scale_state.dart';
+export 'src/photo_view_typedefs.dart';
 
 /// A [StatefulWidget] that contains all the photo view rendering elements.
 ///
@@ -28,10 +31,12 @@ export 'package:photo_view/src/photo_view_typedefs.dart';
 ///  backgroundDecoration: BoxDecoration(color: Colors.black),
 ///  gaplessPlayback: false,
 ///  customSize: MediaQuery.of(context).size,
-///  heroTag: "someTag",
+///  heroAttributes: const HeroAttributes(
+///   tag: "someTag",
+///   transitionOnUserGestures: true,
+///  ),
 ///  scaleStateChangedCallback: this.onScaleStateChanged,
 ///  enableRotation: true,
-///  transitionOnUserGestures: true,
 ///  controller:  controller,
 ///  minScale: PhotoViewComputedScale.contained * 0.8,
 ///  maxScale: PhotoViewComputedScale.covered * 1.8,
@@ -56,10 +61,12 @@ export 'package:photo_view/src/photo_view_typedefs.dart';
 ///  backgroundDecoration: BoxDecoration(color: Colors.black),
 ///  gaplessPlayback: false,
 ///  customSize: MediaQuery.of(context).size,
-///  heroTag: "someTag",
+///  heroAttributes: const HeroAttributes(
+///   tag: "someTag",
+///   transitionOnUserGestures: true,
+///  ),
 ///  scaleStateChangedCallback: this.onScaleStateChanged,
 ///  enableRotation: true,
-///  transitionOnUserGestures: true,
 ///  controller:  controller,
 ///  minScale: PhotoViewComputedScale.contained * 0.8,
 ///  maxScale: PhotoViewComputedScale.covered * 1.8,
@@ -89,8 +96,9 @@ export 'package:photo_view/src/photo_view_typedefs.dart';
 /// (`true`), or briefly show nothing (`false`), when the [imageProvider]
 /// changes.By default it's set to `false`.
 ///
-/// To use within an hero animation, specify [heroTag]. When [heroTag] is
-/// specified, the image provider retrieval process should be sync.
+/// To use within an hero animation, specify [heroAttributes]. When
+/// [heroAttributes] is specified, the image provider retrieval process should
+/// be sync.
 ///
 /// Sample using hero animation:
 /// ```
@@ -107,7 +115,7 @@ export 'package:photo_view/src/photo_view_typedefs.dart';
 /// ...
 /// child: PhotoView(
 ///   imageProvider: AssetImage("assets/large-image.jpg"),
-///   heroTag: "someTag",
+///   heroAttributes: const HeroAttributes(tag: "someTag"),
 /// )
 /// ```
 ///
@@ -221,10 +229,9 @@ class PhotoView extends StatefulWidget {
     this.backgroundDecoration,
     this.gaplessPlayback = false,
     this.customSize,
-    this.heroTag,
+    this.heroAttributes,
     this.scaleStateChangedCallback,
     this.enableRotation = false,
-    this.transitionOnUserGestures = false,
     this.controller,
     this.scaleStateController,
     this.maxScale,
@@ -250,10 +257,9 @@ class PhotoView extends StatefulWidget {
     @required this.childSize,
     this.backgroundDecoration,
     this.customSize,
-    this.heroTag,
+    this.heroAttributes,
     this.scaleStateChangedCallback,
     this.enableRotation = false,
-    this.transitionOnUserGestures = false,
     this.controller,
     this.scaleStateController,
     this.maxScale,
@@ -288,8 +294,9 @@ class PhotoView extends StatefulWidget {
   /// by default it is `MediaQuery.of(context).size`.
   final Size customSize;
 
-  /// Assists the activation of a hero animation within [PhotoView]
-  final Object heroTag;
+  /// Attributes that are going to be passed to [PhotoViewImageWrapper]'s
+  /// [Hero]. Leave this property undefined if you don't want a hero animation.
+  final HeroAttributes heroAttributes;
 
   /// A [Function] to be called whenever the scaleState changes, this heappens when the user double taps the content ou start to pinch-in.
   final PhotoViewScaleStateChangedCallback scaleStateChangedCallback;
@@ -302,11 +309,6 @@ class PhotoView extends StatefulWidget {
 
   /// The size of the custom [child]. [PhotoView] uses this value to compute the relation between the child and the container's size to calculate the scale value.
   final Size childSize;
-
-  /// The value specified to homonimous option givento to [Hero]. Sets [Hero.transitionOnUserGestures] in the internal hero.
-  ///
-  /// Should only be set when [PhotoView.heroTag] is set
-  final bool transitionOnUserGestures;
 
   /// Defines the maximum size in which the image will be allowed to assume, it
   /// is proportional to the original image size. Can be either a double (absolute value) or a
@@ -483,7 +485,7 @@ class _PhotoViewState extends State<PhotoView>
       customChild: widget.child,
       backgroundDecoration: widget.backgroundDecoration,
       enableRotation: widget.enableRotation,
-      heroTag: widget.heroTag,
+      heroAttributes: widget.heroAttributes,
       delegate: PhotoViewControllerDelegate(
         controller: _controller,
         scaleStateController: _scaleStateController,
@@ -503,7 +505,7 @@ class _PhotoViewState extends State<PhotoView>
   }
 
   Widget _buildImage(BuildContext context) {
-    return widget.heroTag == null
+    return widget.heroAttributes == null
         ? _buildWithFuture(context)
         : _buildSync(context);
   }
@@ -533,8 +535,7 @@ class _PhotoViewState extends State<PhotoView>
       backgroundDecoration: widget.backgroundDecoration,
       gaplessPlayback: widget.gaplessPlayback,
       enableRotation: widget.enableRotation,
-      heroTag: widget.heroTag,
-      transitionOnUserGestures: widget.transitionOnUserGestures,
+      heroAttributes: widget.heroAttributes,
       delegate: PhotoViewControllerDelegate(
         basePosition: widget.basePosition ?? Alignment.center,
         controller: _controller,

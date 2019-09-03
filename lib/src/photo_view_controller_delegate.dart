@@ -1,9 +1,11 @@
 import 'dart:ui';
 
 import 'package:flutter/widgets.dart';
-import 'package:photo_view/src/photo_view_utils.dart';
 
-import '../photo_view.dart';
+import 'photo_view_controller.dart';
+import 'photo_view_scale_state.dart';
+import 'photo_view_typedefs.dart';
+import 'photo_view_utils.dart';
 
 /// A  class to hold internal layout logics to sync both controller states
 class PhotoViewControllerDelegate {

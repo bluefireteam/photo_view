@@ -1,6 +1,8 @@
 import 'package:flutter/widgets.dart';
-import 'package:photo_view/src/photo_view_controller.dart';
-import 'package:photo_view/src/photo_view_controller_delegate.dart';
+
+import 'hero_attributes.dart';
+import 'photo_view_controller.dart';
+import 'photo_view_controller_delegate.dart';
 
 typedef PhotoViewImageTapUpCallback = Function(BuildContext context,
     TapUpDetails details, PhotoViewControllerValue controllerValue);
@@ -15,9 +17,8 @@ class PhotoViewImageWrapper extends StatefulWidget {
     @required this.imageProvider,
     this.backgroundDecoration,
     this.gaplessPlayback = false,
-    this.heroTag,
+    this.heroAttributes,
     this.enableRotation,
-    this.transitionOnUserGestures = false,
     this.onTapUp,
     this.onTapDown,
     @required this.delegate,
@@ -28,9 +29,8 @@ class PhotoViewImageWrapper extends StatefulWidget {
     Key key,
     @required this.customChild,
     this.backgroundDecoration,
-    this.heroTag,
+    this.heroAttributes,
     this.enableRotation,
-    this.transitionOnUserGestures = false,
     this.onTapUp,
     this.onTapDown,
     @required this.delegate,
@@ -41,10 +41,9 @@ class PhotoViewImageWrapper extends StatefulWidget {
   final Decoration backgroundDecoration;
   final ImageProvider imageProvider;
   final bool gaplessPlayback;
-  final Object heroTag;
+  final HeroAttributes heroAttributes;
   final bool enableRotation;
   final Widget customChild;
-  final bool transitionOnUserGestures;
 
   final PhotoViewControllerDelegate delegate;
 
@@ -72,23 +71,27 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   AnimationController _rotationAnimationController;
   Animation<double> _rotationAnimation;
 
+  HeroAttributes get heroAttributes => widget.heroAttributes;
+
+  PhotoViewControllerDelegate get delegate => widget.delegate;
+
   void handleScaleAnimation() {
-    widget.delegate.scale = _scaleAnimation.value;
+    delegate.scale = _scaleAnimation.value;
   }
 
   void handlePositionAnimate() {
-    widget.delegate.controller.position = _positionAnimation.value;
+    delegate.controller.position = _positionAnimation.value;
   }
 
   void handleRotationAnimation() {
-    widget.delegate.controller.rotation = _rotationAnimation.value;
+    delegate.controller.rotation = _rotationAnimation.value;
   }
 
   void onScaleStart(ScaleStartDetails details) {
-    _rotationBefore = widget.delegate.controller.rotation;
-    _scaleBefore = widget.delegate.scale;
+    _rotationBefore = delegate.controller.rotation;
+    _scaleBefore = delegate.scale;
     _normalizedPosition =
-        details.focalPoint - widget.delegate.controller.position;
+        details.focalPoint - delegate.controller.position;
     _scaleAnimationController.stop();
     _positionAnimationController.stop();
     _rotationAnimationController.stop();
@@ -98,26 +101,26 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     final double newScale = _scaleBefore * details.scale;
     final Offset delta = details.focalPoint - _normalizedPosition;
 
-    widget.delegate.updateScaleStateFromNewScale(details.scale, newScale);
+    delegate.updateScaleStateFromNewScale(details.scale, newScale);
 
-    widget.delegate.updateMultiple(
+    delegate.updateMultiple(
         scale: newScale,
-        position: widget.delegate.clampPosition(delta * details.scale),
+        position: delegate.clampPosition(delta * details.scale),
         rotation: _rotationBefore + details.rotation,
         rotationFocusPoint: details.focalPoint);
   }
 
   void onScaleEnd(ScaleEndDetails details) {
-    final double _scale = widget.delegate.scale;
-    final Offset _position = widget.delegate.controller.position;
-    final double maxScale = widget.delegate.scaleBoundaries.maxScale;
-    final double minScale = widget.delegate.scaleBoundaries.minScale;
+    final double _scale = delegate.scale;
+    final Offset _position = delegate.controller.position;
+    final double maxScale = delegate.scaleBoundaries.maxScale;
+    final double minScale = delegate.scaleBoundaries.minScale;
 
     //animate back to maxScale if gesture exceeded the maxScale specified
     if (_scale > maxScale) {
       final double scaleComebackRatio = maxScale / _scale;
       animateScale(_scale, maxScale);
-      final Offset clampedPosition = widget.delegate
+      final Offset clampedPosition = delegate
           .clampPosition(_position * scaleComebackRatio, scale: maxScale);
       animatePosition(_position, clampedPosition);
       return;
@@ -129,7 +132,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
       animateScale(_scale, minScale);
       animatePosition(
           _position,
-          widget.delegate
+          delegate
               .clampPosition(_position * scaleComebackRatio, scale: minScale));
       return;
     }
@@ -140,10 +143,10 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     if (_scaleBefore / _scale == 1.0 && magnitude >= 400.0) {
       final Offset direction = details.velocity.pixelsPerSecond / magnitude;
       animatePosition(_position,
-          widget.delegate.clampPosition(_position + direction * 100.0));
+          delegate.clampPosition(_position + direction * 100.0));
     }
 
-    widget.delegate.checkAndSetToInitialScaleState();
+    delegate.checkAndSetToInitialScaleState();
   }
 
   void animateScale(double from, double to) {
@@ -174,7 +177,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
 
   void onAnimationStatus(AnimationStatus status) {
     if (status == AnimationStatus.completed) {
-      widget.delegate.checkAndSetToInitialScaleState();
+      delegate.checkAndSetToInitialScaleState();
     }
   }
 
@@ -190,14 +193,14 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
 
     _rotationAnimationController = AnimationController(vsync: this)
       ..addListener(handleRotationAnimation);
-    widget.delegate.startListeners();
-    widget.delegate.addAnimateOnScaleStateUpdate(animateOnScaleStateUpdate);
+    delegate.startListeners();
+    delegate.addAnimateOnScaleStateUpdate(animateOnScaleStateUpdate);
   }
 
   void animateOnScaleStateUpdate(double prevScale, double nextScale) {
     animateScale(prevScale, nextScale);
-    animatePosition(widget.delegate.controller.position, Offset.zero);
-    animateRotation(widget.delegate.controller.rotation, 0.0);
+    animatePosition(delegate.controller.position, Offset.zero);
+    animateRotation(delegate.controller.rotation, 0.0);
   }
 
   @override
@@ -206,36 +209,36 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     _scaleAnimationController.dispose();
     _positionAnimationController.dispose();
     _rotationAnimationController.dispose();
-    widget.delegate.dispose();
+    delegate.dispose();
     super.dispose();
   }
 
   void onTapUp(TapUpDetails details) {
-    widget.onTapUp(context, details, widget.delegate.controller.value);
+    widget.onTapUp?.call(context, details, delegate.controller.value);
   }
 
   void onTapDown(TapDownDetails details) {
-    widget.onTapDown(context, details, widget.delegate.controller.value);
+    widget.onTapDown?.call(context, details, delegate.controller.value);
   }
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: widget.delegate.controller.outputStateStream,
-        initialData: widget.delegate.controller.prevValue,
+        stream: delegate.controller.outputStateStream,
+        initialData: delegate.controller.prevValue,
         builder: (BuildContext context,
             AsyncSnapshot<PhotoViewControllerValue> snapshot) {
           if (snapshot.hasData) {
             final PhotoViewControllerValue value = snapshot.data;
             final matrix = Matrix4.identity()
               ..translate(value.position.dx, value.position.dy)
-              ..scale(widget.delegate.scale);
+              ..scale(delegate.scale);
 
             final rotationMatrix = Matrix4.identity()..rotateZ(value.rotation);
             final Widget customChildLayout = CustomSingleChildLayout(
               delegate: _CenterWithOriginalSizeDelegate(
-                  widget.delegate.scaleBoundaries.childSize,
-                  widget.delegate.basePosition),
+                  delegate.scaleBoundaries.childSize,
+                  delegate.basePosition),
               child: _buildHero(),
             );
             return GestureDetector(
@@ -251,18 +254,18 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
                         )
                       : customChildLayout,
                   transform: matrix,
-                  alignment: widget.delegate.basePosition,
+                  alignment: delegate.basePosition,
                 )),
                 decoration: widget.backgroundDecoration ??
                     const BoxDecoration(
                         color: const Color.fromRGBO(0, 0, 0, 1.0)),
               ),
-              onDoubleTap: widget.delegate.nextScaleState,
+              onDoubleTap: delegate.nextScaleState,
               onScaleStart: onScaleStart,
               onScaleUpdate: onScaleUpdate,
               onScaleEnd: onScaleEnd,
-              onTapUp: widget.onTapUp == null ? null : onTapUp,
-              onTapDown: widget.onTapDown == null ? null : onTapDown,
+              onTapUp: onTapUp,
+              onTapDown: onTapDown,
             );
           } else {
             return Container();
@@ -271,11 +274,14 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   }
 
   Widget _buildHero() {
-    return widget.heroTag != null
+    return heroAttributes != null
         ? Hero(
-            tag: widget.heroTag,
+            tag: heroAttributes.tag,
+            createRectTween: heroAttributes.createRectTween,
+            flightShuttleBuilder: heroAttributes.flightShuttleBuilder,
+            placeholderBuilder: heroAttributes.placeholderBuilder,
+            transitionOnUserGestures: heroAttributes.transitionOnUserGestures,
             child: _buildChild(),
-            transitionOnUserGestures: widget.transitionOnUserGestures,
           )
         : _buildChild();
   }

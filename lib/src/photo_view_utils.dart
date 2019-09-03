@@ -3,7 +3,9 @@ import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:photo_view/photo_view.dart';
+
+import 'photo_view_computed_scale.dart';
+import 'photo_view_scale_state.dart';
 
 double getScaleForScaleState(
     PhotoViewScaleState scaleState, ScaleBoundaries scaleBoundaries) {
