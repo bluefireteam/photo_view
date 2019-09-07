@@ -1,27 +1,21 @@
 import 'dart:ui';
 
 import 'package:flutter/widgets.dart';
+import 'package:photo_view/src/photo_view_image_wrapper.dart';
 
+import '../photo_view_scale_state.dart';
+import '../photo_view_typedefs.dart';
+import '../photo_view_utils.dart';
 import 'photo_view_controller.dart';
-import 'photo_view_scale_state.dart';
-import 'photo_view_typedefs.dart';
-import 'photo_view_utils.dart';
 
 /// A  class to hold internal layout logics to sync both controller states
-class PhotoViewControllerDelegate {
-  PhotoViewControllerDelegate({
-    @required this.controller,
-    @required this.scaleBoundaries,
-    @required this.scaleStateCycle,
-    @required this.scaleStateController,
-    @required this.basePosition,
-  });
-
-  final PhotoViewControllerBase controller;
-  final PhotoViewScaleStateController scaleStateController;
-  final ScaleBoundaries scaleBoundaries;
-  final ScaleStateCycle scaleStateCycle;
-  final Alignment basePosition;
+mixin PhotoViewControllerDelegate on State<PhotoViewImageWrapper> {
+  PhotoViewControllerBase get controller => widget.controller;
+  PhotoViewScaleStateController get scaleStateController =>
+      widget.scaleStateController;
+  ScaleBoundaries get scaleBoundaries => widget.scaleBoundaries;
+  ScaleStateCycle get scaleStateCycle => widget.scaleStateCycle;
+  Alignment get basePosition => widget.basePosition;
 
   Function(double prevScale, double nextScale) _animateScale;
 
@@ -177,9 +171,11 @@ class PhotoViewControllerDelegate {
     return Offset(computedX, computedY);
   }
 
+  @override
   void dispose() {
     _animateScale = null;
     controller.removeIgnorableListener(_blindScaleListener);
     scaleStateController.removeIgnorableListener(_blindScaleStateListener);
+    super.dispose();
   }
 }

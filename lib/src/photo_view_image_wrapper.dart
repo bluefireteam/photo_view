@@ -1,8 +1,10 @@
 import 'package:flutter/widgets.dart';
+import 'package:photo_view/src/photo_view_utils.dart';
 
-import 'photo_view_controller.dart';
-import 'photo_view_controller_delegate.dart';
+import 'controller/photo_view_controller.dart';
+import 'controller/photo_view_controller_delegate.dart';
 import 'photo_view_hero_attributes.dart';
+import 'photo_view_typedefs.dart';
 
 typedef PhotoViewImageTapUpCallback = Function(BuildContext context,
     TapUpDetails details, PhotoViewControllerValue controllerValue);
@@ -21,7 +23,11 @@ class PhotoViewImageWrapper extends StatefulWidget {
     this.enableRotation,
     this.onTapUp,
     this.onTapDown,
-    @required this.delegate,
+    @required this.controller,
+    @required this.scaleBoundaries,
+    @required this.scaleStateCycle,
+    @required this.scaleStateController,
+    @required this.basePosition,
   })  : customChild = null,
         super(key: key);
 
@@ -33,7 +39,11 @@ class PhotoViewImageWrapper extends StatefulWidget {
     this.enableRotation,
     this.onTapUp,
     this.onTapDown,
-    @required this.delegate,
+    @required this.controller,
+    @required this.scaleBoundaries,
+    @required this.scaleStateCycle,
+    @required this.scaleStateController,
+    @required this.basePosition,
   })  : imageProvider = null,
         gaplessPlayback = false,
         super(key: key);
@@ -41,11 +51,15 @@ class PhotoViewImageWrapper extends StatefulWidget {
   final Decoration backgroundDecoration;
   final ImageProvider imageProvider;
   final bool gaplessPlayback;
-  final HeroAttributes heroAttributes;
+  final PhotoViewHeroAttributes heroAttributes;
   final bool enableRotation;
   final Widget customChild;
 
-  final PhotoViewControllerDelegate delegate;
+  final PhotoViewControllerBase controller;
+  final PhotoViewScaleStateController scaleStateController;
+  final ScaleBoundaries scaleBoundaries;
+  final ScaleStateCycle scaleStateCycle;
+  final Alignment basePosition;
 
   final PhotoViewImageTapUpCallback onTapUp;
   final PhotoViewImageTapDownCallback onTapDown;
@@ -57,7 +71,7 @@ class PhotoViewImageWrapper extends StatefulWidget {
 }
 
 class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
-    with TickerProviderStateMixin {
+    with TickerProviderStateMixin, PhotoViewControllerDelegate {
   Offset _normalizedPosition;
   double _scaleBefore;
   double _rotationBefore;
@@ -71,26 +85,24 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   AnimationController _rotationAnimationController;
   Animation<double> _rotationAnimation;
 
-  HeroAttributes get heroAttributes => widget.heroAttributes;
-
-  PhotoViewControllerDelegate get delegate => widget.delegate;
+  PhotoViewHeroAttributes get heroAttributes => widget.heroAttributes;
 
   void handleScaleAnimation() {
-    delegate.scale = _scaleAnimation.value;
+    scale = _scaleAnimation.value;
   }
 
   void handlePositionAnimate() {
-    delegate.controller.position = _positionAnimation.value;
+    controller.position = _positionAnimation.value;
   }
 
   void handleRotationAnimation() {
-    delegate.controller.rotation = _rotationAnimation.value;
+    controller.rotation = _rotationAnimation.value;
   }
 
   void onScaleStart(ScaleStartDetails details) {
-    _rotationBefore = delegate.controller.rotation;
-    _scaleBefore = delegate.scale;
-    _normalizedPosition = details.focalPoint - delegate.controller.position;
+    _rotationBefore = controller.rotation;
+    _scaleBefore = scale;
+    _normalizedPosition = details.focalPoint - controller.position;
     _scaleAnimationController.stop();
     _positionAnimationController.stop();
     _rotationAnimationController.stop();
@@ -100,27 +112,27 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     final double newScale = _scaleBefore * details.scale;
     final Offset delta = details.focalPoint - _normalizedPosition;
 
-    delegate.updateScaleStateFromNewScale(details.scale, newScale);
+    updateScaleStateFromNewScale(details.scale, newScale);
 
-    delegate.updateMultiple(
+    updateMultiple(
       scale: newScale,
-      position: delegate.clampPosition(delta * details.scale),
+      position: clampPosition(delta * details.scale),
       rotation: _rotationBefore + details.rotation,
       rotationFocusPoint: details.focalPoint,
     );
   }
 
   void onScaleEnd(ScaleEndDetails details) {
-    final double _scale = delegate.scale;
-    final Offset _position = delegate.controller.position;
-    final double maxScale = delegate.scaleBoundaries.maxScale;
-    final double minScale = delegate.scaleBoundaries.minScale;
+    final double _scale = scale;
+    final Offset _position = controller.position;
+    final double maxScale = scaleBoundaries.maxScale;
+    final double minScale = scaleBoundaries.minScale;
 
     //animate back to maxScale if gesture exceeded the maxScale specified
     if (_scale > maxScale) {
       final double scaleComebackRatio = maxScale / _scale;
       animateScale(_scale, maxScale);
-      final Offset clampedPosition = delegate.clampPosition(
+      final Offset clampedPosition = clampPosition(
         _position * scaleComebackRatio,
         scale: maxScale,
       );
@@ -134,7 +146,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
       animateScale(_scale, minScale);
       animatePosition(
         _position,
-        delegate.clampPosition(
+        clampPosition(
           _position * scaleComebackRatio,
           scale: minScale,
         ),
@@ -149,11 +161,11 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
       final Offset direction = details.velocity.pixelsPerSecond / magnitude;
       animatePosition(
         _position,
-        delegate.clampPosition(_position + direction * 100.0),
+        clampPosition(_position + direction * 100.0),
       );
     }
 
-    delegate.checkAndSetToInitialScaleState();
+    checkAndSetToInitialScaleState();
   }
 
   void animateScale(double from, double to) {
@@ -184,7 +196,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
 
   void onAnimationStatus(AnimationStatus status) {
     if (status == AnimationStatus.completed) {
-      delegate.checkAndSetToInitialScaleState();
+      checkAndSetToInitialScaleState();
     }
   }
 
@@ -200,14 +212,14 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
 
     _rotationAnimationController = AnimationController(vsync: this)
       ..addListener(handleRotationAnimation);
-    delegate.startListeners();
-    delegate.addAnimateOnScaleStateUpdate(animateOnScaleStateUpdate);
+    startListeners();
+    addAnimateOnScaleStateUpdate(animateOnScaleStateUpdate);
   }
 
   void animateOnScaleStateUpdate(double prevScale, double nextScale) {
     animateScale(prevScale, nextScale);
-    animatePosition(delegate.controller.position, Offset.zero);
-    animateRotation(delegate.controller.rotation, 0.0);
+    animatePosition(controller.position, Offset.zero);
+    animateRotation(controller.rotation, 0.0);
   }
 
   @override
@@ -216,23 +228,22 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     _scaleAnimationController.dispose();
     _positionAnimationController.dispose();
     _rotationAnimationController.dispose();
-    delegate.dispose();
     super.dispose();
   }
 
   void onTapUp(TapUpDetails details) {
-    widget.onTapUp?.call(context, details, delegate.controller.value);
+    widget.onTapUp?.call(context, details, controller.value);
   }
 
   void onTapDown(TapDownDetails details) {
-    widget.onTapDown?.call(context, details, delegate.controller.value);
+    widget.onTapDown?.call(context, details, controller.value);
   }
 
   @override
   Widget build(BuildContext context) {
     return StreamBuilder(
-        stream: delegate.controller.outputStateStream,
-        initialData: delegate.controller.prevValue,
+        stream: controller.outputStateStream,
+        initialData: controller.prevValue,
         builder: (
           BuildContext context,
           AsyncSnapshot<PhotoViewControllerValue> snapshot,
@@ -241,13 +252,13 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
             final PhotoViewControllerValue value = snapshot.data;
             final matrix = Matrix4.identity()
               ..translate(value.position.dx, value.position.dy)
-              ..scale(delegate.scale);
+              ..scale(scale);
 
             final rotationMatrix = Matrix4.identity()..rotateZ(value.rotation);
             final Widget customChildLayout = CustomSingleChildLayout(
               delegate: _CenterWithOriginalSizeDelegate(
-                delegate.scaleBoundaries.childSize,
-                delegate.basePosition,
+                scaleBoundaries.childSize,
+                basePosition,
               ),
               child: _buildHero(),
             );
@@ -264,14 +275,14 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
                         )
                       : customChildLayout,
                   transform: matrix,
-                  alignment: delegate.basePosition,
+                  alignment: basePosition,
                 )),
                 decoration: widget.backgroundDecoration ??
                     const BoxDecoration(
                       color: const Color.fromRGBO(0, 0, 0, 1.0),
                     ),
               ),
-              onDoubleTap: delegate.nextScaleState,
+              onDoubleTap: nextScaleState,
               onScaleStart: onScaleStart,
               onScaleUpdate: onScaleUpdate,
               onScaleEnd: onScaleEnd,

@@ -3,7 +3,6 @@ library photo_view_gallery;
 import 'package:flutter/widgets.dart';
 
 import 'photo_view.dart';
-import 'src/photo_view_controller.dart';
 import 'src/photo_view_hero_attributes.dart';
 import 'src/photo_view_image_wrapper.dart';
 import 'src/photo_view_scale_state.dart';
@@ -77,7 +76,6 @@ class PhotoViewGallery extends StatefulWidget {
     this.loadingChild,
     this.backgroundDecoration,
     this.gaplessPlayback = false,
-    this.customSize,
     this.reverse = false,
     this.pageController,
     this.onPageChanged,
@@ -85,6 +83,7 @@ class PhotoViewGallery extends StatefulWidget {
     this.enableRotation = false,
     this.scrollPhysics,
     this.scrollDirection = Axis.horizontal,
+    this.customSize,
   })  : _isBuilder = false,
         itemCount = null,
         builder = null,
@@ -101,7 +100,6 @@ class PhotoViewGallery extends StatefulWidget {
     this.loadingChild,
     this.backgroundDecoration,
     this.gaplessPlayback = false,
-    this.customSize,
     this.reverse = false,
     this.pageController,
     this.onPageChanged,
@@ -109,6 +107,7 @@ class PhotoViewGallery extends StatefulWidget {
     this.enableRotation = false,
     this.scrollPhysics,
     this.scrollDirection = Axis.horizontal,
+    this.customSize,
   })  : _isBuilder = true,
         pageOptions = null,
         assert(itemCount != null),
@@ -148,11 +147,11 @@ class PhotoViewGallery extends StatefulWidget {
   /// Mirror to [PhotoView.scaleStateChangedCallback]
   final PhotoViewScaleStateChangedCallback scaleStateChangedCallback;
 
-  /// Mirror to [PhotoView.customSize]
-  final Size customSize;
-
   /// Mirror to [PhotoView.enableRotation]
   final bool enableRotation;
+
+  /// Mirror to [PhotoView.customSize]
+  final Size customSize;
 
   /// The axis along which the [PageView] scrolls. Mirror to [PageView.scrollDirection]
   final Axis scrollDirection;
@@ -243,8 +242,8 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             backgroundDecoration: widget.backgroundDecoration,
             controller: pageOption.controller,
             scaleStateController: pageOption.scaleStateController,
-            gaplessPlayback: widget.gaplessPlayback,
             customSize: widget.customSize,
+            gaplessPlayback: widget.gaplessPlayback,
             heroAttributes: pageOption.heroAttributes,
             scaleStateChangedCallback: scaleStateChangedCallback,
             enableRotation: widget.enableRotation,
@@ -313,7 +312,7 @@ class PhotoViewGalleryPageOptions {
   final ImageProvider imageProvider;
 
   /// Mirror to [PhotoView.heroAttributes]
-  final HeroAttributes heroAttributes;
+  final PhotoViewHeroAttributes heroAttributes;
 
   /// Mirror to [PhotoView.minScale]
   final dynamic minScale;
