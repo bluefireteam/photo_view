@@ -125,14 +125,17 @@ class PhotoViewControllerValue {
 ///
 class PhotoViewController
     implements PhotoViewControllerBase<PhotoViewControllerValue> {
-  PhotoViewController(
-      {Offset initialPosition = Offset.zero, double initialRotation = 0.0})
-      : _valueNotifier = IgnorableValueNotifier(PhotoViewControllerValue(
+  PhotoViewController({
+    Offset initialPosition = Offset.zero,
+    double initialRotation = 0.0,
+  })  : _valueNotifier = IgnorableValueNotifier(
+          PhotoViewControllerValue(
             position: initialPosition,
             rotation: initialRotation,
-            scale:
-                null, // initial  scale is obtained via PhotoViewScaleState, therefore will be computed via scaleStateAwareScale
-            rotationFocusPoint: null)),
+            scale: null, // initial  scale is obtained via PhotoViewScaleState
+            rotationFocusPoint: null,
+          ),
+        ),
         super() {
     initial = value;
     prevValue = initial;
@@ -186,10 +189,11 @@ class PhotoViewController
     }
     prevValue = value;
     value = PhotoViewControllerValue(
-        position: position,
-        scale: scale,
-        rotation: rotation,
-        rotationFocusPoint: rotationFocusPoint);
+      position: position,
+      scale: scale,
+      rotation: rotation,
+      rotationFocusPoint: rotationFocusPoint,
+    );
   }
 
   @override
@@ -202,10 +206,11 @@ class PhotoViewController
     }
     prevValue = value;
     value = PhotoViewControllerValue(
-        position: position,
-        scale: scale,
-        rotation: rotation,
-        rotationFocusPoint: rotationFocusPoint);
+      position: position,
+      scale: scale,
+      rotation: rotation,
+      rotationFocusPoint: rotationFocusPoint,
+    );
   }
 
   @override
@@ -217,11 +222,14 @@ class PhotoViewController
       return;
     }
     prevValue = value;
-    _valueNotifier.updateIgnoring(PhotoViewControllerValue(
+    _valueNotifier.updateIgnoring(
+      PhotoViewControllerValue(
         position: position,
         scale: scale,
         rotation: rotation,
-        rotationFocusPoint: rotationFocusPoint));
+        rotationFocusPoint: rotationFocusPoint,
+      ),
+    );
   }
 
   @override
@@ -231,10 +239,11 @@ class PhotoViewController
     }
     prevValue = value;
     value = PhotoViewControllerValue(
-        position: position,
-        scale: scale,
-        rotation: rotation,
-        rotationFocusPoint: rotationFocusPoint);
+      position: position,
+      scale: scale,
+      rotation: rotation,
+      rotationFocusPoint: rotationFocusPoint,
+    );
   }
 
   @override
@@ -247,10 +256,11 @@ class PhotoViewController
     }
     prevValue = value;
     value = PhotoViewControllerValue(
-        position: position,
-        scale: scale,
-        rotation: rotation,
-        rotationFocusPoint: rotationFocusPoint);
+      position: position,
+      scale: scale,
+      rotation: rotation,
+      rotationFocusPoint: rotationFocusPoint,
+    );
   }
 
   @override
@@ -265,10 +275,11 @@ class PhotoViewController
   }) {
     prevValue = value;
     value = PhotoViewControllerValue(
-        position: position ?? value.position,
-        scale: scale ?? value.scale,
-        rotation: rotation ?? value.rotation,
-        rotationFocusPoint: rotationFocusPoint ?? value.rotationFocusPoint);
+      position: position ?? value.position,
+      scale: scale ?? value.scale,
+      rotation: rotation ?? value.rotation,
+      rotationFocusPoint: rotationFocusPoint ?? value.rotationFocusPoint,
+    );
   }
 
   @override

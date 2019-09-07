@@ -40,10 +40,14 @@ class PhotoViewControllerDelegate {
     }
     final double prevScale = controller.scale ??
         getScaleForScaleState(
-            scaleStateController.prevScaleState, scaleBoundaries);
+          scaleStateController.prevScaleState,
+          scaleBoundaries,
+        );
 
-    final double nextScale =
-        getScaleForScaleState(scaleStateController.scaleState, scaleBoundaries);
+    final double nextScale = getScaleForScaleState(
+      scaleStateController.scaleState,
+      scaleBoundaries,
+    );
 
     _animateScale(prevScale, nextScale);
   }
@@ -68,7 +72,10 @@ class PhotoViewControllerDelegate {
 
   double get scale {
     return controller.scale ??
-        getScaleForScaleState(scaleStateController.scaleState, scaleBoundaries);
+        getScaleForScaleState(
+          scaleStateController.scaleState,
+          scaleBoundaries,
+        );
   }
 
   set scale(double scale) {
@@ -115,8 +122,10 @@ class PhotoViewControllerDelegate {
       scaleStateController.scaleState = scaleStateCycle(scaleState);
       return;
     }
-    final double originalScale =
-        getScaleForScaleState(scaleState, scaleBoundaries);
+    final double originalScale = getScaleForScaleState(
+      scaleState,
+      scaleBoundaries,
+    );
 
     double prevScale = originalScale;
     PhotoViewScaleState prevScaleState = scaleState;

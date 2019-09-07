@@ -8,7 +8,9 @@ import 'photo_view_computed_scale.dart';
 import 'photo_view_scale_state.dart';
 
 double getScaleForScaleState(
-    PhotoViewScaleState scaleState, ScaleBoundaries scaleBoundaries) {
+  PhotoViewScaleState scaleState,
+  ScaleBoundaries scaleBoundaries,
+) {
   switch (scaleState) {
     case PhotoViewScaleState.initial:
     case PhotoViewScaleState.zoomedIn:
@@ -27,8 +29,13 @@ double getScaleForScaleState(
 }
 
 class ScaleBoundaries {
-  const ScaleBoundaries(this._minScale, this._maxScale, this._initialScale,
-      this.outerSize, this.childSize);
+  const ScaleBoundaries(
+    this._minScale,
+    this._maxScale,
+    this._initialScale,
+    this.outerSize,
+    this.childSize,
+  );
 
   final dynamic _minScale;
   final dynamic _maxScale;

@@ -103,10 +103,11 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     delegate.updateScaleStateFromNewScale(details.scale, newScale);
 
     delegate.updateMultiple(
-        scale: newScale,
-        position: delegate.clampPosition(delta * details.scale),
-        rotation: _rotationBefore + details.rotation,
-        rotationFocusPoint: details.focalPoint);
+      scale: newScale,
+      position: delegate.clampPosition(delta * details.scale),
+      rotation: _rotationBefore + details.rotation,
+      rotationFocusPoint: details.focalPoint,
+    );
   }
 
   void onScaleEnd(ScaleEndDetails details) {
@@ -119,8 +120,10 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     if (_scale > maxScale) {
       final double scaleComebackRatio = maxScale / _scale;
       animateScale(_scale, maxScale);
-      final Offset clampedPosition = delegate
-          .clampPosition(_position * scaleComebackRatio, scale: maxScale);
+      final Offset clampedPosition = delegate.clampPosition(
+        _position * scaleComebackRatio,
+        scale: maxScale,
+      );
       animatePosition(_position, clampedPosition);
       return;
     }
@@ -130,9 +133,12 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
       final double scaleComebackRatio = minScale / _scale;
       animateScale(_scale, minScale);
       animatePosition(
-          _position,
-          delegate.clampPosition(_position * scaleComebackRatio,
-              scale: minScale));
+        _position,
+        delegate.clampPosition(
+          _position * scaleComebackRatio,
+          scale: minScale,
+        ),
+      );
       return;
     }
     // get magnitude from gesture velocity
@@ -142,7 +148,9 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     if (_scaleBefore / _scale == 1.0 && magnitude >= 400.0) {
       final Offset direction = details.velocity.pixelsPerSecond / magnitude;
       animatePosition(
-          _position, delegate.clampPosition(_position + direction * 100.0));
+        _position,
+        delegate.clampPosition(_position + direction * 100.0),
+      );
     }
 
     delegate.checkAndSetToInitialScaleState();
@@ -225,8 +233,10 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     return StreamBuilder(
         stream: delegate.controller.outputStateStream,
         initialData: delegate.controller.prevValue,
-        builder: (BuildContext context,
-            AsyncSnapshot<PhotoViewControllerValue> snapshot) {
+        builder: (
+          BuildContext context,
+          AsyncSnapshot<PhotoViewControllerValue> snapshot,
+        ) {
           if (snapshot.hasData) {
             final PhotoViewControllerValue value = snapshot.data;
             final matrix = Matrix4.identity()
