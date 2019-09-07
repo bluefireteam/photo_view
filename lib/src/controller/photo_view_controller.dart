@@ -3,8 +3,8 @@ import 'dart:ui';
 
 import 'package:flutter/widgets.dart';
 
-import 'photo_view_scale_state.dart';
-import 'photo_view_utils.dart';
+import '../photo_view_scale_state.dart';
+import '../photo_view_utils.dart';
 
 typedef ScaleStateListener = void Function(double prevScale, double nextScale);
 

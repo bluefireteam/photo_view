@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:photo_view/src/photo_view_controller.dart';
+import 'package:photo_view/src/controller/photo_view_controller.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -13,13 +13,16 @@ void main() {
     const double initialRotation = 0.0;
     const Offset initialPosition = Offset(40.0, 40.0);
     controller = PhotoViewController(
-        initialRotation: initialRotation, initialPosition: initialPosition);
+      initialRotation: initialRotation,
+      initialPosition: initialPosition,
+    );
 
     const PhotoViewControllerValue testValue = const PhotoViewControllerValue(
-        position: initialPosition,
-        scale: null,
-        rotation: initialRotation,
-        rotationFocusPoint: null);
+      position: initialPosition,
+      scale: null,
+      rotation: initialRotation,
+      rotationFocusPoint: null,
+    );
 
     expect(controller.value, testValue);
   });
@@ -80,8 +83,15 @@ void main() {
       rotationFocusPoint: null,
     );
 
-    expect(controller.outputStateStream,
-        emitsInOrder([value1, value2, value3, value4]));
+    expect(
+      controller.outputStateStream,
+      emitsInOrder([
+        value1,
+        value2,
+        value3,
+        value4,
+      ]),
+    );
 
     controller.rotation = 1.0;
     controller.scale = 3.0;

@@ -9,7 +9,6 @@ environment:
   flutter: ">=1.5.9-pre.94 <2.0.0"
 
 dependencies:
-  after_layout: ^1.0.7
   flutter:
     sdk: flutter
 

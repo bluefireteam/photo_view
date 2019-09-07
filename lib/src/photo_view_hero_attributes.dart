@@ -4,8 +4,8 @@ import 'photo_view_image_wrapper.dart';
 
 /// Data class that holds the attributes that are going to be passed to
 /// [PhotoViewImageWrapper]'s [Hero].
-class HeroAttributes {
-  const HeroAttributes({
+class PhotoViewHeroAttributes {
+  const PhotoViewHeroAttributes({
     @required this.tag,
     this.createRectTween,
     this.flightShuttleBuilder,
