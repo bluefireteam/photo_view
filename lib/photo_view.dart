@@ -1,22 +1,23 @@
 library photo_view;
 
 import 'dart:async';
+
+import 'package:after_layout/after_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:after_layout/after_layout.dart';
 
-import 'src/hero_attributes.dart';
 import 'src/photo_view_computed_scale.dart';
 import 'src/photo_view_controller.dart';
 import 'src/photo_view_controller_delegate.dart';
+import 'src/photo_view_hero_attributes.dart';
 import 'src/photo_view_image_wrapper.dart';
 import 'src/photo_view_scale_state.dart';
 import 'src/photo_view_typedefs.dart';
 import 'src/photo_view_utils.dart';
 
-export 'src/hero_attributes.dart';
 export 'src/photo_view_computed_scale.dart';
 export 'src/photo_view_controller.dart';
+export 'src/photo_view_hero_attributes.dart';
 export 'src/photo_view_scale_state.dart';
 export 'src/photo_view_typedefs.dart';
 

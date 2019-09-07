@@ -3,8 +3,8 @@ library photo_view_gallery;
 import 'package:flutter/widgets.dart';
 
 import 'photo_view.dart';
-import 'src/hero_attributes.dart';
 import 'src/photo_view_controller.dart';
+import 'src/photo_view_hero_attributes.dart';
 import 'src/photo_view_image_wrapper.dart';
 import 'src/photo_view_scale_state.dart';
 import 'src/photo_view_typedefs.dart';
@@ -275,37 +275,37 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
 /// The [maxScale], [minScale] and [initialScale] options may be [double] or a [PhotoViewComputedScale] constant
 ///
 class PhotoViewGalleryPageOptions {
-  PhotoViewGalleryPageOptions(
-      {Key key,
-      @required this.imageProvider,
-      this.heroAttributes,
-      this.minScale,
-      this.maxScale,
-      this.initialScale,
-      this.controller,
-      this.scaleStateController,
-      this.basePosition,
-      this.scaleStateCycle,
-      this.onTapUp,
-      this.onTapDown})
-      : child = null,
+  PhotoViewGalleryPageOptions({
+    Key key,
+    @required this.imageProvider,
+    this.heroAttributes,
+    this.minScale,
+    this.maxScale,
+    this.initialScale,
+    this.controller,
+    this.scaleStateController,
+    this.basePosition,
+    this.scaleStateCycle,
+    this.onTapUp,
+    this.onTapDown,
+  })  : child = null,
         childSize = null,
         assert(imageProvider != null);
 
-  PhotoViewGalleryPageOptions.customChild(
-      {@required this.child,
-      @required this.childSize,
-      this.heroAttributes,
-      this.minScale,
-      this.maxScale,
-      this.initialScale,
-      this.controller,
-      this.scaleStateController,
-      this.basePosition,
-      this.scaleStateCycle,
-      this.onTapUp,
-      this.onTapDown})
-      : imageProvider = null,
+  PhotoViewGalleryPageOptions.customChild({
+    @required this.child,
+    @required this.childSize,
+    this.heroAttributes,
+    this.minScale,
+    this.maxScale,
+    this.initialScale,
+    this.controller,
+    this.scaleStateController,
+    this.basePosition,
+    this.scaleStateCycle,
+    this.onTapUp,
+    this.onTapDown,
+  })  : imageProvider = null,
         assert(child != null),
         assert(childSize != null);
 

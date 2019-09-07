@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
 
-import 'hero_attributes.dart';
 import 'photo_view_controller.dart';
 import 'photo_view_controller_delegate.dart';
+import 'photo_view_hero_attributes.dart';
 
 typedef PhotoViewImageTapUpCallback = Function(BuildContext context,
     TapUpDetails details, PhotoViewControllerValue controllerValue);
@@ -90,8 +90,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
   void onScaleStart(ScaleStartDetails details) {
     _rotationBefore = delegate.controller.rotation;
     _scaleBefore = delegate.scale;
-    _normalizedPosition =
-        details.focalPoint - delegate.controller.position;
+    _normalizedPosition = details.focalPoint - delegate.controller.position;
     _scaleAnimationController.stop();
     _positionAnimationController.stop();
     _rotationAnimationController.stop();
@@ -132,8 +131,8 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
       animateScale(_scale, minScale);
       animatePosition(
           _position,
-          delegate
-              .clampPosition(_position * scaleComebackRatio, scale: minScale));
+          delegate.clampPosition(_position * scaleComebackRatio,
+              scale: minScale));
       return;
     }
     // get magnitude from gesture velocity
@@ -142,8 +141,8 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     // animate velocity only if there is no scale change and a significant magnitude
     if (_scaleBefore / _scale == 1.0 && magnitude >= 400.0) {
       final Offset direction = details.velocity.pixelsPerSecond / magnitude;
-      animatePosition(_position,
-          delegate.clampPosition(_position + direction * 100.0));
+      animatePosition(
+          _position, delegate.clampPosition(_position + direction * 100.0));
     }
 
     delegate.checkAndSetToInitialScaleState();
@@ -237,8 +236,9 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
             final rotationMatrix = Matrix4.identity()..rotateZ(value.rotation);
             final Widget customChildLayout = CustomSingleChildLayout(
               delegate: _CenterWithOriginalSizeDelegate(
-                  delegate.scaleBoundaries.childSize,
-                  delegate.basePosition),
+                delegate.scaleBoundaries.childSize,
+                delegate.basePosition,
+              ),
               child: _buildHero(),
             );
             return GestureDetector(
@@ -258,7 +258,8 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
                 )),
                 decoration: widget.backgroundDecoration ??
                     const BoxDecoration(
-                        color: const Color.fromRGBO(0, 0, 0, 1.0)),
+                      color: const Color.fromRGBO(0, 0, 0, 1.0),
+                    ),
               ),
               onDoubleTap: delegate.nextScaleState,
               onScaleStart: onScaleStart,
