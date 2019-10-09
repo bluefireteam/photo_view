@@ -5,21 +5,13 @@ import 'package:photo_view/photo_view_gallery.dart';
 import 'package:photo_view_example/screens/app_bar.dart';
 import 'package:photo_view_example/screens/examples/gallery/gallery_example_item.dart';
 
-class GalleryExample extends StatelessWidget {
-  void open(BuildContext context, final int index) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => GalleryPhotoViewWrapper(
-          galleryItems: galleryItems,
-          backgroundDecoration: const BoxDecoration(
-            color: Colors.black,
-          ),
-          initialIndex: index,
-        ),
-      ),
-    );
-  }
+class GalleryExample extends StatefulWidget {
+  @override
+  _GalleryExampleState createState() => _GalleryExampleState();
+}
+
+class _GalleryExampleState extends State<GalleryExample> {
+  bool useCustomPageView = true;
 
   @override
   Widget build(BuildContext context) {
@@ -33,38 +25,74 @@ class GalleryExample extends StatelessWidget {
           ),
           Expanded(
               child: Center(
-                  child: Row(
+                  child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              GalleryExampleItemThumbnail(
-                galleryExampleItem: galleryItems[0],
-                onTap: () {
-                  open(context, 0);
-                },
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  GalleryExampleItemThumbnail(
+                    galleryExampleItem: galleryItems[0],
+                    onTap: () {
+                      open(context, 0);
+                    },
+                  ),
+                  GalleryExampleItemThumbnail(
+                    galleryExampleItem: galleryItems[2],
+                    onTap: () {
+                      open(context, 2);
+                    },
+                  ),
+                  GalleryExampleItemThumbnail(
+                    galleryExampleItem: galleryItems[3],
+                    onTap: () {
+                      open(context, 3);
+                    },
+                  ),
+                ],
               ),
-              GalleryExampleItemThumbnail(
-                galleryExampleItem: galleryItems[2],
-                onTap: () {
-                  open(context, 2);
-                },
-              ),
-              GalleryExampleItemThumbnail(
-                galleryExampleItem: galleryItems[3],
-                onTap: () {
-                  open(context, 3);
-                },
-              ),
+              Container(
+                  height: 30,
+                  child: Center(
+                      child: Row(
+                    children: <Widget>[
+                      const Text(" use custom pageView"),
+                      Checkbox(
+                          value: useCustomPageView,
+                          onChanged: (value) {
+                            setState(() {
+                              useCustomPageView = value;
+                            });
+                          }),
+                    ],
+                  ))),
             ],
           ))),
         ],
       ),
     );
   }
+
+  void open(BuildContext context, final int index) {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => GalleryPhotoViewWrapper(
+            usePageViewWrapper: useCustomPageView,
+            galleryItems: galleryItems,
+            backgroundDecoration: const BoxDecoration(
+              color: Colors.black,
+            ),
+            initialIndex: index,
+          ),
+        ));
+  }
 }
 
 class GalleryPhotoViewWrapper extends StatefulWidget {
   GalleryPhotoViewWrapper(
       {this.loadingChild,
+      this.usePageViewWrapper = false,
       this.backgroundDecoration,
       this.minScale,
       this.maxScale,
@@ -79,6 +107,7 @@ class GalleryPhotoViewWrapper extends StatefulWidget {
   final int initialIndex;
   final PageController pageController;
   final List<GalleryExampleItem> galleryItems;
+  final bool usePageViewWrapper;
 
   @override
   State<StatefulWidget> createState() {
@@ -88,6 +117,7 @@ class GalleryPhotoViewWrapper extends StatefulWidget {
 
 class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
   int currentIndex;
+
   @override
   void initState() {
     currentIndex = widget.initialIndex;
@@ -95,9 +125,11 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
   }
 
   void onPageChanged(int index) {
-    setState(() {
-      currentIndex = index;
-    });
+    if (!widget.usePageViewWrapper) {
+      setState(() {
+        currentIndex = index;
+      });
+    }
   }
 
   @override
@@ -119,15 +151,20 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
                 backgroundDecoration: widget.backgroundDecoration,
                 pageController: widget.pageController,
                 onPageChanged: onPageChanged,
+                usePageViewWrapper: widget.usePageViewWrapper,
               ),
-              Container(
-                padding: const EdgeInsets.all(20.0),
-                child: Text(
-                  "Image ${currentIndex + 1}",
-                  style: const TextStyle(
-                      color: Colors.white, fontSize: 17.0, decoration: null),
-                ),
-              )
+              widget.usePageViewWrapper
+                  ? Container()
+                  : Container(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Text(
+                        "Image ${currentIndex + 1}",
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 17.0,
+                            decoration: null),
+                      ),
+                    )
             ],
           )),
     );
