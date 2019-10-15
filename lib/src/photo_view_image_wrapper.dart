@@ -286,8 +286,10 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
               onScaleStart: onScaleStart,
               onScaleUpdate: onScaleUpdate,
               onScaleEnd: onScaleEnd,
-              onTapUp: onTapUp,
-              onTapDown: onTapDown,
+              // Return null to prevent overriding tap handlers higher in the widget tree.
+              // See https://github.com/renancaraujo/photo_view/issues/134
+              onTapUp: widget.onTapUp == null ? null : onTapUp,
+              onTapDown: widget.onTapDown == null ? null : onTapDown,
             );
           } else {
             return Container();
