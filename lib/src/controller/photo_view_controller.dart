@@ -145,7 +145,7 @@ class PhotoViewController
     _outputCtrl.sink.add(initial);
   }
 
-  IgnorableValueNotifier<PhotoViewControllerValue> _valueNotifier;
+  final IgnorableValueNotifier<PhotoViewControllerValue> _valueNotifier;
 
   PhotoViewControllerValue initial;
 
@@ -303,7 +303,7 @@ class PhotoViewController
 ///
 /// As it is a controller, whoever instantiates it, should [dispose] it afterwards.
 ///
-/// The updates should be done via [scaleState] setter and the updated lintened via [outputScaleStateStream]
+/// The updates should be done via [scaleState] setter and the updated listened via [outputScaleStateStream]
 ///
 class PhotoViewScaleStateController {
   PhotoViewScaleStateController() {
@@ -374,16 +374,16 @@ class PhotoViewScaleStateController {
 
   /// Add a listener that will ignore updates made internally
   ///
-  /// Since it is made for internal use, it is not porformatic to use more than one
-  /// listener. Preffer [outputScaleStateStream]
+  /// Since it is made for internal use, it is not performatic to use more than one
+  /// listener. Prefer [outputScaleStateStream]
   void addIgnorableListener(VoidCallback callback) {
     _scaleStateNotifier.addIgnorableListener(callback);
   }
 
   /// Remove a listener that will ignore updates made internally
   ///
-  /// Since it is made for internal use, it is not porformatic to use more than one
-  /// listener. Preffer [outputScaleStateStream]
+  /// Since it is made for internal use, it is not performatic to use more than one
+  /// listener. Prefer [outputScaleStateStream]
   void removeIgnorableListener(VoidCallback callback) {
     _scaleStateNotifier.removeIgnorableListener(callback);
   }

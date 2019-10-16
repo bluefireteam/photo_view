@@ -89,7 +89,7 @@ export 'src/photo_view_typedefs.dart';
 /// ```
 ///
 /// [customSize] is used to define the viewPort size in which the image will be
-/// scaled to. This argument is rarely used. By befault is the size that this widget assumes.
+/// scaled to. This argument is rarely used. By default is the size that this widget assumes.
 ///
 /// The argument [gaplessPlayback] is used to continue showing the old image
 /// (`true`), or briefly show nothing (`false`), when the [imageProvider]
@@ -297,7 +297,7 @@ class PhotoView extends StatefulWidget {
   /// by default it is `MediaQuery.of(context).size`.
   final Size customSize;
 
-  /// A [Function] to be called whenever the scaleState changes, this heappens when the user double taps the content ou start to pinch-in.
+  /// A [Function] to be called whenever the scaleState changes, this happens when the user double taps the content ou start to pinch-in.
   final PhotoViewScaleStateChangedCallback scaleStateChangedCallback;
 
   /// A flag that enables the rotation gesture support
