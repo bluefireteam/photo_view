@@ -114,8 +114,6 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
 
     updateScaleStateFromNewScale(details.scale, newScale);
 
-    print(details.focalPoint.dy);
-
     updateMultiple(
       scale: newScale,
       position: clampPosition(delta * details.scale),
