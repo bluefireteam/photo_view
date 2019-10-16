@@ -4,6 +4,7 @@ import 'package:photo_view/src/photo_view_utils.dart';
 import 'controller/photo_view_controller.dart';
 import 'controller/photo_view_controller_delegate.dart';
 import 'photo_view_hero_attributes.dart';
+import 'photo_view_pageview_wrapper.dart';
 import 'photo_view_typedefs.dart';
 
 typedef PhotoViewImageTapUpCallback = Function(
@@ -29,6 +30,7 @@ class PhotoViewImageWrapper extends StatefulWidget {
     this.enableRotation,
     this.onTapUp,
     this.onTapDown,
+    this.index,
     @required this.controller,
     @required this.scaleBoundaries,
     @required this.scaleStateCycle,
@@ -45,6 +47,7 @@ class PhotoViewImageWrapper extends StatefulWidget {
     this.enableRotation,
     this.onTapUp,
     this.onTapDown,
+    this.index,
     @required this.controller,
     @required this.scaleBoundaries,
     @required this.scaleStateCycle,
@@ -54,6 +57,7 @@ class PhotoViewImageWrapper extends StatefulWidget {
         gaplessPlayback = false,
         super(key: key);
 
+  final int index;
   final Decoration backgroundDecoration;
   final ImageProvider imageProvider;
   final bool gaplessPlayback;
@@ -72,15 +76,16 @@ class PhotoViewImageWrapper extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return _PhotoViewImageWrapperState();
+    return PhotoViewImageWrapperState();
   }
 }
 
-class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
+class PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     with TickerProviderStateMixin, PhotoViewControllerDelegate {
   Offset _normalizedPosition;
   double _scaleBefore;
   double _rotationBefore;
+  PageViewWrapper _customViewPager;
 
   AnimationController _scaleAnimationController;
   Animation<double> _scaleAnimation;
@@ -105,6 +110,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     controller.rotation = _rotationAnimation.value;
   }
 
+  @override
   void onScaleStart(ScaleStartDetails details) {
     _rotationBefore = controller.rotation;
     _scaleBefore = scale;
@@ -114,6 +120,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     _rotationAnimationController.stop();
   }
 
+  @override
   void onScaleUpdate(ScaleUpdateDetails details) {
     final double newScale = _scaleBefore * details.scale;
     final Offset delta = details.focalPoint - _normalizedPosition;
@@ -128,6 +135,7 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     );
   }
 
+  @override
   void onScaleEnd(ScaleEndDetails details) {
     final double _scale = scale;
     final Offset _position = controller.position;
@@ -172,6 +180,16 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     }
 
     checkAndSetToInitialScaleState();
+  }
+
+  @override
+  bool canMove(double scale, Offset delta) {
+    return moveTest(scale, delta);
+  }
+
+  @override
+  void onDoubleTap() {
+    nextScaleState();
   }
 
   void animateScale(double from, double to) {
@@ -222,6 +240,15 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     addAnimateOnScaleStateUpdate(animateOnScaleStateUpdate);
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _customViewPager = context.ancestorWidgetOfExactType(PageViewWrapper);
+    if (_customViewPager != null && widget.index != null) {
+      _customViewPager.controller.addChildGestureCallback(widget.index, this);
+    }
+  }
+
   void animateOnScaleStateUpdate(double prevScale, double nextScale) {
     animateScale(prevScale, nextScale);
     animatePosition(controller.position, Offset.zero);
@@ -234,6 +261,10 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     _scaleAnimationController.dispose();
     _positionAnimationController.dispose();
     _rotationAnimationController.dispose();
+    if (_customViewPager != null && widget.index != null) {
+      _customViewPager.controller
+          .removeChildGestureCallback(widget.index, this);
+    }
     super.dispose();
   }
 

@@ -11,12 +11,16 @@ import 'photo_view_controller.dart';
 /// A  class to hold internal layout logic to sync both controller states
 mixin PhotoViewControllerDelegate on State<PhotoViewImageWrapper> {
   PhotoViewControllerBase get controller => widget.controller;
+
   PhotoViewScaleStateController get scaleStateController =>
       widget.scaleStateController;
-  ScaleBoundaries get scaleBoundaries => widget.scaleBoundaries;
-  ScaleStateCycle get scaleStateCycle => widget.scaleStateCycle;
-  Alignment get basePosition => widget.basePosition;
 
+  ScaleBoundaries get scaleBoundaries => widget.scaleBoundaries;
+
+  ScaleStateCycle get scaleStateCycle => widget.scaleStateCycle;
+
+  Alignment get basePosition => widget.basePosition;
+  OffsetWrapper _lastOffsetWrapper;
   Function(double prevScale, double nextScale) _animateScale;
 
   void startListeners() {
@@ -168,7 +172,26 @@ mixin PhotoViewControllerDelegate on State<PhotoViewImageWrapper> {
     final double computedY =
         screenHeight < computedHeight ? y.clamp(minY, maxY) : 0.0;
 
-    return Offset(computedX, computedY);
+    final result = OffsetWrapper(computedX, computedY, x < minX, x > maxX);
+    _lastOffsetWrapper = result;
+    return result;
+  }
+
+  bool moveTest(double scale, Offset delta) {
+    if (scale != 1.0) {
+      //when child is zooming
+      return true;
+    }
+    if (_lastOffsetWrapper != null) {
+      final moveRight = delta.dx < 0;
+      if (_lastOffsetWrapper.reachLeftBound) {
+        return moveRight;
+      } else if (_lastOffsetWrapper.reachRightBound) {
+        return !moveRight;
+      }
+    }
+
+    return scaleStateController.scaleState != PhotoViewScaleState.initial;
   }
 
   @override
@@ -178,4 +201,11 @@ mixin PhotoViewControllerDelegate on State<PhotoViewImageWrapper> {
     scaleStateController.removeIgnorableListener(_blindScaleStateListener);
     super.dispose();
   }
+}
+
+class OffsetWrapper extends Offset {
+  OffsetWrapper(double dx, double dy, this.reachRightBound, this.reachLeftBound)
+      : super(dx, dy);
+  final bool reachLeftBound;
+  final bool reachRightBound;
 }
