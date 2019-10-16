@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'package:flutter/material.dart';
+import 'package:photo_view/src/photo_view_image_wrapper.dart';
 
 /// This class wrap [PageView], use [GestureDetector] to detect touch event and decide which widget should move.
 /// [PageViewWrapperController] is touch event handler, it will query [PageView] child move or not, if child can't move
@@ -36,20 +37,6 @@ class _PageViewWrapperState extends State<PageViewWrapper> {
   }
 }
 
-abstract class GestureDetectorCallback {
-  GestureDetectorCallback();
-
-  void onDoubleTap();
-
-  void onScaleStart(ScaleStartDetails detail);
-
-  void onScaleUpdate(ScaleUpdateDetails detail);
-
-  void onScaleEnd(ScaleEndDetails details);
-
-  bool canMove(double scale, Offset delta);
-}
-
 ///Touch event handler.
 ///It will dispatch event to PageView child and will move itself if needed.
 class PageViewWrapperController {
@@ -71,7 +58,7 @@ class PageViewWrapperController {
   double _freshScrollPixels;
   ScaleStartDetails _scaleStartDetail;
   bool needNotifyChildEnd = false;
-  List<GestureDetectorCallback> _callbackList;
+  List<PhotoViewImageWrapperState> _callbackList;
   Offset _startPosition;
   Offset _lastDelta;
   int _currentSelectPage = 0;
@@ -81,12 +68,12 @@ class PageViewWrapperController {
   }
 
   void addChildGestureCallback(
-      int index, GestureDetectorCallback childCallback) {
+      int index, PhotoViewImageWrapperState childCallback) {
     _callbackList[index] = childCallback;
   }
 
   void removeChildGestureCallback(
-      int index, GestureDetectorCallback childCallback) {
+      int index, PhotoViewImageWrapperState childCallback) {
     assert(_callbackList[index] == childCallback);
     _callbackList[index] = null;
   }
@@ -145,7 +132,7 @@ class PageViewWrapperController {
     if (_callbackList.isNotEmpty) {
       final Offset delta = detail.focalPoint - _startPosition;
       bool pageViewShouldMove = false;
-      final GestureDetectorCallback currentCallback =
+      final PhotoViewImageWrapperState currentCallback =
           _callbackList[_currentSelectPage];
       if (currentCallback != null) {
         if (needNotifyChildEnd) {

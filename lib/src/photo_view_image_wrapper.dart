@@ -76,13 +76,12 @@ class PhotoViewImageWrapper extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return _PhotoViewImageWrapperState();
+    return PhotoViewImageWrapperState();
   }
 }
 
-class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
-    with TickerProviderStateMixin, PhotoViewControllerDelegate
-    implements GestureDetectorCallback {
+class PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
+    with TickerProviderStateMixin, PhotoViewControllerDelegate {
   Offset _normalizedPosition;
   double _scaleBefore;
   double _rotationBefore;
