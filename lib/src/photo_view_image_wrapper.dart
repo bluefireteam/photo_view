@@ -11,7 +11,7 @@ typedef PhotoViewImageTapUpCallback = Function(BuildContext context,
 typedef PhotoViewImageTapDownCallback = Function(BuildContext context,
     TapDownDetails details, PhotoViewControllerValue controllerValue);
 
-/// Internal widget in which controls all animations lifecycles, core responses
+/// Internal widget in which controls all animations lifecycle, core responses
 /// to user gestures, updates to  the controller state and mounts the entire PhotoView Layout
 class PhotoViewImageWrapper extends StatefulWidget {
   const PhotoViewImageWrapper({
@@ -113,6 +113,8 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
     final Offset delta = details.focalPoint - _normalizedPosition;
 
     updateScaleStateFromNewScale(details.scale, newScale);
+
+    print(details.focalPoint.dy);
 
     updateMultiple(
       scale: newScale,
@@ -253,8 +255,10 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
             final matrix = Matrix4.identity()
               ..translate(value.position.dx, value.position.dy)
               ..scale(scale);
+            if (widget.enableRotation) {
+              matrix..rotateZ(value.rotation);
+            }
 
-            final rotationMatrix = Matrix4.identity()..rotateZ(value.rotation);
             final Widget customChildLayout = CustomSingleChildLayout(
               delegate: _CenterWithOriginalSizeDelegate(
                 scaleBoundaries.childSize,
@@ -265,18 +269,12 @@ class _PhotoViewImageWrapperState extends State<PhotoViewImageWrapper>
             return GestureDetector(
               child: Container(
                 child: Center(
-                    child: Transform(
-                  child: widget.enableRotation
-                      ? Transform(
-                          child: customChildLayout,
-                          transform: rotationMatrix,
-                          alignment: Alignment.center,
-                          origin: value.rotationFocusPoint,
-                        )
-                      : customChildLayout,
-                  transform: matrix,
-                  alignment: basePosition,
-                )),
+                  child: Transform(
+                    child: customChildLayout,
+                    transform: matrix,
+                    alignment: basePosition,
+                  ),
+                ),
                 decoration: widget.backgroundDecoration ??
                     const BoxDecoration(
                       color: const Color.fromRGBO(0, 0, 0, 1.0),

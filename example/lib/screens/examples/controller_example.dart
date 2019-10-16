@@ -49,48 +49,52 @@ class _ControllerExampleState extends State<ControllerExample> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-          height: MediaQuery.of(context).size.height,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              const ExampleAppBar(
-                title: "Controller Examples",
-                showGoBack: true,
-              ),
-              Flexible(
-                  flex: 1,
-                  child: ClipRect(
-                    child: Stack(
-                      children: <Widget>[
-                        Positioned.fill(
-                          child: PhotoView(
-                            imageProvider:
-                                const AssetImage("assets/large-image.jpg"),
-                            controller: controller,
-                            scaleStateController: scaleStateController,
-                            enableRotation: true,
-                            initialScale: defScale,
-                            minScale: minScale,
-                            maxScale: maxScale,
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          height: 220,
-                          left: 0,
-                          right: 0,
-                          child: Container(
-                              padding: const EdgeInsets.all(30.0),
-                              child: StreamBuilder(
-                                  stream: controller.outputStateStream,
-                                  initialData: controller.value,
-                                  builder: _streamBuild)),
-                        )
-                      ],
+        height: MediaQuery.of(context).size.height,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            const ExampleAppBar(
+              title: "Controller Examples",
+              showGoBack: true,
+            ),
+            Flexible(
+              flex: 1,
+              child: ClipRect(
+                child: Stack(
+                  children: <Widget>[
+                    Positioned.fill(
+                      child: PhotoView(
+                        imageProvider:
+                            const AssetImage("assets/large-image.jpg"),
+                        controller: controller,
+                        scaleStateController: scaleStateController,
+                        enableRotation: true,
+                        initialScale: defScale,
+                        minScale: minScale,
+                        maxScale: maxScale,
+                      ),
                     ),
-                  )),
-            ],
-          )),
+                    Positioned(
+                      bottom: 0,
+                      height: 220,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        padding: const EdgeInsets.all(30.0),
+                        child: StreamBuilder(
+                          stream: controller.outputStateStream,
+                          initialData: controller.value,
+                          builder: _streamBuild,
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -106,29 +110,35 @@ class _ControllerExampleState extends State<ControllerExample> {
           style: const TextStyle(color: Colors.white),
         ),
         SliderTheme(
-            data: SliderTheme.of(context).copyWith(
-                activeTrackColor: Colors.orange, thumbColor: Colors.orange),
-            child: Slider(
-                value: value.rotation.clamp(min, max),
-                min: min,
-                max: max,
-                onChanged: (double newRotation) {
-                  controller.rotation = newRotation;
-                })),
+          data: SliderTheme.of(context).copyWith(
+              activeTrackColor: Colors.orange, thumbColor: Colors.orange),
+          child: Slider(
+            value: value.rotation.clamp(min, max),
+            min: min,
+            max: max,
+            onChanged: (double newRotation) {
+              controller.rotation = newRotation;
+            },
+          ),
+        ),
         Text(
           "Scale ${value.scale}",
           style: const TextStyle(color: Colors.white),
         ),
         SliderTheme(
-            data: SliderTheme.of(context).copyWith(
-                activeTrackColor: Colors.orange, thumbColor: Colors.orange),
-            child: Slider(
-                value: value.scale.clamp(minScale, maxScale),
-                min: minScale,
-                max: maxScale,
-                onChanged: (double newScale) {
-                  controller.scale = newScale;
-                })),
+          data: SliderTheme.of(context).copyWith(
+            activeTrackColor: Colors.orange,
+            thumbColor: Colors.orange,
+          ),
+          child: Slider(
+            value: value.scale.clamp(minScale, maxScale),
+            min: minScale,
+            max: maxScale,
+            onChanged: (double newScale) {
+              controller.scale = newScale;
+            },
+          ),
+        ),
         Text(
           "ScaleState ${scaleStateController.scaleState}",
           style: const TextStyle(color: Colors.white),

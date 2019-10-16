@@ -17,7 +17,7 @@ typedef PhotoViewGalleryBuilder = PhotoViewGalleryPageOptions Function(
 
 /// A [StatefulWidget] that shows multiple [PhotoView] widgets in a [PageView]
 ///
-/// Some of [PhotoView] consturctor options are passed direct to [PhotoViewGallery] cosntructor. Those options will affect the gallery in a whole.
+/// Some of [PhotoView] constructor options are passed direct to [PhotoViewGallery] cosntructor. Those options will affect the gallery in a whole.
 ///
 /// Some of the options may be defined to each image individually, such as `initialScale` or `heroAttributes`. Those must be passed via each [PhotoViewGalleryPageOptions].
 ///

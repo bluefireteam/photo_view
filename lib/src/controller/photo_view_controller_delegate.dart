@@ -8,7 +8,7 @@ import '../photo_view_typedefs.dart';
 import '../photo_view_utils.dart';
 import 'photo_view_controller.dart';
 
-/// A  class to hold internal layout logics to sync both controller states
+/// A  class to hold internal layout logic to sync both controller states
 mixin PhotoViewControllerDelegate on State<PhotoViewImageWrapper> {
   PhotoViewControllerBase get controller => widget.controller;
   PhotoViewScaleStateController get scaleStateController =>

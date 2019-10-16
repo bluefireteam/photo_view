@@ -8,16 +8,17 @@ import 'package:photo_view_example/screens/examples/gallery/gallery_example_item
 class GalleryExample extends StatelessWidget {
   void open(BuildContext context, final int index) {
     Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => GalleryPhotoViewWrapper(
-            galleryItems: galleryItems,
-            backgroundDecoration: const BoxDecoration(
-              color: Colors.black,
-            ),
-            initialIndex: index,
+      context,
+      MaterialPageRoute(
+        builder: (context) => GalleryPhotoViewWrapper(
+          galleryItems: galleryItems,
+          backgroundDecoration: const BoxDecoration(
+            color: Colors.black,
           ),
-        ));
+          initialIndex: index,
+        ),
+      ),
+    );
   }
 
   @override
