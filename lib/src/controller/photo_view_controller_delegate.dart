@@ -11,10 +11,14 @@ import 'photo_view_controller.dart';
 /// A  class to hold internal layout logic to sync both controller states
 mixin PhotoViewControllerDelegate on State<PhotoViewImageWrapper> {
   PhotoViewControllerBase get controller => widget.controller;
+
   PhotoViewScaleStateController get scaleStateController =>
       widget.scaleStateController;
+
   ScaleBoundaries get scaleBoundaries => widget.scaleBoundaries;
+
   ScaleStateCycle get scaleStateCycle => widget.scaleStateCycle;
+
   Alignment get basePosition => widget.basePosition;
   OffsetWrapper _lastOffsetWrapper;
   Function(double prevScale, double nextScale) _animateScale;
@@ -168,10 +172,9 @@ mixin PhotoViewControllerDelegate on State<PhotoViewImageWrapper> {
     final double computedY =
         screenHeight < computedHeight ? y.clamp(minY, maxY) : 0.0;
 
-    final position = Offset(computedX, computedY);
-    final result = OffsetWrapper(position, x < minX, x > maxX);
+    final result = OffsetWrapper(computedX, computedY, x < minX, x > maxX);
     _lastOffsetWrapper = result;
-    return position;
+    return result;
   }
 
   bool moveTest(double scale, Offset delta) {
@@ -200,14 +203,9 @@ mixin PhotoViewControllerDelegate on State<PhotoViewImageWrapper> {
   }
 }
 
-class OffsetWrapper {
-  OffsetWrapper(this.position, this.reachRightBound, this.reachLeftBound);
+class OffsetWrapper extends Offset {
+  OffsetWrapper(double dx, double dy, this.reachRightBound, this.reachLeftBound)
+      : super(dx, dy);
   final bool reachLeftBound;
   final bool reachRightBound;
-  final Offset position;
-
-  @override
-  String toString() {
-    return "reachLeftBound=$reachRightBound, reachRightBound=$reachLeftBound, offset=$position";
-  }
 }

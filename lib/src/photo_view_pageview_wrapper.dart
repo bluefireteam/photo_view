@@ -52,24 +52,26 @@ abstract class GestureDetectorCallback {
 
 ///Touch event handler.
 ///It will dispatch event to PageView child and will move itself if needed.
-class PageViewWrapperController implements GestureDetectorCallback {
+class PageViewWrapperController {
   PageViewWrapperController(
-      {this.pageViewController, this.onPageChangedWrapper}) {
-    onPageChangedWrapper.addListener(onPageChange);
+      {this.pageViewController, this.onPageChangedWrapper, this.itemCount}) {
+    _callbackList = List(itemCount);
+    onPageChangedWrapper.addListener(() {
+      onPageChange(onPageChangedWrapper.currentPage);
+    });
     _currentSelectPage = pageViewController.initialPage;
   }
+
   final int durationMs = 400;
   final double pi = 3.14;
   final OnPageChangedWrapper onPageChangedWrapper;
+  final int itemCount;
   PageController pageViewController;
   double _lastScrollPixels;
   double _freshScrollPixels;
   ScaleStartDetails _scaleStartDetail;
   bool needNotifyChildEnd = false;
-  Set<GestureDetectorCallback> childCallbacks =
-      HashSet<GestureDetectorCallback>();
-  Map<GestureDetectorCallback, bool> callbackStartMap = HashMap();
-  Map<GestureDetectorCallback, int> callbackIntMap = HashMap();
+  List<GestureDetectorCallback> _callbackList;
   Offset _startPosition;
   Offset _lastDelta;
   int _currentSelectPage = 0;
@@ -80,42 +82,26 @@ class PageViewWrapperController implements GestureDetectorCallback {
 
   void addChildGestureCallback(
       int index, GestureDetectorCallback childCallback) {
-    childCallbacks.add(childCallback);
-    callbackIntMap[childCallback] = index;
+    _callbackList[index] = childCallback;
   }
 
   void removeChildGestureCallback(
       int index, GestureDetectorCallback childCallback) {
-    childCallbacks.remove(childCallback);
-    callbackIntMap.remove(childCallback);
+    assert(_callbackList[index] == childCallback);
+    _callbackList[index] = null;
   }
 
-  @override
   void onDoubleTap() {
-    for (final callback in childCallbacks) {
-      final callbackIndex = callbackIntMap[callback];
-      if (callbackIndex != null && callbackIndex == _currentSelectPage) {
-        callback.onDoubleTap();
-      }
-    }
+    _callbackList[_currentSelectPage]?.onDoubleTap();
   }
 
-  @override
   void onScaleEnd(ScaleEndDetails details) {
     _startPosition = null;
     _scaleStartDetail = null;
     final direction = details.velocity.pixelsPerSecond.direction;
     final distance = details.velocity.pixelsPerSecond.distance;
     if (needNotifyChildEnd) {
-      for (final callback in childCallbacks) {
-        final callbackIndex = callbackIntMap[callback];
-        if (callbackIndex != null && callbackIndex == _currentSelectPage) {
-          final bool started = callbackStartMap[callback];
-          if (started != null && started) {
-            callback.onScaleEnd(details);
-          }
-        }
-      }
+      _callbackList[_currentSelectPage].onScaleEnd(details);
       needNotifyChildEnd = false;
     } else {
       final ScrollPositionWithSingleContext scrollPosition =
@@ -148,7 +134,6 @@ class PageViewWrapperController implements GestureDetectorCallback {
     }
   }
 
-  @override
   void onScaleStart(ScaleStartDetails detail) {
     _startPosition = detail.focalPoint;
     _lastScrollPixels =
@@ -156,25 +141,23 @@ class PageViewWrapperController implements GestureDetectorCallback {
     _scaleStartDetail = detail;
   }
 
-  @override
   void onScaleUpdate(ScaleUpdateDetails detail) {
-    if (childCallbacks.isNotEmpty) {
+    if (_callbackList.isNotEmpty) {
       final Offset delta = detail.focalPoint - _startPosition;
       bool pageViewShouldMove = false;
-      for (final callback in childCallbacks) {
-        final callbackIndex = callbackIntMap[callback];
-        if (callbackIndex != null && callbackIndex == _currentSelectPage) {
-          if (needNotifyChildEnd) {
-            callback.onScaleUpdate(detail);
+      final GestureDetectorCallback currentCallback =
+          _callbackList[_currentSelectPage];
+      if (currentCallback != null) {
+        if (needNotifyChildEnd) {
+          currentCallback.onScaleUpdate(detail);
+        } else {
+          final bool childCanMove =
+              currentCallback.canMove(detail.scale, delta);
+          if (childCanMove != null && childCanMove) {
+            needNotifyChildEnd = true;
+            currentCallback.onScaleStart(_scaleStartDetail);
           } else {
-            final bool childCanMove = callback.canMove(detail.scale, delta);
-            if (childCanMove != null && childCanMove) {
-              needNotifyChildEnd = true;
-              callbackStartMap[callback] = childCanMove;
-              callback.onScaleStart(_scaleStartDetail);
-            } else {
-              pageViewShouldMove = true;
-            }
+            pageViewShouldMove = true;
           }
         }
       }
@@ -232,31 +215,18 @@ class PageViewWrapperController implements GestureDetectorCallback {
     final Offset delta = detail.focalPoint - _startPosition;
     final value = _lastScrollPixels - delta.dx;
     _lastDelta = delta;
-    scrollPosition.jumpToWithoutSettling(
-        value.clamp(-0.0, scrollPosition.maxScrollExtent));
-  }
-
-  @override
-  bool canMove(double scale, Offset delta) {
-    return true;
+    scrollPosition.jumpTo(value.clamp(-0.0, scrollPosition.maxScrollExtent));
   }
 }
 
 ///dispatch onPageChanged to listeners
-class OnPageChangedWrapper {
-  final HashSet<ValueChanged<int>> _listeners = HashSet();
-
-  void addListener(ValueChanged<int> listener) {
-    _listeners.add(listener);
-  }
-
-  void removeListener(ValueChanged<int> listener) {
-    _listeners.remove(listener);
-  }
+class OnPageChangedWrapper extends ChangeNotifier {
+  int currentPage;
 
   void onPageChanged(int value) {
-    for (final listener in _listeners) {
-      listener(value);
+    if (currentPage != value) {
+      currentPage = value;
+      notifyListeners();
     }
   }
 }

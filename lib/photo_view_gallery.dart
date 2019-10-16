@@ -173,11 +173,25 @@ class PhotoViewGallery extends StatefulWidget {
 class _PhotoViewGalleryState extends State<PhotoViewGallery> {
   PageController _controller;
   bool _locked;
+  PageViewWrapperController _pageViewWrapperController;
+  OnPageChangedWrapper _onPageChangedWrapper;
 
   @override
   void initState() {
     _controller = widget.pageController ?? PageController();
     _locked = false;
+    if (widget.usePageViewWrapper) {
+      _onPageChangedWrapper = OnPageChangedWrapper();
+      _onPageChangedWrapper.addListener(() {
+        widget.onPageChanged(_onPageChangedWrapper.currentPage);
+      });
+
+      _pageViewWrapperController = PageViewWrapperController(
+        pageViewController: _controller,
+        itemCount: widget.itemCount,
+        onPageChangedWrapper: _onPageChangedWrapper,
+      );
+    }
     super.initState();
   }
 
@@ -213,17 +227,10 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
   }
 
   PageViewWrapper _getPageViewWrapper() {
-    final pageChangeListeners = OnPageChangedWrapper();
-    pageChangeListeners.addListener(widget.onPageChanged);
-
-    final customController = PageViewWrapperController(
-        pageViewController: _controller,
-        onPageChangedWrapper: pageChangeListeners);
-
     final pageView = PageView.builder(
       reverse: widget.reverse,
       controller: _controller,
-      onPageChanged: pageChangeListeners.onPageChanged,
+      onPageChanged: _onPageChangedWrapper.onPageChanged,
       itemCount: itemCount,
       itemBuilder: _buildItem,
       scrollDirection: widget.scrollDirection,
@@ -233,7 +240,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
 
     return PageViewWrapper(
       pageView: pageView,
-      controller: customController,
+      controller: _pageViewWrapperController,
     );
   }
 
