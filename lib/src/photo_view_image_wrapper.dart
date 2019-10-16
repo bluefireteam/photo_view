@@ -6,7 +6,6 @@ import 'controller/photo_view_controller_delegate.dart';
 import 'photo_view_hero_attributes.dart';
 import 'photo_view_typedefs.dart';
 
-
 typedef PhotoViewImageTapUpCallback = Function(BuildContext context,
     TapUpDetails details, PhotoViewControllerValue controllerValue);
 typedef PhotoViewImageTapDownCallback = Function(BuildContext context,
