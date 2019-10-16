@@ -6,10 +6,16 @@ import 'controller/photo_view_controller_delegate.dart';
 import 'photo_view_hero_attributes.dart';
 import 'photo_view_typedefs.dart';
 
-typedef PhotoViewImageTapUpCallback = Function(BuildContext context,
-    TapUpDetails details, PhotoViewControllerValue controllerValue);
-typedef PhotoViewImageTapDownCallback = Function(BuildContext context,
-    TapDownDetails details, PhotoViewControllerValue controllerValue);
+typedef PhotoViewImageTapUpCallback = Function(
+  BuildContext context,
+  TapUpDetails details,
+  PhotoViewControllerValue controllerValue,
+);
+typedef PhotoViewImageTapDownCallback = Function(
+  BuildContext context,
+  TapDownDetails details,
+  PhotoViewControllerValue controllerValue,
+);
 
 /// Internal widget in which controls all animations lifecycle, core responses
 /// to user gestures, updates to  the controller state and mounts the entire PhotoView Layout
