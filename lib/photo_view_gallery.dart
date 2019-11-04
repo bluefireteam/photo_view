@@ -1,13 +1,10 @@
 library photo_view_gallery;
 
 import 'package:flutter/widgets.dart';
+import 'package:photo_view/src/core/photo_view_image_core.dart';
 
 import 'photo_view.dart';
-import 'src/photo_view_hero_attributes.dart';
-import 'src/photo_view_image_wrapper.dart';
-import 'src/photo_view_pageview_wrapper.dart';
 import 'src/photo_view_scale_state.dart';
-import 'src/photo_view_typedefs.dart';
 
 /// A type definition for a [Function] that receives a index after a page change in [PhotoViewGallery]
 typedef PhotoViewGalleryPageChangedCallback = void Function(int index);
@@ -148,7 +145,7 @@ class PhotoViewGallery extends StatefulWidget {
   final PhotoViewGalleryPageChangedCallback onPageChanged;
 
   /// Mirror to [PhotoView.scaleStateChangedCallback]
-  final PhotoViewScaleStateChangedCallback scaleStateChangedCallback;
+  final ValueChanged<PhotoViewScaleState> scaleStateChangedCallback;
 
   /// Mirror to [PhotoView.enableRotation]
   final bool enableRotation;
@@ -173,25 +170,11 @@ class PhotoViewGallery extends StatefulWidget {
 class _PhotoViewGalleryState extends State<PhotoViewGallery> {
   PageController _controller;
   bool _locked;
-  PageViewWrapperController _pageViewWrapperController;
-  OnPageChangedWrapper _onPageChangedWrapper;
 
   @override
   void initState() {
     _controller = widget.pageController ?? PageController();
     _locked = false;
-    if (widget.usePageViewWrapper) {
-      _onPageChangedWrapper = OnPageChangedWrapper();
-      _onPageChangedWrapper.addListener(() {
-        widget.onPageChanged(_onPageChangedWrapper.currentPage);
-      });
-
-      _pageViewWrapperController = PageViewWrapperController(
-        pageViewController: _controller,
-        itemCount: widget.itemCount,
-        onPageChangedWrapper: _onPageChangedWrapper,
-      );
-    }
     super.initState();
   }
 
@@ -223,28 +206,6 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.usePageViewWrapper ? _getPageViewWrapper() : _getPageView();
-  }
-
-  PageViewWrapper _getPageViewWrapper() {
-    final pageView = PageView.builder(
-      reverse: widget.reverse,
-      controller: _controller,
-      onPageChanged: _onPageChangedWrapper.onPageChanged,
-      itemCount: itemCount,
-      itemBuilder: _buildItem,
-      scrollDirection: widget.scrollDirection,
-      physics:
-          _locked ? const NeverScrollableScrollPhysics() : widget.scrollPhysics,
-    );
-
-    return PageViewWrapper(
-      pageView: pageView,
-      controller: _pageViewWrapperController,
-    );
-  }
-
-  PageView _getPageView() {
     return PageView.builder(
       reverse: widget.reverse,
       controller: _controller,

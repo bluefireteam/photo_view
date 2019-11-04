@@ -2,9 +2,8 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/widgets.dart';
-
-import '../photo_view_scale_state.dart';
-import '../photo_view_utils.dart';
+import 'package:photo_view/src/photo_view_scale_state.dart';
+import 'package:photo_view/src/utils/ignorable_change_notifier.dart';
 
 typedef ScaleStateListener = void Function(double prevScale, double nextScale);
 
@@ -44,14 +43,14 @@ abstract class PhotoViewControllerBase<T extends PhotoViewControllerValue> {
 
   /// Add a listener that will ignore updates made internally
   ///
-  /// Since it is made for internal use, it is not porformatic to use more than one
-  /// listener. Preffer [outputStateStream]
+  /// Since it is made for internal use, it is not performatic to use more than one
+  /// listener. Prefer [outputStateStream]
   void addIgnorableListener(VoidCallback callback);
 
   /// Remove a listener that will ignore updates made internally
   ///
-  /// Since it is made for internal use, it is not porformatic to use more than one
-  /// listener. Preffer [outputStateStream]
+  /// Since it is made for internal use, it is not performatic to use more than one
+  /// listener. Prefer [outputStateStream]
   void removeIgnorableListener(VoidCallback callback);
 
   /// The position of the image in the screen given its offset after pan gestures.
