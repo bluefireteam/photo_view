@@ -2,26 +2,16 @@ import 'package:flutter/widgets.dart';
 
 import 'package:photo_view/photo_view.dart'
     show
-        PhotoViewControllerBase,
-        PhotoViewControllerValue,
         PhotoViewHeroAttributes,
-        PhotoViewScaleStateController,
+        PhotoViewImageTapDownCallback,
+        PhotoViewImageTapUpCallback,
         ScaleStateCycle;
+import 'package:photo_view/src/controller/photo_view_controller.dart';
 import 'package:photo_view/src/controller/photo_view_controller_delegate.dart';
+import 'package:photo_view/src/controller/photo_view_scalestate_controller.dart';
 import 'package:photo_view/src/utils/photo_view_utils.dart';
 import 'package:photo_view/src/core/photo_view_gesture_detector.dart';
 import 'package:photo_view/src/core/photo_view_hit_corners.dart';
-
-typedef PhotoViewImageTapUpCallback = Function(
-  BuildContext context,
-  TapUpDetails details,
-  PhotoViewControllerValue controllerValue,
-);
-typedef PhotoViewImageTapDownCallback = Function(
-  BuildContext context,
-  TapDownDetails details,
-  PhotoViewControllerValue controllerValue,
-);
 
 /// Internal widget in which controls all animations lifecycle, core responses
 /// to user gestures, updates to  the controller state and mounts the entire PhotoView Layout
@@ -307,6 +297,8 @@ class PhotoViewCoreState extends State<PhotoViewCore>
               onScaleUpdate: onScaleUpdate,
               onScaleEnd: onScaleEnd,
               hitDetector: this,
+              onTapUp: widget.onTapUp == null ? null : onTapUp,
+              onTapDown: widget.onTapDown == null ? null : onTapDown,
             );
           } else {
             return Container();

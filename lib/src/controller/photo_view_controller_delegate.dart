@@ -8,7 +8,7 @@ import 'package:photo_view/photo_view.dart'
         PhotoViewScaleState,
         PhotoViewScaleStateController,
         ScaleStateCycle;
-import 'package:photo_view/src/core/photo_view_image_core.dart';
+import 'package:photo_view/src/core/photo_view_core.dart';
 import 'package:photo_view/src/utils/photo_view_utils.dart';
 import 'package:photo_view/src/controller/photo_view_controller.dart';
 import 'package:photo_view/src/controller/photo_view_scalestate_controller.dart';
