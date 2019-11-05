@@ -44,7 +44,6 @@ class PhotoViewScaleStateController {
 
   /// Updates scaleState and notify all listeners (and the stream)
   set scaleState(PhotoViewScaleState newValue) {
-    print(newValue);
     if (_scaleStateNotifier.value == newValue) {
       return;
     }
@@ -76,7 +75,6 @@ class PhotoViewScaleStateController {
   /// Nevermind this method :D, look away
   /// Seriously: It is used to change scale state without trigging updates on the []
   void setInvisibly(PhotoViewScaleState newValue) {
-    print(newValue);
     if (_scaleStateNotifier.value == newValue) {
       return;
     }

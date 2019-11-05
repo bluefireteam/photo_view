@@ -25,13 +25,17 @@ class PhotoViewGestureDetector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scope = PhotoViewGestureDetectorScope.of(context);
+
+    final Axis axis = scope?.scrollDirection ?? Axis.horizontal;
+
     return RawGestureDetector(
       behavior: HitTestBehavior.translucent,
       child: child,
       gestures: <Type, GestureRecognizerFactory>{
         PhotoViewGestureRecognizer:
             GestureRecognizerFactoryWithHandlers<PhotoViewGestureRecognizer>(
-          () => PhotoViewGestureRecognizer(hitDetector, this),
+          () => PhotoViewGestureRecognizer(hitDetector, this, axis),
           (PhotoViewGestureRecognizer instance) {
             instance
               ..onStart = onScaleStart
@@ -55,8 +59,10 @@ class PhotoViewGestureRecognizer extends ScaleGestureRecognizer {
   PhotoViewGestureRecognizer(
     this.hitDetector,
     Object debugOwner,
+    this.scrollDirection,
   ) : super(debugOwner: debugOwner);
   final HitCornersDetector hitDetector;
+  final Axis scrollDirection;
 
   Map<int, Offset> _pointerLocations = <int, Offset>{};
 
@@ -114,9 +120,32 @@ class PhotoViewGestureRecognizer extends ScaleGestureRecognizer {
     if (!(event is PointerMoveEvent)) {
       return;
     }
-    if (hitDetector.shouldMoveX(_initialFocalPoint - _currentFocalPoint) ||
-        _pointerLocations.keys.length > 1) {
+    final move = _initialFocalPoint - _currentFocalPoint;
+    final bool shouldMove = scrollDirection == Axis.vertical
+        ? hitDetector.shouldMoveY(move)
+        : hitDetector.shouldMoveX(move);
+    if (shouldMove || _pointerLocations.keys.length > 1) {
       resolve(GestureDisposition.accepted);
     }
+  }
+}
+
+class PhotoViewGestureDetectorScope extends InheritedWidget {
+  PhotoViewGestureDetectorScope({
+    this.scrollDirection,
+    @required Widget child,
+  }) : super(child: child);
+
+  static PhotoViewGestureDetectorScope of(BuildContext context) {
+    final PhotoViewGestureDetectorScope scope =
+        context.inheritFromWidgetOfExactType(PhotoViewGestureDetectorScope);
+    return scope;
+  }
+
+  final Axis scrollDirection;
+
+  @override
+  bool updateShouldNotify(PhotoViewGestureDetectorScope oldWidget) {
+    return scrollDirection != oldWidget.scrollDirection;
   }
 }
