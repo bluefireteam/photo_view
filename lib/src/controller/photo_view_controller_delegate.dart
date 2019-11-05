@@ -2,7 +2,12 @@ import 'dart:ui';
 
 import 'package:flutter/widgets.dart';
 
-import 'package:photo_view/photo_view.dart' show PhotoViewControllerBase, PhotoViewScaleState, PhotoViewScaleStateController, ScaleStateCycle;
+import 'package:photo_view/photo_view.dart'
+    show
+        PhotoViewControllerBase,
+        PhotoViewScaleState,
+        PhotoViewScaleStateController,
+        ScaleStateCycle;
 import 'package:photo_view/src/core/photo_view_image_core.dart';
 import 'package:photo_view/src/utils/photo_view_utils.dart';
 import 'package:photo_view/src/controller/photo_view_controller.dart';
@@ -92,7 +97,6 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
   }
 
   void updateScaleStateFromNewScale(double newScale) {
-
     final PhotoViewScaleState newScaleState =
         (newScale > scaleBoundaries.initialScale)
             ? PhotoViewScaleState.zoomedIn

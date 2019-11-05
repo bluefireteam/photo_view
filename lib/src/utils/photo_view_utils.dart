@@ -112,7 +112,6 @@ double _clampSize(double size, ScaleBoundaries scaleBoundaries) {
   return size.clamp(scaleBoundaries.minScale, scaleBoundaries.maxScale);
 }
 
-
 class CornersRange {
   const CornersRange(this.min, this.max);
   final double min;

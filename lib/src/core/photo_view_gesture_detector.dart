@@ -29,7 +29,8 @@ class PhotoViewGestureDetector extends StatelessWidget {
       behavior: HitTestBehavior.translucent,
       child: child,
       gestures: <Type, GestureRecognizerFactory>{
-        PhotoViewGestureRecognizer: GestureRecognizerFactoryWithHandlers<PhotoViewGestureRecognizer>(
+        PhotoViewGestureRecognizer:
+            GestureRecognizerFactoryWithHandlers<PhotoViewGestureRecognizer>(
           () => PhotoViewGestureRecognizer(hitDetector, this),
           (PhotoViewGestureRecognizer instance) {
             instance
@@ -38,11 +39,11 @@ class PhotoViewGestureDetector extends StatelessWidget {
               ..onEnd = onScaleEnd;
           },
         ),
-        DoubleTapGestureRecognizer: GestureRecognizerFactoryWithHandlers<DoubleTapGestureRecognizer>(
-              () => DoubleTapGestureRecognizer(debugOwner: this),
-              (DoubleTapGestureRecognizer instance) {
-            instance
-              ..onDoubleTap = onDoubleTap;
+        DoubleTapGestureRecognizer:
+            GestureRecognizerFactoryWithHandlers<DoubleTapGestureRecognizer>(
+          () => DoubleTapGestureRecognizer(debugOwner: this),
+          (DoubleTapGestureRecognizer instance) {
+            instance..onDoubleTap = onDoubleTap;
           },
         )
       },
@@ -81,7 +82,6 @@ class PhotoViewGestureRecognizer extends ScaleGestureRecognizer {
 
   @override
   void handleEvent(PointerEvent event) {
-
     _computeEvent(event);
     _updateDistances();
     _decideIfWeAcceptEvent(event);
@@ -91,8 +91,7 @@ class PhotoViewGestureRecognizer extends ScaleGestureRecognizer {
 
   void _computeEvent(PointerEvent event) {
     if (event is PointerMoveEvent) {
-      if (!event.synthesized)
-        _pointerLocations[event.pointer] = event.position;
+      if (!event.synthesized) _pointerLocations[event.pointer] = event.position;
     } else if (event is PointerDownEvent) {
       _pointerLocations[event.pointer] = event.position;
     } else if (event is PointerUpEvent || event is PointerCancelEvent) {
@@ -107,16 +106,17 @@ class PhotoViewGestureRecognizer extends ScaleGestureRecognizer {
     Offset focalPoint = Offset.zero;
     for (int pointer in _pointerLocations.keys)
       focalPoint += _pointerLocations[pointer];
-    _currentFocalPoint = count > 0 ? focalPoint / count.toDouble() : Offset.zero;
+    _currentFocalPoint =
+        count > 0 ? focalPoint / count.toDouble() : Offset.zero;
   }
 
   void _decideIfWeAcceptEvent(PointerEvent event) {
-    if(!(event is PointerMoveEvent)) {
+    if (!(event is PointerMoveEvent)) {
       return;
     }
-    if(hitDetector.shouldMoveX(_initialFocalPoint - _currentFocalPoint) || _pointerLocations.keys.length > 1) {
+    if (hitDetector.shouldMoveX(_initialFocalPoint - _currentFocalPoint) ||
+        _pointerLocations.keys.length > 1) {
       resolve(GestureDisposition.accepted);
     }
   }
-
 }

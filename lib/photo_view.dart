@@ -18,7 +18,6 @@ export 'src/photo_view_computed_scale.dart';
 export 'src/photo_view_scale_state.dart';
 export 'src/utils/photo_view_hero_attributes.dart';
 
-
 /// A [StatefulWidget] that contains all the photo view rendering elements.
 ///
 /// Sample code to use within an image:

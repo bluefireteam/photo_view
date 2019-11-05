@@ -1,6 +1,12 @@
 import 'package:flutter/widgets.dart';
 
-import 'package:photo_view/photo_view.dart' show PhotoViewControllerBase, PhotoViewControllerValue, PhotoViewHeroAttributes, PhotoViewScaleStateController, ScaleStateCycle;
+import 'package:photo_view/photo_view.dart'
+    show
+        PhotoViewControllerBase,
+        PhotoViewControllerValue,
+        PhotoViewHeroAttributes,
+        PhotoViewScaleStateController,
+        ScaleStateCycle;
 import 'package:photo_view/src/controller/photo_view_controller_delegate.dart';
 import 'package:photo_view/src/utils/photo_view_utils.dart';
 import 'package:photo_view/src/core/photo_view_gesture_detector.dart';
@@ -82,7 +88,10 @@ class PhotoViewCore extends StatefulWidget {
 }
 
 class PhotoViewCoreState extends State<PhotoViewCore>
-    with TickerProviderStateMixin, PhotoViewControllerDelegate, HitCornersDetector {
+    with
+        TickerProviderStateMixin,
+        PhotoViewControllerDelegate,
+        HitCornersDetector {
   Offset _normalizedPosition;
   double _scaleBefore;
   double _rotationBefore;
