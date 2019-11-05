@@ -118,7 +118,9 @@ class PhotoViewGestureRecognizer extends ScaleGestureRecognizer {
 
   void _computeEvent(PointerEvent event) {
     if (event is PointerMoveEvent) {
-      if (!event.synthesized) _pointerLocations[event.pointer] = event.position;
+      if (!event.synthesized) {
+        _pointerLocations[event.pointer] = event.position;
+      }
     } else if (event is PointerDownEvent) {
       _pointerLocations[event.pointer] = event.position;
     } else if (event is PointerUpEvent || event is PointerCancelEvent) {

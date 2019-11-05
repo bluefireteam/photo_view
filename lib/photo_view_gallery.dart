@@ -1,12 +1,16 @@
 library photo_view_gallery;
 
 import 'package:flutter/widgets.dart';
-import 'package:photo_view/photo_view.dart' show PhotoView, ScaleStateCycle;
+import 'package:photo_view/photo_view.dart'
+    show
+        PhotoView,
+        PhotoViewImageTapDownCallback,
+        PhotoViewImageTapUpCallback,
+        ScaleStateCycle;
 
 import 'package:photo_view/src/controller/photo_view_controller.dart';
 import 'package:photo_view/src/controller/photo_view_scalestate_controller.dart';
 import 'package:photo_view/src/core/photo_view_gesture_detector.dart';
-import 'package:photo_view/src/core/photo_view_core.dart';
 import 'package:photo_view/src/photo_view_scale_state.dart';
 import 'package:photo_view/src/utils/photo_view_hero_attributes.dart';
 
@@ -215,7 +219,6 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
     final PhotoView photoView = isCustomChild
         ? PhotoView.customChild(
             key: ObjectKey(index),
-            index: index,
             child: pageOption.child,
             childSize: pageOption.childSize,
             backgroundDecoration: widget.backgroundDecoration,
@@ -234,7 +237,6 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
           )
         : PhotoView(
             key: ObjectKey(index),
-            index: index,
             imageProvider: pageOption.imageProvider,
             loadingChild: widget.loadingChild,
             backgroundDecoration: widget.backgroundDecoration,

@@ -239,7 +239,6 @@ class PhotoView extends StatefulWidget {
     this.scaleStateCycle,
     this.onTapUp,
     this.onTapDown,
-    this.index,
     this.customSize,
   })  : child = null,
         childSize = null,
@@ -268,14 +267,11 @@ class PhotoView extends StatefulWidget {
     this.scaleStateCycle,
     this.onTapUp,
     this.onTapDown,
-    this.index,
     this.customSize,
   })  : loadingChild = null,
         imageProvider = null,
         gaplessPlayback = false,
         super(key: key);
-
-  int index;
 
   /// Given a [imageProvider] it resolves into an zoomable image widget using. It
   /// is required
@@ -494,7 +490,6 @@ class _PhotoViewState extends State<PhotoView> {
     );
 
     return PhotoViewCore.customChild(
-      index: widget.index,
       customChild: widget.child,
       backgroundDecoration: widget.backgroundDecoration,
       enableRotation: widget.enableRotation,
@@ -546,7 +541,6 @@ class _PhotoViewState extends State<PhotoView> {
     );
 
     return PhotoViewCore(
-      index: widget.index,
       imageProvider: widget.imageProvider,
       backgroundDecoration: widget.backgroundDecoration,
       gaplessPlayback: widget.gaplessPlayback,
