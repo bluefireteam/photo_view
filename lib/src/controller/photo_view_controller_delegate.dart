@@ -1,15 +1,20 @@
 import 'dart:ui';
 
 import 'package:flutter/widgets.dart';
-import 'package:photo_view/src/photo_view_image_wrapper.dart';
 
-import '../photo_view_scale_state.dart';
-import '../photo_view_typedefs.dart';
-import '../photo_view_utils.dart';
-import 'photo_view_controller.dart';
+import 'package:photo_view/photo_view.dart'
+    show
+        PhotoViewControllerBase,
+        PhotoViewScaleState,
+        PhotoViewScaleStateController,
+        ScaleStateCycle;
+import 'package:photo_view/src/core/photo_view_image_core.dart';
+import 'package:photo_view/src/utils/photo_view_utils.dart';
+import 'package:photo_view/src/controller/photo_view_controller.dart';
+import 'package:photo_view/src/controller/photo_view_scalestate_controller.dart';
 
 /// A  class to hold internal layout logic to sync both controller states
-mixin PhotoViewControllerDelegate on State<PhotoViewImageWrapper> {
+mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
   PhotoViewControllerBase get controller => widget.controller;
 
   PhotoViewScaleStateController get scaleStateController =>
@@ -20,7 +25,6 @@ mixin PhotoViewControllerDelegate on State<PhotoViewImageWrapper> {
   ScaleStateCycle get scaleStateCycle => widget.scaleStateCycle;
 
   Alignment get basePosition => widget.basePosition;
-  OffsetWrapper _lastOffsetWrapper;
   Function(double prevScale, double nextScale) _animateScale;
 
   void startListeners() {
@@ -65,20 +69,19 @@ mixin PhotoViewControllerDelegate on State<PhotoViewImageWrapper> {
             : PhotoViewScaleState.zoomedOut;
 
     scaleStateController.setInvisibly(newScaleState);
-    controller.position = clampPosition(controller.position);
+    controller.position = clampPosition();
   }
 
-  double get scale {
-    return controller.scale ??
-        getScaleForScaleState(
-          scaleStateController.scaleState,
-          scaleBoundaries,
-        );
-  }
+  Offset get position => controller.position;
 
-  set scale(double scale) {
-    controller.setScaleInvisibly(scale);
-  }
+  double get scale =>
+      controller.scale ??
+      getScaleForScaleState(
+        scaleStateController.scaleState,
+        scaleBoundaries,
+      );
+
+  set scale(double scale) => controller.setScaleInvisibly(scale);
 
   void updateMultiple({
     Offset position,
@@ -93,11 +96,7 @@ mixin PhotoViewControllerDelegate on State<PhotoViewImageWrapper> {
         rotationFocusPoint: rotationFocusPoint);
   }
 
-  void updateScaleStateFromNewScale(double scaleFactor, double newScale) {
-    if (scaleFactor == 1.0) {
-      return;
-    }
-
+  void updateScaleStateFromNewScale(double newScale) {
     final PhotoViewScaleState newScaleState =
         (newScale > scaleBoundaries.initialScale)
             ? PhotoViewScaleState.zoomedIn
@@ -143,10 +142,37 @@ mixin PhotoViewControllerDelegate on State<PhotoViewImageWrapper> {
     scaleStateController.scaleState = nextScaleState;
   }
 
-  Offset clampPosition(Offset offset, {double scale}) {
+  CornersRange cornersX({double scale}) {
     final double _scale = scale ?? this.scale;
-    final double x = offset.dx;
-    final double y = offset.dy;
+
+    final double computedWidth = scaleBoundaries.childSize.width * _scale;
+    final double screenWidth = scaleBoundaries.outerSize.width;
+
+    final double positionX = basePosition.x;
+    final double widthDiff = computedWidth - screenWidth;
+
+    final double minX = ((positionX - 1).abs() / 2) * widthDiff * -1;
+    final double maxX = ((positionX + 1).abs() / 2) * widthDiff;
+    return CornersRange(minX, maxX);
+  }
+
+  CornersRange cornersY({double scale}) {
+    final double _scale = scale ?? this.scale;
+
+    final double computedHeight = scaleBoundaries.childSize.height * _scale;
+    final double screenHeight = scaleBoundaries.outerSize.height;
+
+    final double positionY = basePosition.y;
+    final double heightDiff = computedHeight - screenHeight;
+
+    final double minY = ((positionY - 1).abs() / 2) * heightDiff * -1;
+    final double maxY = ((positionY + 1).abs() / 2) * heightDiff;
+    return CornersRange(minY, maxY);
+  }
+
+  Offset clampPosition({Offset position, double scale}) {
+    final double _scale = scale ?? this.scale;
+    final Offset _position = position ?? this.position;
 
     final double computedWidth = scaleBoundaries.childSize.width * _scale;
     final double computedHeight = scaleBoundaries.childSize.height * _scale;
@@ -154,44 +180,19 @@ mixin PhotoViewControllerDelegate on State<PhotoViewImageWrapper> {
     final double screenWidth = scaleBoundaries.outerSize.width;
     final double screenHeight = scaleBoundaries.outerSize.height;
 
-    final double positionX = basePosition.x;
-    final double positionY = basePosition.y;
-
-    final double widthDiff = computedWidth - screenWidth;
-    final double heightDiff = computedHeight - screenHeight;
-
-    final double minX = ((positionX - 1).abs() / 2) * widthDiff * -1;
-    final double maxX = ((positionX + 1).abs() / 2) * widthDiff;
-
-    final double minY = ((positionY - 1).abs() / 2) * heightDiff * -1;
-    final double maxY = ((positionY + 1).abs() / 2) * heightDiff;
-
-    final double computedX =
-        screenWidth < computedWidth ? x.clamp(minX, maxX) : 0.0;
-
-    final double computedY =
-        screenHeight < computedHeight ? y.clamp(minY, maxY) : 0.0;
-
-    final result = OffsetWrapper(computedX, computedY, x < minX, x > maxX);
-    _lastOffsetWrapper = result;
-    return result;
-  }
-
-  bool moveTest(double scale, Offset delta) {
-    if (scale != 1.0) {
-      //when child is zooming
-      return true;
-    }
-    if (_lastOffsetWrapper != null) {
-      final moveRight = delta.dx < 0;
-      if (_lastOffsetWrapper.reachLeftBound) {
-        return moveRight;
-      } else if (_lastOffsetWrapper.reachRightBound) {
-        return !moveRight;
-      }
+    double finalX = 0.0;
+    if (screenWidth < computedWidth) {
+      final cornersX = this.cornersX(scale: _scale);
+      finalX = _position.dx.clamp(cornersX.min, cornersX.max);
     }
 
-    return scaleStateController.scaleState != PhotoViewScaleState.initial;
+    double finalY = 0.0;
+    if (screenHeight < computedHeight) {
+      final cornersY = this.cornersY(scale: _scale);
+      finalY = _position.dy.clamp(cornersY.min, cornersY.max);
+    }
+
+    return Offset(finalX, finalY);
   }
 
   @override
@@ -201,11 +202,4 @@ mixin PhotoViewControllerDelegate on State<PhotoViewImageWrapper> {
     scaleStateController.removeIgnorableListener(_blindScaleStateListener);
     super.dispose();
   }
-}
-
-class OffsetWrapper extends Offset {
-  OffsetWrapper(double dx, double dy, this.reachRightBound, this.reachLeftBound)
-      : super(dx, dy);
-  final bool reachLeftBound;
-  final bool reachRightBound;
 }

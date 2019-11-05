@@ -1,3 +1,4 @@
+// A class that work as a enum. It overloads the operator `*` saving the double as a multiplier.
 class PhotoViewComputedScale {
   const PhotoViewComputedScale._internal(this._value, [this.multiplier = 1.0]);
 

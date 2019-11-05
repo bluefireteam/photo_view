@@ -1,13 +1,14 @@
 library photo_view_gallery;
 
 import 'package:flutter/widgets.dart';
+import 'package:photo_view/photo_view.dart' show PhotoView, ScaleStateCycle;
 
-import 'photo_view.dart';
-import 'src/photo_view_hero_attributes.dart';
-import 'src/photo_view_image_wrapper.dart';
-import 'src/photo_view_pageview_wrapper.dart';
-import 'src/photo_view_scale_state.dart';
-import 'src/photo_view_typedefs.dart';
+import 'package:photo_view/src/controller/photo_view_controller.dart';
+import 'package:photo_view/src/controller/photo_view_scalestate_controller.dart';
+import 'package:photo_view/src/core/photo_view_gesture_detector.dart';
+import 'package:photo_view/src/core/photo_view_image_core.dart';
+import 'package:photo_view/src/photo_view_scale_state.dart';
+import 'package:photo_view/src/utils/photo_view_hero_attributes.dart';
 
 /// A type definition for a [Function] that receives a index after a page change in [PhotoViewGallery]
 typedef PhotoViewGalleryPageChangedCallback = void Function(int index);
@@ -84,7 +85,6 @@ class PhotoViewGallery extends StatefulWidget {
     this.enableRotation = false,
     this.scrollPhysics,
     this.scrollDirection = Axis.horizontal,
-    this.usePageViewWrapper = false,
     this.customSize,
   })  : _isBuilder = false,
         itemCount = null,
@@ -109,7 +109,6 @@ class PhotoViewGallery extends StatefulWidget {
     this.enableRotation = false,
     this.scrollPhysics,
     this.scrollDirection = Axis.horizontal,
-    this.usePageViewWrapper = false,
     this.customSize,
   })  : _isBuilder = true,
         pageOptions = null,
@@ -148,7 +147,7 @@ class PhotoViewGallery extends StatefulWidget {
   final PhotoViewGalleryPageChangedCallback onPageChanged;
 
   /// Mirror to [PhotoView.scaleStateChangedCallback]
-  final PhotoViewScaleStateChangedCallback scaleStateChangedCallback;
+  final ValueChanged<PhotoViewScaleState> scaleStateChangedCallback;
 
   /// Mirror to [PhotoView.enableRotation]
   final bool enableRotation;
@@ -161,9 +160,6 @@ class PhotoViewGallery extends StatefulWidget {
 
   final bool _isBuilder;
 
-  ///A bool indicate to use [PageViewWrapper]
-  final bool usePageViewWrapper;
-
   @override
   State<StatefulWidget> createState() {
     return _PhotoViewGalleryState();
@@ -172,39 +168,14 @@ class PhotoViewGallery extends StatefulWidget {
 
 class _PhotoViewGalleryState extends State<PhotoViewGallery> {
   PageController _controller;
-  bool _locked;
-  PageViewWrapperController _pageViewWrapperController;
-  OnPageChangedWrapper _onPageChangedWrapper;
 
   @override
   void initState() {
     _controller = widget.pageController ?? PageController();
-    _locked = false;
-    if (widget.usePageViewWrapper) {
-      _onPageChangedWrapper = OnPageChangedWrapper();
-      _onPageChangedWrapper.addListener(() {
-        widget.onPageChanged(_onPageChangedWrapper.currentPage);
-      });
-
-      _pageViewWrapperController = PageViewWrapperController(
-        pageViewController: _controller,
-        itemCount: widget.itemCount,
-        onPageChangedWrapper: _onPageChangedWrapper,
-      );
-    }
     super.initState();
   }
 
   void scaleStateChangedCallback(PhotoViewScaleState scaleState) {
-    if (!widget.usePageViewWrapper) {
-      setState(() {
-        _locked = (scaleState == PhotoViewScaleState.initial ||
-                scaleState == PhotoViewScaleState.zoomedOut)
-            ? false
-            : true;
-      });
-    }
-
     if (widget.scaleStateChangedCallback != null) {
       widget.scaleStateChangedCallback(scaleState);
     }
@@ -223,37 +194,17 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.usePageViewWrapper ? _getPageViewWrapper() : _getPageView();
-  }
-
-  PageViewWrapper _getPageViewWrapper() {
-    final pageView = PageView.builder(
-      reverse: widget.reverse,
-      controller: _controller,
-      onPageChanged: _onPageChangedWrapper.onPageChanged,
-      itemCount: itemCount,
-      itemBuilder: _buildItem,
+    return PhotoViewGestureDetectorScope(
       scrollDirection: widget.scrollDirection,
-      physics:
-          _locked ? const NeverScrollableScrollPhysics() : widget.scrollPhysics,
-    );
-
-    return PageViewWrapper(
-      pageView: pageView,
-      controller: _pageViewWrapperController,
-    );
-  }
-
-  PageView _getPageView() {
-    return PageView.builder(
-      reverse: widget.reverse,
-      controller: _controller,
-      onPageChanged: widget.onPageChanged,
-      itemCount: itemCount,
-      itemBuilder: _buildItem,
-      scrollDirection: widget.scrollDirection,
-      physics:
-          _locked ? const NeverScrollableScrollPhysics() : widget.scrollPhysics,
+      child: PageView.builder(
+        reverse: widget.reverse,
+        controller: _controller,
+        onPageChanged: widget.onPageChanged,
+        itemCount: itemCount,
+        itemBuilder: _buildItem,
+        scrollDirection: widget.scrollDirection,
+        physics: widget.scrollPhysics,
+      ),
     );
   }
 

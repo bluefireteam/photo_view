@@ -3,21 +3,20 @@ library photo_view;
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
-import 'src/controller/photo_view_controller.dart';
-import 'src/photo_view_computed_scale.dart';
-import 'src/photo_view_hero_attributes.dart';
-import 'src/photo_view_image_wrapper.dart';
-import 'src/photo_view_scale_state.dart';
-import 'src/photo_view_typedefs.dart';
-import 'src/photo_view_utils.dart';
+import 'package:photo_view/src/controller/photo_view_controller.dart';
+import 'package:photo_view/src/controller/photo_view_scalestate_controller.dart';
+import 'package:photo_view/src/core/photo_view_image_core.dart';
+import 'package:photo_view/src/photo_view_computed_scale.dart';
+import 'package:photo_view/src/photo_view_scale_state.dart';
+import 'package:photo_view/src/utils/photo_view_hero_attributes.dart';
+import 'package:photo_view/src/utils/photo_view_utils.dart';
 
 export 'src/controller/photo_view_controller.dart';
+export 'src/controller/photo_view_scalestate_controller.dart';
 export 'src/photo_view_computed_scale.dart';
-export 'src/photo_view_hero_attributes.dart';
 export 'src/photo_view_scale_state.dart';
-export 'src/photo_view_typedefs.dart';
+export 'src/utils/photo_view_hero_attributes.dart';
 
 /// A [StatefulWidget] that contains all the photo view rendering elements.
 ///
@@ -72,7 +71,6 @@ export 'src/photo_view_typedefs.dart';
 ///  initialScale: PhotoViewComputedScale.contained,
 ///  basePosition: Alignment.center,
 ///  scaleStateCycle: scaleStateCycle
-/// );
 /// );
 /// ```
 /// The [maxScale], [minScale] and [initialScale] options may be [double] or a [PhotoViewComputedScale] constant
@@ -152,7 +150,9 @@ export 'src/photo_view_typedefs.dart';
 ///   }
 ///
 ///   void listener(PhotoViewControllerValue value){
-///     scaleCopy = value.scale;
+///     setState((){
+///       scaleCopy = value.scale;
+///     })
 ///   }
 ///
 ///   @override
@@ -293,7 +293,7 @@ class PhotoView extends StatefulWidget {
   /// to `false`.
   final bool gaplessPlayback;
 
-  /// Attributes that are going to be passed to [PhotoViewImageWrapper]'s
+  /// Attributes that are going to be passed to [PhotoViewCore]'s
   /// [Hero]. Leave this property undefined if you don't want a hero animation.
   final PhotoViewHeroAttributes heroAttributes;
 
@@ -302,7 +302,7 @@ class PhotoView extends StatefulWidget {
   final Size customSize;
 
   /// A [Function] to be called whenever the scaleState changes, this happens when the user double taps the content ou start to pinch-in.
-  final PhotoViewScaleStateChangedCallback scaleStateChangedCallback;
+  final ValueChanged<PhotoViewScaleState> scaleStateChangedCallback;
 
   /// A flag that enables the rotation gesture support
   final bool enableRotation;
@@ -493,7 +493,7 @@ class _PhotoViewState extends State<PhotoView> {
       _childSize,
     );
 
-    return PhotoViewImageWrapper.customChild(
+    return PhotoViewCore.customChild(
       index: widget.index,
       customChild: widget.child,
       backgroundDecoration: widget.backgroundDecoration,
@@ -545,7 +545,7 @@ class _PhotoViewState extends State<PhotoView> {
       _childSize,
     );
 
-    return PhotoViewImageWrapper(
+    return PhotoViewCore(
       index: widget.index,
       imageProvider: widget.imageProvider,
       backgroundDecoration: widget.backgroundDecoration,
@@ -591,3 +591,10 @@ PhotoViewScaleState defaultScaleStateCycle(PhotoViewScaleState actual) {
       return PhotoViewScaleState.initial;
   }
 }
+
+/// A type definition for a [Function] that receives the actual [PhotoViewScaleState] and returns the next one
+/// It is used internally to walk in the "doubletap gesture cycle".
+/// It is passed to [PhotoView.scaleStateCycle]
+typedef ScaleStateCycle = PhotoViewScaleState Function(
+  PhotoViewScaleState actual,
+);

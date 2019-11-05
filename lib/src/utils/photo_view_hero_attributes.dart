@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-
-import 'photo_view_image_wrapper.dart';
+import 'package:flutter/widgets.dart';
 
 /// Data class that holds the attributes that are going to be passed to
 /// [PhotoViewImageWrapper]'s [Hero].

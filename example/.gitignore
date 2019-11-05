@@ -15,8 +15,10 @@
 *.iws
 .idea/
 
-# Visual Studio Code related
-.vscode/
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
 
 # Flutter/Dart/Pub related
 **/doc/api/
@@ -35,7 +37,6 @@
 **/android/gradlew.bat
 **/android/local.properties
 **/android/**/GeneratedPluginRegistrant.java
-**/android/key.properties
 
 # iOS/XCode related
 **/ios/**/*.mode1v3
@@ -60,10 +61,12 @@
 **/ios/Flutter/app.flx
 **/ios/Flutter/app.zip
 **/ios/Flutter/flutter_assets/
-
+**/ios/Flutter/flutter_export_environment.sh
 **/ios/ServiceDefinitions.json
 **/ios/Runner/GeneratedPluginRegistrant.*
-flutter_export_environment.sh
+
+# Web related
+lib/generated_plugin_registrant.dart
 
 # Exceptions to above rules.
 !**/ios/**/default.mode1v3
