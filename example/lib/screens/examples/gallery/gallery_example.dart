@@ -151,7 +151,6 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
                 backgroundDecoration: widget.backgroundDecoration,
                 pageController: widget.pageController,
                 onPageChanged: onPageChanged,
-                usePageViewWrapper: widget.usePageViewWrapper,
               ),
               widget.usePageViewWrapper
                   ? Container()

@@ -330,6 +330,7 @@ class PhotoViewScaleStateController {
 
   /// Updates scaleState and notify all listeners (and the stream)
   set scaleState(PhotoViewScaleState newValue) {
+    print(newValue);
     if (_scaleStateNotifier.value == newValue) {
       return;
     }
@@ -360,6 +361,7 @@ class PhotoViewScaleStateController {
 
   /// Nevermind this method :D, look away
   void setInvisibly(PhotoViewScaleState newValue) {
+    print(newValue);
     if (_scaleStateNotifier.value == newValue) {
       return;
     }

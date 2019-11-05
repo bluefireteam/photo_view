@@ -1,5 +1,6 @@
 library photo_view_gallery;
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:photo_view/src/core/photo_view_image_core.dart';
 
@@ -81,7 +82,6 @@ class PhotoViewGallery extends StatefulWidget {
     this.enableRotation = false,
     this.scrollPhysics,
     this.scrollDirection = Axis.horizontal,
-    this.usePageViewWrapper = false,
     this.customSize,
   })  : _isBuilder = false,
         itemCount = null,
@@ -106,7 +106,6 @@ class PhotoViewGallery extends StatefulWidget {
     this.enableRotation = false,
     this.scrollPhysics,
     this.scrollDirection = Axis.horizontal,
-    this.usePageViewWrapper = false,
     this.customSize,
   })  : _isBuilder = true,
         pageOptions = null,
@@ -158,9 +157,6 @@ class PhotoViewGallery extends StatefulWidget {
 
   final bool _isBuilder;
 
-  ///A bool indicate to use [PageViewWrapper]
-  final bool usePageViewWrapper;
-
   @override
   State<StatefulWidget> createState() {
     return _PhotoViewGalleryState();
@@ -179,15 +175,6 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
   }
 
   void scaleStateChangedCallback(PhotoViewScaleState scaleState) {
-    if (!widget.usePageViewWrapper) {
-      setState(() {
-        _locked = (scaleState == PhotoViewScaleState.initial ||
-                scaleState == PhotoViewScaleState.zoomedOut)
-            ? false
-            : true;
-      });
-    }
-
     if (widget.scaleStateChangedCallback != null) {
       widget.scaleStateChangedCallback(scaleState);
     }

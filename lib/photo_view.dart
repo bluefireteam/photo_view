@@ -72,7 +72,6 @@ export 'src/photo_view_scale_state.dart';
 ///  basePosition: Alignment.center,
 ///  scaleStateCycle: scaleStateCycle
 /// );
-/// );
 /// ```
 /// The [maxScale], [minScale] and [initialScale] options may be [double] or a [PhotoViewComputedScale] constant
 ///
@@ -151,7 +150,9 @@ export 'src/photo_view_scale_state.dart';
 ///   }
 ///
 ///   void listener(PhotoViewControllerValue value){
-///     scaleCopy = value.scale;
+///     setState((){
+///       scaleCopy = value.scale;
+///     })
 ///   }
 ///
 ///   @override

@@ -124,7 +124,7 @@ class PhotoViewCoreState extends State<PhotoViewCore>
     final double newScale = _scaleBefore * details.scale;
     final Offset delta = details.focalPoint - _normalizedPosition;
 
-    updateScaleStateFromNewScale(details.scale, newScale);
+    updateScaleStateFromNewScale(newScale);
 
     updateMultiple(
       scale: newScale,
@@ -298,6 +298,7 @@ class PhotoViewCoreState extends State<PhotoViewCore>
               onScaleStart: onScaleStart,
               onScaleUpdate: onScaleUpdate,
               onScaleEnd: onScaleEnd,
+              hitDetector: this,
             );
           } else {
             return Container();

@@ -7,8 +7,7 @@ import 'package:photo_view/src/core/photo_view_image_core.dart';
 import 'package:photo_view/src/utils/photo_view_utils.dart';
 
 /// A  class to hold internal layout logic to sync both controller states
-mixin PhotoViewControllerDelegate on State<PhotoViewCore>
-    implements HitCornersDetector {
+mixin PhotoViewControllerDelegate on State<PhotoViewCore> implements HitCornersDetector {
   PhotoViewControllerBase get controller => widget.controller;
 
   PhotoViewScaleStateController get scaleStateController =>
@@ -90,10 +89,7 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore>
         rotationFocusPoint: rotationFocusPoint);
   }
 
-  void updateScaleStateFromNewScale(double scaleFactor, double newScale) {
-    if (scaleFactor == 1.0) {
-      return;
-    }
+  void updateScaleStateFromNewScale(double newScale) {
 
     final PhotoViewScaleState newScaleState =
         (newScale > scaleBoundaries.initialScale)
@@ -194,31 +190,58 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore>
   }
 
   @override
-  HitCornersDefinition get hasHitCorners =>
-      HitCornersDefinition(hasHitCornersX, hasHitCornersY);
+  HitCorners get hasHitCorners => HitCorners(hasHitCornersX, hasHitCornersY);
 
   @override
-  bool get hasHitCornersX {
+  AxisHitCorners get hasHitCornersX {
     final double childWidth = scaleBoundaries.childSize.width * scale;
     final double screenWidth = scaleBoundaries.outerSize.width;
     if (screenWidth >= childWidth) {
-      return true;
+      return const AxisHitCorners(true, true);
     }
     final x = position.dx;
     final cornersX = _cornersX();
-    return x <= cornersX.min || x >= cornersX.max;
+    return AxisHitCorners(x <= cornersX.min, x >= cornersX.max);
   }
 
   @override
-  bool get hasHitCornersY {
+  AxisHitCorners get hasHitCornersY {
     final double childHeight = scaleBoundaries.childSize.height * scale;
     final double screenHeight = scaleBoundaries.outerSize.height;
     if (screenHeight >= childHeight) {
-      return true;
+      return const AxisHitCorners(true, true);
     }
     final y = position.dy;
     final cornersY = _cornersY();
-    return y <= cornersY.min || y >= cornersY.max;
+    return AxisHitCorners(y <= cornersY.min, y >= cornersY.max);
+  }
+
+  @override
+  bool shouldMoveX(Offset move) {
+    if(!hasHitCorners.hasHitAny || move == Offset.zero) {
+      return true;
+    }
+    if(hasHitCornersX.hasHitAny) {
+      if(hasHitCornersX.hasHitMax) {
+        return move.dx > 0;
+      }
+      return move.dx < 0;
+    }
+    return true;
+  }
+
+  @override
+  bool shouldMoveY(Offset move) {
+    if(!hasHitCorners.hasHitAny || move == Offset.zero) {
+      return true;
+    }
+    if(hasHitCornersY.hasHitAny) {
+      if(hasHitCornersY.hasHitMax) {
+        return move.dy > 0;
+      }
+      return move.dy < 0;
+    }
+    return true;
   }
 
   @override
@@ -231,19 +254,27 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore>
 }
 
 abstract class HitCornersDetector {
-  HitCornersDefinition get hasHitCorners;
-  bool get hasHitCornersX;
-  bool get hasHitCornersY;
+  HitCorners get hasHitCorners;
+  AxisHitCorners get hasHitCornersX;
+  AxisHitCorners get hasHitCornersY;
+  bool shouldMoveX(Offset move);
+  bool shouldMoveY(Offset move);
+}
+class HitCorners {
+  HitCorners(this.hasHitX, this.hasHitY);
+
+  final AxisHitCorners hasHitX;
+  final AxisHitCorners hasHitY;
+
+  bool get hasHitAny => hasHitX.hasHitAny || hasHitY.hasHitAny;
+}
+class AxisHitCorners {
+  const AxisHitCorners(this.hasHitMin, this.hasHitMax);
+  final bool hasHitMin;
+  final bool hasHitMax;
+  bool get hasHitAny => hasHitMin || hasHitMax;
 }
 
-class HitCornersDefinition {
-  HitCornersDefinition(this.hasHitX, this.hasHitY);
-
-  final bool hasHitX;
-  final bool hasHitY;
-
-  bool get hasHitAny => hasHitX || hasHitY;
-}
 
 class CornersRange {
   const CornersRange(this.min, this.max);
