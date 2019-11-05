@@ -1,8 +1,7 @@
 import 'dart:math' as math;
-import 'dart:ui';
+import 'dart:ui' show Size;
 
-import 'package:flutter/widgets.dart';
-import 'package:photo_view/src/photo_view_computed_scale.dart';
+import "package:photo_view/src/photo_view_computed_scale.dart";
 import 'package:photo_view/src/photo_view_scale_state.dart';
 
 // Given a [PhotoViewScaleState], returns a
@@ -111,4 +110,11 @@ double _scaleForCovering(Size size, Size childSize) {
 
 double _clampSize(double size, ScaleBoundaries scaleBoundaries) {
   return size.clamp(scaleBoundaries.minScale, scaleBoundaries.maxScale);
+}
+
+
+class CornersRange {
+  const CornersRange(this.min, this.max);
+  final double min;
+  final double max;
 }

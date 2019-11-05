@@ -3,20 +3,21 @@ library photo_view;
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+
+import 'package:photo_view/src/controller/photo_view_controller.dart';
+import 'package:photo_view/src/controller/photo_view_scalestate_controller.dart';
 import 'package:photo_view/src/core/photo_view_image_core.dart';
+import 'package:photo_view/src/photo_view_computed_scale.dart';
+import 'package:photo_view/src/photo_view_scale_state.dart';
 import 'package:photo_view/src/utils/photo_view_hero_attributes.dart';
 import 'package:photo_view/src/utils/photo_view_utils.dart';
 
-import 'src/controller/photo_view_controller.dart';
-import 'src/photo_view_computed_scale.dart';
-import 'src/photo_view_scale_state.dart';
-import 'src/utils/photo_view_utils.dart';
-
 export 'src/controller/photo_view_controller.dart';
+export 'src/controller/photo_view_scalestate_controller.dart';
 export 'src/photo_view_computed_scale.dart';
-export 'src/utils/photo_view_hero_attributes.dart';
 export 'src/photo_view_scale_state.dart';
+export 'src/utils/photo_view_hero_attributes.dart';
+
 
 /// A [StatefulWidget] that contains all the photo view rendering elements.
 ///

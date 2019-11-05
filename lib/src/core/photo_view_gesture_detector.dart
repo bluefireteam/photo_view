@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
-import 'package:photo_view/src/controller/photo_view_controller_delegate.dart';
+
+import 'photo_view_hit_corners.dart';
 
 class PhotoViewGestureDetector extends StatelessWidget {
   const PhotoViewGestureDetector({
@@ -56,9 +57,7 @@ class PhotoViewGestureRecognizer extends ScaleGestureRecognizer {
   ) : super(debugOwner: debugOwner);
   final HitCornersDetector hitDetector;
 
-  Matrix4 _lastPointerTransform;
   Map<int, Offset> _pointerLocations = <int, Offset>{};
-  List<int> _pointerQueue = <int>[];
 
   Offset _initialFocalPoint;
   Offset _currentFocalPoint;
@@ -70,7 +69,6 @@ class PhotoViewGestureRecognizer extends ScaleGestureRecognizer {
     if (ready) {
       ready = false;
       _pointerLocations = <int, Offset>{};
-      _pointerQueue = <int>[];
     }
     super.addAllowedPointer(event);
   }
@@ -84,14 +82,35 @@ class PhotoViewGestureRecognizer extends ScaleGestureRecognizer {
   @override
   void handleEvent(PointerEvent event) {
 
-    computeEvents(event);
-    updateDistances();
-    decideIfAcceptsEvent(event);
+    _computeEvent(event);
+    _updateDistances();
+    _decideIfWeAcceptEvent(event);
 
     super.handleEvent(event);
   }
 
-  void decideIfAcceptsEvent(PointerEvent event) {
+  void _computeEvent(PointerEvent event) {
+    if (event is PointerMoveEvent) {
+      if (!event.synthesized)
+        _pointerLocations[event.pointer] = event.position;
+    } else if (event is PointerDownEvent) {
+      _pointerLocations[event.pointer] = event.position;
+    } else if (event is PointerUpEvent || event is PointerCancelEvent) {
+      _pointerLocations.remove(event.pointer);
+    }
+
+    _initialFocalPoint = _currentFocalPoint;
+  }
+
+  void _updateDistances() {
+    final int count = _pointerLocations.keys.length;
+    Offset focalPoint = Offset.zero;
+    for (int pointer in _pointerLocations.keys)
+      focalPoint += _pointerLocations[pointer];
+    _currentFocalPoint = count > 0 ? focalPoint / count.toDouble() : Offset.zero;
+  }
+
+  void _decideIfWeAcceptEvent(PointerEvent event) {
     if(!(event is PointerMoveEvent)) {
       return;
     }
@@ -99,42 +118,5 @@ class PhotoViewGestureRecognizer extends ScaleGestureRecognizer {
       resolve(GestureDisposition.accepted);
     }
   }
-
-  void computeEvents(PointerEvent event) {
-    if (event is PointerMoveEvent) {
-      if (!event.synthesized)
-        _pointerLocations[event.pointer] = event.position;
-      _lastPointerTransform = event.transform;
-    } else if (event is PointerDownEvent) {
-      _pointerLocations[event.pointer] = event.position;
-      _pointerQueue.add(event.pointer);
-      _lastPointerTransform = event.transform;
-    } else if (event is PointerUpEvent || event is PointerCancelEvent) {
-      _pointerLocations.remove(event.pointer);
-      _pointerQueue.remove(event.pointer);
-      _lastPointerTransform = event.transform;
-    }
-
-    _initialFocalPoint = _currentFocalPoint;
-  }
-
-  void updateDistances() {
-    final int count = _pointerLocations.keys.length;
-
-    Offset focalPoint = Offset.zero;
-    for (int pointer in _pointerLocations.keys)
-      focalPoint += _pointerLocations[pointer];
-    _currentFocalPoint = count > 0 ? focalPoint / count.toDouble() : Offset.zero;
-    double totalHorizontalDeviation = 0.0;
-    double totalVerticalDeviation = 0.0;
-
-    for (int pointer in _pointerLocations.keys) {
-      totalHorizontalDeviation += (_currentFocalPoint.dx - _pointerLocations[pointer].dx).abs();
-      totalVerticalDeviation += (_currentFocalPoint.dy - _pointerLocations[pointer].dy).abs();
-    }
-    final horizontalSpan = count > 0 ? totalHorizontalDeviation / count : 0.0;
-    final verticalSpan = count > 0 ? totalVerticalDeviation / count : 0.0;
-  }
-
 
 }

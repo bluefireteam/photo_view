@@ -1,11 +1,15 @@
 library photo_view_gallery;
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
-import 'package:photo_view/src/core/photo_view_image_core.dart';
+import 'package:photo_view/photo_view.dart' show PhotoView, ScaleStateCycle;
 
-import 'photo_view.dart';
-import 'src/photo_view_scale_state.dart';
+
+import 'package:photo_view/src/controller/photo_view_controller.dart';
+import 'package:photo_view/src/controller/photo_view_scalestate_controller.dart';
+import 'package:photo_view/src/core/photo_view_image_core.dart';
+import 'package:photo_view/src/photo_view_scale_state.dart';
+import 'package:photo_view/src/utils/photo_view_hero_attributes.dart';
+
 
 /// A type definition for a [Function] that receives a index after a page change in [PhotoViewGallery]
 typedef PhotoViewGalleryPageChangedCallback = void Function(int index);
@@ -165,12 +169,10 @@ class PhotoViewGallery extends StatefulWidget {
 
 class _PhotoViewGalleryState extends State<PhotoViewGallery> {
   PageController _controller;
-  bool _locked;
 
   @override
   void initState() {
     _controller = widget.pageController ?? PageController();
-    _locked = false;
     super.initState();
   }
 
@@ -200,8 +202,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
       itemCount: itemCount,
       itemBuilder: _buildItem,
       scrollDirection: widget.scrollDirection,
-      physics:
-          _locked ? const NeverScrollableScrollPhysics() : widget.scrollPhysics,
+      physics: widget.scrollPhysics,
     );
   }
 
