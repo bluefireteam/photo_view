@@ -79,7 +79,6 @@ class _GalleryExampleState extends State<GalleryExample> {
       context,
       MaterialPageRoute(
         builder: (context) => GalleryPhotoViewWrapper(
-          usePageViewWrapper: verticalGallery,
           galleryItems: galleryItems,
           backgroundDecoration: const BoxDecoration(
             color: Colors.black,
@@ -95,7 +94,6 @@ class _GalleryExampleState extends State<GalleryExample> {
 class GalleryPhotoViewWrapper extends StatefulWidget {
   GalleryPhotoViewWrapper({
     this.loadingChild,
-    this.usePageViewWrapper = false,
     this.backgroundDecoration,
     this.minScale,
     this.maxScale,
@@ -111,7 +109,6 @@ class GalleryPhotoViewWrapper extends StatefulWidget {
   final int initialIndex;
   final PageController pageController;
   final List<GalleryExampleItem> galleryItems;
-  final bool usePageViewWrapper;
   final Axis scrollDirection;
 
   @override
@@ -130,11 +127,9 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
   }
 
   void onPageChanged(int index) {
-    if (!widget.usePageViewWrapper) {
-      setState(() {
-        currentIndex = index;
-      });
-    }
+    setState(() {
+      currentIndex = index;
+    });
   }
 
   @override
@@ -158,19 +153,17 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
               onPageChanged: onPageChanged,
               scrollDirection: widget.scrollDirection,
             ),
-            widget.usePageViewWrapper
-                ? Container()
-                : Container(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Text(
-                      "Image ${currentIndex + 1}",
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 17.0,
-                        decoration: null,
-                      ),
-                    ),
-                  )
+            Container(
+              padding: const EdgeInsets.all(20.0),
+              child: Text(
+                "Image ${currentIndex + 1}",
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 17.0,
+                  decoration: null,
+                ),
+              ),
+            )
           ],
         ),
       ),

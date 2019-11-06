@@ -199,7 +199,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
   @override
   Widget build(BuildContext context) {
     return PhotoViewGestureDetectorScope(
-      scrollDirection: widget.scrollDirection,
+      axis: widget.scrollDirection,
       child: PageView.builder(
         reverse: widget.reverse,
         controller: _controller,
