@@ -14,21 +14,23 @@ class FullScreenExamples extends StatelessWidget {
             showGoBack: true,
           ),
           Expanded(
-              child: ListView(
-            children: <Widget>[
-              ExampleButtonNode(
+            child: ListView(
+              children: <Widget>[
+                ExampleButtonNode(
                   title: "Large Image",
                   onPressed: () {
                     Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const FullScreenWrapper(
-                            imageProvider:
-                                const AssetImage("assets/large-image.jpg"),
-                          ),
-                        ));
-                  }),
-              ExampleButtonNode(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const FullScreenWrapper(
+                          imageProvider:
+                              const AssetImage("assets/large-image.jpg"),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                ExampleButtonNode(
                   title: "Small Image (custom background)",
                   onPressed: () {
                     Navigator.push(
@@ -38,15 +40,17 @@ class FullScreenExamples extends StatelessWidget {
                           imageProvider:
                               const AssetImage("assets/small-image.jpg"),
                           backgroundDecoration: BoxDecoration(
-                              gradient: LinearGradient(
-                            colors: <Color>[Colors.white, Colors.grey],
-                            stops: [0.1, 1.0],
-                          )),
+                            gradient: LinearGradient(
+                              colors: <Color>[Colors.white, Colors.grey],
+                              stops: [0.1, 1.0],
+                            ),
+                          ),
                         ),
                       ),
                     );
-                  }),
-              ExampleButtonNode(
+                  },
+                ),
+                ExampleButtonNode(
                   title: "Small Image (custom alignment)",
                   onPressed: () {
                     Navigator.push(
@@ -62,8 +66,9 @@ class FullScreenExamples extends StatelessWidget {
                         ),
                       ),
                     );
-                  }),
-              ExampleButtonNode(
+                  },
+                ),
+                ExampleButtonNode(
                   title: "Image from the internet",
                   onPressed: () {
                     Navigator.push(
@@ -75,8 +80,9 @@ class FullScreenExamples extends StatelessWidget {
                         ),
                       ),
                     );
-                  }),
-              ExampleButtonNode(
+                  },
+                ),
+                ExampleButtonNode(
                   title: "Animated GIF",
                   onPressed: () {
                     Navigator.push(
@@ -90,8 +96,9 @@ class FullScreenExamples extends StatelessWidget {
                         ),
                       ),
                     );
-                  }),
-              ExampleButtonNode(
+                  },
+                ),
+                ExampleButtonNode(
                   title: "Limited scale",
                   onPressed: () {
                     Navigator.push(
@@ -106,8 +113,9 @@ class FullScreenExamples extends StatelessWidget {
                         ),
                       ),
                     );
-                  }),
-              ExampleButtonNode(
+                  },
+                ),
+                ExampleButtonNode(
                   title: "Custom Initial scale",
                   onPressed: () {
                     Navigator.push(
@@ -120,9 +128,11 @@ class FullScreenExamples extends StatelessWidget {
                         ),
                       ),
                     );
-                  }),
-            ],
-          ))
+                  },
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
