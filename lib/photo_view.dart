@@ -240,6 +240,7 @@ class PhotoView extends StatefulWidget {
     this.onTapUp,
     this.onTapDown,
     this.customSize,
+    this.gestureDetectorBehavior,
   })  : child = null,
         childSize = null,
         super(key: key);
@@ -268,6 +269,7 @@ class PhotoView extends StatefulWidget {
     this.onTapUp,
     this.onTapDown,
     this.customSize,
+    this.gestureDetectorBehavior,
   })  : loadingChild = null,
         imageProvider = null,
         gaplessPlayback = false,
@@ -343,6 +345,9 @@ class PhotoView extends StatefulWidget {
   /// A pointer that might cause a tap has contacted the screen at a particular
   /// location.
   final PhotoViewImageTapDownCallback onTapDown;
+
+  /// [HitTestBehavior] to be passed to the internal gesture detector.
+  final HitTestBehavior gestureDetectorBehavior;
 
   @override
   State<StatefulWidget> createState() {
@@ -501,6 +506,7 @@ class _PhotoViewState extends State<PhotoView> {
       scaleBoundaries: scaleBoundaries,
       onTapUp: widget.onTapUp,
       onTapDown: widget.onTapDown,
+      gestureDetectorBehavior: widget.gestureDetectorBehavior,
     );
   }
 
@@ -553,6 +559,7 @@ class _PhotoViewState extends State<PhotoView> {
       scaleBoundaries: scaleBoundaries,
       onTapUp: widget.onTapUp,
       onTapDown: widget.onTapDown,
+      gestureDetectorBehavior: widget.gestureDetectorBehavior,
     );
   }
 

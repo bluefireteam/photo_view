@@ -19,13 +19,13 @@ class PhotoViewCore extends StatefulWidget {
   const PhotoViewCore({
     Key key,
     @required this.imageProvider,
-    this.backgroundDecoration,
-    this.gaplessPlayback = false,
-    this.heroAttributes,
-    this.enableRotation,
-    this.onTapUp,
-    this.onTapDown,
-    this.index,
+    @required this.backgroundDecoration,
+    @required this.gaplessPlayback,
+    @required this.heroAttributes,
+    @required this.enableRotation,
+    @required this.onTapUp,
+    @required this.onTapDown,
+    @required this.gestureDetectorBehavior,
     @required this.controller,
     @required this.scaleBoundaries,
     @required this.scaleStateCycle,
@@ -37,12 +37,12 @@ class PhotoViewCore extends StatefulWidget {
   const PhotoViewCore.customChild({
     Key key,
     @required this.customChild,
-    this.backgroundDecoration,
-    this.heroAttributes,
-    this.enableRotation,
-    this.onTapUp,
-    this.onTapDown,
-    this.index,
+    @required this.backgroundDecoration,
+    @required this.heroAttributes,
+    @required this.enableRotation,
+    @required this.onTapUp,
+    @required this.onTapDown,
+    @required this.gestureDetectorBehavior,
     @required this.controller,
     @required this.scaleBoundaries,
     @required this.scaleStateCycle,
@@ -52,7 +52,6 @@ class PhotoViewCore extends StatefulWidget {
         gaplessPlayback = false,
         super(key: key);
 
-  final int index;
   final Decoration backgroundDecoration;
   final ImageProvider imageProvider;
   final bool gaplessPlayback;
@@ -68,6 +67,8 @@ class PhotoViewCore extends StatefulWidget {
 
   final PhotoViewImageTapUpCallback onTapUp;
   final PhotoViewImageTapDownCallback onTapDown;
+
+  final HitTestBehavior gestureDetectorBehavior;
 
   @override
   State<StatefulWidget> createState() {
@@ -334,7 +335,7 @@ class PhotoViewCoreState extends State<PhotoViewCore>
         ? widget.customChild
         : Image(
             image: widget.imageProvider,
-            gaplessPlayback: widget.gaplessPlayback,
+            gaplessPlayback: widget.gaplessPlayback ?? false,
           );
   }
 }
