@@ -234,6 +234,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             scaleStateCycle: pageOption.scaleStateCycle,
             onTapUp: pageOption.onTapUp,
             onTapDown: pageOption.onTapDown,
+            gestureDetectorBehavior: pageOption.gestureDetectorBehavior,
           )
         : PhotoView(
             key: ObjectKey(index),
@@ -253,6 +254,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             scaleStateCycle: pageOption.scaleStateCycle,
             onTapUp: pageOption.onTapUp,
             onTapDown: pageOption.onTapDown,
+            gestureDetectorBehavior: pageOption.gestureDetectorBehavior,
           );
 
     return ClipRect(
@@ -287,6 +289,7 @@ class PhotoViewGalleryPageOptions {
     this.scaleStateCycle,
     this.onTapUp,
     this.onTapDown,
+    this.gestureDetectorBehavior,
   })  : child = null,
         childSize = null,
         assert(imageProvider != null);
@@ -304,6 +307,7 @@ class PhotoViewGalleryPageOptions {
     this.scaleStateCycle,
     this.onTapUp,
     this.onTapDown,
+    this.gestureDetectorBehavior,
   })  : imageProvider = null,
         assert(child != null),
         assert(childSize != null);
@@ -346,4 +350,7 @@ class PhotoViewGalleryPageOptions {
 
   /// Mirror to [PhotoView.onTapDown]
   final PhotoViewImageTapDownCallback onTapDown;
+
+  /// Mirror to [PhotoView.gestureDetectorBehavior]
+  final HitTestBehavior gestureDetectorBehavior;
 }

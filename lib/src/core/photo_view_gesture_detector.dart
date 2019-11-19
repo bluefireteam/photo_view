@@ -14,6 +14,7 @@ class PhotoViewGestureDetector extends StatelessWidget {
     this.child,
     this.onTapUp,
     this.onTapDown,
+    this.behavior,
   }) : super(key: key);
 
   final GestureDoubleTapCallback onDoubleTap;
@@ -27,6 +28,8 @@ class PhotoViewGestureDetector extends StatelessWidget {
   final GestureTapDownCallback onTapDown;
 
   final Widget child;
+
+  final HitTestBehavior behavior;
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +72,7 @@ class PhotoViewGestureDetector extends StatelessWidget {
     );
 
     return RawGestureDetector(
-      behavior: HitTestBehavior.translucent,
+      behavior: behavior ?? HitTestBehavior.translucent,
       child: child,
       gestures: gestures,
     );
