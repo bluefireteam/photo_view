@@ -76,7 +76,7 @@ class _ControllerExampleState extends State<ControllerExample> {
                     ),
                     Positioned(
                       bottom: 0,
-                      height: 220,
+                      height: 290,
                       left: 0,
                       right: 0,
                       child: Container(
@@ -136,6 +136,24 @@ class _ControllerExampleState extends State<ControllerExample> {
             max: maxScale,
             onChanged: (double newScale) {
               controller.scale = newScale;
+            },
+          ),
+        ),
+        Text(
+          "Position ${value.position.dx}",
+          style: const TextStyle(color: Colors.white),
+        ),
+        SliderTheme(
+          data: SliderTheme.of(context).copyWith(
+            activeTrackColor: Colors.orange,
+            thumbColor: Colors.orange,
+          ),
+          child: Slider(
+            value: value.position.dx,
+            min: -1000.0,
+            max: 1000.0,
+            onChanged: (double newPosition) {
+              controller.position = Offset(newPosition, controller.position.dy);
             },
           ),
         ),
