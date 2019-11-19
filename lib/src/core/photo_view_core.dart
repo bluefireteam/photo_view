@@ -259,11 +259,10 @@ class PhotoViewCoreState extends State<PhotoViewCore>
 
   @override
   Widget build(BuildContext context) {
-    if(widget.scaleBoundaries != cachedScaleBoundaries){
+    if (widget.scaleBoundaries != cachedScaleBoundaries) {
       markNeedsScaleRecalc = true;
       cachedScaleBoundaries = widget.scaleBoundaries;
     }
-
 
     return StreamBuilder(
         stream: controller.outputStateStream,

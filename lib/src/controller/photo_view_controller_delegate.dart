@@ -14,8 +14,10 @@ import 'package:photo_view/src/utils/photo_view_utils.dart';
 import 'package:photo_view/src/controller/photo_view_controller.dart';
 import 'package:photo_view/src/controller/photo_view_scalestate_controller.dart';
 
-
 /// A  class to hold internal layout logic to sync both controller states
+///
+/// It reacts to layout changes (eg: enter landscape or widget resize) and syncs the two controllers.
+/// It is responsible
 mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
   PhotoViewControllerBase get controller => widget.controller;
 
@@ -80,7 +82,8 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
   Offset get position => controller.position;
 
   double get scale {
-    if(markNeedsScaleRecalc && !isScaleStateZooming(scaleStateController.scaleState)){
+    if (markNeedsScaleRecalc &&
+        !isScaleStateZooming(scaleStateController.scaleState)) {
       scale = getScaleForScaleState(
         scaleStateController.scaleState,
         scaleBoundaries,

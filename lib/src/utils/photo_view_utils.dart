@@ -90,13 +90,13 @@ class ScaleBoundaries {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is ScaleBoundaries &&
-              runtimeType == other.runtimeType &&
-              _minScale == other._minScale &&
-              _maxScale == other._maxScale &&
-              _initialScale == other._initialScale &&
-              outerSize == other.outerSize &&
-              childSize == other.childSize;
+      other is ScaleBoundaries &&
+          runtimeType == other.runtimeType &&
+          _minScale == other._minScale &&
+          _maxScale == other._maxScale &&
+          _initialScale == other._initialScale &&
+          outerSize == other.outerSize &&
+          childSize == other.childSize;
 
   @override
   int get hashCode =>
@@ -105,7 +105,6 @@ class ScaleBoundaries {
       _initialScale.hashCode ^
       outerSize.hashCode ^
       childSize.hashCode;
-
 }
 
 double _scaleForContained(Size size, Size childSize) {
