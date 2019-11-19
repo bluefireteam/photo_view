@@ -4,7 +4,7 @@ import 'dart:ui' show Size;
 import "package:photo_view/src/photo_view_computed_scale.dart";
 import 'package:photo_view/src/photo_view_scale_state.dart';
 
-// Given a [PhotoViewScaleState], returns a
+/// Given a [PhotoViewScaleState], returns a scale value considering scaleBoundaries.
 double getScaleForScaleState(
   PhotoViewScaleState scaleState,
   ScaleBoundaries scaleBoundaries,
@@ -26,6 +26,8 @@ double getScaleForScaleState(
   }
 }
 
+/// Internal class to wraps custom scale boundaries (min, max and initial)
+/// Also, stores values regarding the two sizes: the container and teh child.
 class ScaleBoundaries {
   const ScaleBoundaries(
     this._minScale,
@@ -131,6 +133,7 @@ double _clampSize(double size, ScaleBoundaries scaleBoundaries) {
   return size.clamp(scaleBoundaries.minScale, scaleBoundaries.maxScale);
 }
 
+/// Simple class to store a min and a max value
 class CornersRange {
   const CornersRange(this.min, this.max);
   final double min;
