@@ -86,6 +86,26 @@ class ScaleBoundaries {
     }
     return _initialScale.clamp(minScale, maxScale);
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+          other is ScaleBoundaries &&
+              runtimeType == other.runtimeType &&
+              _minScale == other._minScale &&
+              _maxScale == other._maxScale &&
+              _initialScale == other._initialScale &&
+              outerSize == other.outerSize &&
+              childSize == other.childSize;
+
+  @override
+  int get hashCode =>
+      _minScale.hashCode ^
+      _maxScale.hashCode ^
+      _initialScale.hashCode ^
+      outerSize.hashCode ^
+      childSize.hashCode;
+
 }
 
 double _scaleForContained(Size size, Size childSize) {

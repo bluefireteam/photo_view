@@ -97,6 +97,8 @@ class PhotoViewCoreState extends State<PhotoViewCore>
 
   PhotoViewHeroAttributes get heroAttributes => widget.heroAttributes;
 
+  ScaleBoundaries cachedScaleBoundaries;
+
   void handleScaleAnimation() {
     scale = _scaleAnimation.value;
   }
@@ -228,6 +230,8 @@ class PhotoViewCoreState extends State<PhotoViewCore>
       ..addListener(handleRotationAnimation);
     startListeners();
     addAnimateOnScaleStateUpdate(animateOnScaleStateUpdate);
+
+    cachedScaleBoundaries = widget.scaleBoundaries;
   }
 
   void animateOnScaleStateUpdate(double prevScale, double nextScale) {
@@ -255,6 +259,12 @@ class PhotoViewCoreState extends State<PhotoViewCore>
 
   @override
   Widget build(BuildContext context) {
+    if(widget.scaleBoundaries != cachedScaleBoundaries){
+      markNeedsScaleRecalc = true;
+      cachedScaleBoundaries = widget.scaleBoundaries;
+    }
+
+
     return StreamBuilder(
         stream: controller.outputStateStream,
         initialData: controller.prevValue,
