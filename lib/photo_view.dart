@@ -254,7 +254,7 @@ class PhotoView extends StatefulWidget {
   PhotoView.customChild({
     Key key,
     @required this.child,
-    @required this.childSize,
+    this.childSize,
     this.backgroundDecoration,
     this.heroAttributes,
     this.scaleStateChangedCallback,
@@ -491,7 +491,7 @@ class _PhotoViewState extends State<PhotoView> {
       widget.maxScale ?? double.infinity,
       widget.initialScale ?? PhotoViewComputedScale.contained,
       _computedOuterSize,
-      _childSize,
+      _childSize ?? constraints.biggest,
     );
 
     return PhotoViewCore.customChild(
