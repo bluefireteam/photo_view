@@ -67,6 +67,7 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
   }
 
   void _blindScaleListener() {
+    controller.position = clampPosition();
     if (controller.scale == controller.prevValue.scale) {
       return;
     }
@@ -76,7 +77,6 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
             : PhotoViewScaleState.zoomedOut;
 
     scaleStateController.setInvisibly(newScaleState);
-    controller.position = clampPosition();
   }
 
   Offset get position => controller.position;
