@@ -131,7 +131,7 @@ class FullScreenExamples extends StatelessWidget {
                   },
                 ),
                 ExampleButtonNode(
-                  title: "Onbe tap",
+                  title: "One tap to dismiss",
                   onPressed: () {
                     Navigator.push(
                       context,
@@ -243,7 +243,7 @@ class OneTapWrapper extends StatelessWidget {
         height: MediaQuery.of(context).size.height,
       ),
       child: GestureDetector(
-        onTapUp: (_) {
+        onTapDown: (_) {
           Navigator.pop(context);
         },
         child: PhotoView(
