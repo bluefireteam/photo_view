@@ -198,6 +198,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
 
   @override
   Widget build(BuildContext context) {
+    // Enable corner hit test
     return PhotoViewGestureDetectorScope(
       axis: widget.scrollDirection,
       child: PageView.builder(
@@ -235,6 +236,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             onTapUp: pageOption.onTapUp,
             onTapDown: pageOption.onTapDown,
             gestureDetectorBehavior: pageOption.gestureDetectorBehavior,
+            tightMode: pageOption.tightMode,
           )
         : PhotoView(
             key: ObjectKey(index),
@@ -255,6 +257,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             onTapUp: pageOption.onTapUp,
             onTapDown: pageOption.onTapDown,
             gestureDetectorBehavior: pageOption.gestureDetectorBehavior,
+            tightMode: pageOption.tightMode,
           );
 
     return ClipRect(
@@ -290,6 +293,7 @@ class PhotoViewGalleryPageOptions {
     this.onTapUp,
     this.onTapDown,
     this.gestureDetectorBehavior,
+    this.tightMode,
   })  : child = null,
         childSize = null,
         assert(imageProvider != null);
@@ -308,6 +312,7 @@ class PhotoViewGalleryPageOptions {
     this.onTapUp,
     this.onTapDown,
     this.gestureDetectorBehavior,
+    this.tightMode,
   })  : imageProvider = null,
         assert(child != null),
         assert(childSize != null);
@@ -353,4 +358,7 @@ class PhotoViewGalleryPageOptions {
 
   /// Mirror to [PhotoView.gestureDetectorBehavior]
   final HitTestBehavior gestureDetectorBehavior;
+
+  /// Mirror to [PhotoView.tightMode]
+  final bool tightMode;
 }

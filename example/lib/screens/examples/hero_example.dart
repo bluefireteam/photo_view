@@ -14,24 +14,27 @@ class HeroExample extends StatelessWidget {
             showGoBack: true,
           ),
           Expanded(
-              child: Center(
-            child: GestureDetector(
-              onTap: () {
-                Navigator.push(
+            child: Center(
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) => const HeroPhotoViewWrapper(
                         imageProvider: AssetImage("assets/large-image.jpg"),
                       ),
-                    ));
-              },
-              child: Container(
+                    ),
+                  );
+                },
+                child: Container(
                   child: Hero(
-                tag: "someTag",
-                child: Image.asset("assets/large-image.jpg", width: 150.0),
-              )),
+                    tag: "someTag",
+                    child: Image.asset("assets/large-image.jpg", width: 150.0),
+                  ),
+                ),
+              ),
             ),
-          ))
+          )
         ],
       ),
     );
@@ -39,12 +42,13 @@ class HeroExample extends StatelessWidget {
 }
 
 class HeroPhotoViewWrapper extends StatelessWidget {
-  const HeroPhotoViewWrapper(
-      {this.imageProvider,
-      this.loadingChild,
-      this.backgroundDecoration,
-      this.minScale,
-      this.maxScale});
+  const HeroPhotoViewWrapper({
+    this.imageProvider,
+    this.loadingChild,
+    this.backgroundDecoration,
+    this.minScale,
+    this.maxScale,
+  });
 
   final ImageProvider imageProvider;
   final Widget loadingChild;

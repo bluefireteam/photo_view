@@ -157,6 +157,23 @@ class PhotoViewGestureRecognizer extends ScaleGestureRecognizer {
   }
 }
 
+/// An [InheritedWidget] responsible to give a axis aware scope to the internal[GestureRecognizer].
+///
+/// When using this, PhotoView will test if the content zoomed has hit edge every time user pinches,
+/// if so, it will let parent gesture detectors win the gesture arena
+///
+/// Useful when placing PhotoView inside a gesture sensitive context,
+/// such as [PageView], [Dismissible], [BottomSheet].
+///
+/// Usage example:
+/// ```
+/// PhotoViewGestureDetectorScope(
+///   axis: Axis.vertical,
+///   child: PhotoView(
+///     imageProvider: AssetImage("assets/pudim.jpg"),
+///   ),
+/// );
+/// ```
 class PhotoViewGestureDetectorScope extends InheritedWidget {
   PhotoViewGestureDetectorScope({
     this.axis,

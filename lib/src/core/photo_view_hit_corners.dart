@@ -50,9 +50,9 @@ mixin HitCornersDetector on PhotoViewControllerDelegate {
         return false;
       }
       if (hitCornersY.hasHitMax) {
-        return move.dy > 0;
+        return move.dy < 0;
       }
-      return move.dy < 0;
+      return move.dy > 0;
     }
     return true;
   }

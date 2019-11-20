@@ -130,6 +130,20 @@ class FullScreenExamples extends StatelessWidget {
                     );
                   },
                 ),
+                ExampleButtonNode(
+                  title: "One tap to dismiss",
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const OneTapWrapper(
+                          imageProvider:
+                              const AssetImage("assets/large-image.jpg"),
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ],
             ),
           ),
@@ -178,14 +192,15 @@ class ExampleButtonNode extends StatelessWidget {
 }
 
 class FullScreenWrapper extends StatelessWidget {
-  const FullScreenWrapper(
-      {this.imageProvider,
-      this.loadingChild,
-      this.backgroundDecoration,
-      this.minScale,
-      this.maxScale,
-      this.initialScale,
-      this.basePosition = Alignment.center});
+  const FullScreenWrapper({
+    this.imageProvider,
+    this.loadingChild,
+    this.backgroundDecoration,
+    this.minScale,
+    this.maxScale,
+    this.initialScale,
+    this.basePosition = Alignment.center,
+  });
 
   final ImageProvider imageProvider;
   final Widget loadingChild;
@@ -198,17 +213,43 @@ class FullScreenWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        constraints: BoxConstraints.expand(
-          height: MediaQuery.of(context).size.height,
-        ),
+      constraints: BoxConstraints.expand(
+        height: MediaQuery.of(context).size.height,
+      ),
+      child: PhotoView(
+        imageProvider: imageProvider,
+        loadingChild: loadingChild,
+        backgroundDecoration: backgroundDecoration,
+        minScale: minScale,
+        maxScale: maxScale,
+        initialScale: initialScale,
+        basePosition: basePosition,
+      ),
+    );
+  }
+}
+
+class OneTapWrapper extends StatelessWidget {
+  const OneTapWrapper({
+    this.imageProvider,
+  });
+
+  final ImageProvider imageProvider;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      constraints: BoxConstraints.expand(
+        height: MediaQuery.of(context).size.height,
+      ),
+      child: GestureDetector(
+        onTapDown: (_) {
+          Navigator.pop(context);
+        },
         child: PhotoView(
           imageProvider: imageProvider,
-          loadingChild: loadingChild,
-          backgroundDecoration: backgroundDecoration,
-          minScale: minScale,
-          maxScale: maxScale,
-          initialScale: initialScale,
-          basePosition: basePosition,
-        ));
+        ),
+      ),
+    );
   }
 }

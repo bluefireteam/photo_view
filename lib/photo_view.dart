@@ -14,6 +14,8 @@ import 'package:photo_view/src/utils/photo_view_utils.dart';
 
 export 'src/controller/photo_view_controller.dart';
 export 'src/controller/photo_view_scalestate_controller.dart';
+export 'src/core/photo_view_gesture_detector.dart'
+    show PhotoViewGestureDetectorScope;
 export 'src/photo_view_computed_scale.dart';
 export 'src/photo_view_scale_state.dart';
 export 'src/utils/photo_view_hero_attributes.dart';
@@ -241,6 +243,7 @@ class PhotoView extends StatefulWidget {
     this.onTapDown,
     this.customSize,
     this.gestureDetectorBehavior,
+    this.tightMode,
   })  : child = null,
         childSize = null,
         super(key: key);
@@ -270,6 +273,7 @@ class PhotoView extends StatefulWidget {
     this.onTapDown,
     this.customSize,
     this.gestureDetectorBehavior,
+    this.tightMode,
   })  : loadingChild = null,
         imageProvider = null,
         gaplessPlayback = false,
@@ -348,6 +352,10 @@ class PhotoView extends StatefulWidget {
 
   /// [HitTestBehavior] to be passed to the internal gesture detector.
   final HitTestBehavior gestureDetectorBehavior;
+
+  /// Enables tight mode, making background container assume the size of the image/child.
+  /// Useful when inside a [Dialog]
+  final bool tightMode;
 
   @override
   State<StatefulWidget> createState() {
@@ -507,6 +515,7 @@ class _PhotoViewState extends State<PhotoView> {
       onTapUp: widget.onTapUp,
       onTapDown: widget.onTapDown,
       gestureDetectorBehavior: widget.gestureDetectorBehavior,
+      tightMode: widget.tightMode ?? false,
     );
   }
 
@@ -560,6 +569,7 @@ class _PhotoViewState extends State<PhotoView> {
       onTapUp: widget.onTapUp,
       onTapDown: widget.onTapDown,
       gestureDetectorBehavior: widget.gestureDetectorBehavior,
+      tightMode: widget.tightMode ?? false,
     );
   }
 

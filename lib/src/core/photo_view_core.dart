@@ -13,6 +13,10 @@ import 'package:photo_view/src/utils/photo_view_utils.dart';
 import 'package:photo_view/src/core/photo_view_gesture_detector.dart';
 import 'package:photo_view/src/core/photo_view_hit_corners.dart';
 
+const _defaultDecoration = const BoxDecoration(
+  color: const Color.fromRGBO(0, 0, 0, 1.0),
+);
+
 /// Internal widget in which controls all animations lifecycle, core responses
 /// to user gestures, updates to  the controller state and mounts the entire PhotoView Layout
 class PhotoViewCore extends StatefulWidget {
@@ -31,6 +35,7 @@ class PhotoViewCore extends StatefulWidget {
     @required this.scaleStateCycle,
     @required this.scaleStateController,
     @required this.basePosition,
+    @required this.tightMode,
   })  : customChild = null,
         super(key: key);
 
@@ -48,6 +53,7 @@ class PhotoViewCore extends StatefulWidget {
     @required this.scaleStateCycle,
     @required this.scaleStateController,
     @required this.basePosition,
+    @required this.tightMode,
   })  : imageProvider = null,
         gaplessPlayback = false,
         super(key: key);
@@ -69,6 +75,7 @@ class PhotoViewCore extends StatefulWidget {
   final PhotoViewImageTapDownCallback onTapDown;
 
   final HitTestBehavior gestureDetectorBehavior;
+  final bool tightMode;
 
   @override
   State<StatefulWidget> createState() {
@@ -291,6 +298,9 @@ class PhotoViewCoreState extends State<PhotoViewCore>
             );
             return PhotoViewGestureDetector(
               child: Container(
+                constraints: widget.tightMode
+                    ? BoxConstraints.tight(scaleBoundaries.childSize * scale)
+                    : null,
                 child: Center(
                   child: Transform(
                     child: customChildLayout,
@@ -298,10 +308,7 @@ class PhotoViewCoreState extends State<PhotoViewCore>
                     alignment: basePosition,
                   ),
                 ),
-                decoration: widget.backgroundDecoration ??
-                    const BoxDecoration(
-                      color: const Color.fromRGBO(0, 0, 0, 1.0),
-                    ),
+                decoration: widget.backgroundDecoration ?? _defaultDecoration,
               ),
               onDoubleTap: nextScaleState,
               onScaleStart: onScaleStart,
