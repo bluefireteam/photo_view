@@ -198,6 +198,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
 
   @override
   Widget build(BuildContext context) {
+    // Enable corner hit test
     return PhotoViewGestureDetectorScope(
       axis: widget.scrollDirection,
       child: PageView.builder(

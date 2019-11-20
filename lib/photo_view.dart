@@ -353,7 +353,8 @@ class PhotoView extends StatefulWidget {
   /// [HitTestBehavior] to be passed to the internal gesture detector.
   final HitTestBehavior gestureDetectorBehavior;
 
-  /// Enables tight mode, useful when using PhotoView inside a dialog
+  /// Enables tight mode, making background container assume the size of the image/child.
+  /// Useful when inside a [Dialog]
   final bool tightMode;
 
   @override

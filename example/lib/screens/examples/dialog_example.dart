@@ -37,11 +37,14 @@ class _DialogExampleInnerState extends State<DialogExampleInner> {
   VoidCallback openBottomSheet(BuildContext context) => () {
         showBottomSheet(
           context: context,
+          backgroundColor: Colors.transparent,
           shape: ContinuousRectangleBorder(),
           builder: (BuildContext context) {
             return PhotoViewGestureDetectorScope(
               axis: Axis.vertical,
               child: PhotoView(
+                backgroundDecoration:
+                    BoxDecoration(color: Colors.black.withAlpha(240)),
                 imageProvider: const AssetImage("assets/large-image.jpg"),
                 heroAttributes: const PhotoViewHeroAttributes(tag: "someTag"),
               ),
