@@ -237,6 +237,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             onTapDown: pageOption.onTapDown,
             gestureDetectorBehavior: pageOption.gestureDetectorBehavior,
             tightMode: pageOption.tightMode,
+            filterQuality: pageOption.filterQuality,
           )
         : PhotoView(
             key: ObjectKey(index),
@@ -258,6 +259,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             onTapDown: pageOption.onTapDown,
             gestureDetectorBehavior: pageOption.gestureDetectorBehavior,
             tightMode: pageOption.tightMode,
+            filterQuality: pageOption.filterQuality,
           );
 
     return ClipRect(
@@ -294,6 +296,7 @@ class PhotoViewGalleryPageOptions {
     this.onTapDown,
     this.gestureDetectorBehavior,
     this.tightMode,
+    this.filterQuality,
   })  : child = null,
         childSize = null,
         assert(imageProvider != null);
@@ -313,6 +316,7 @@ class PhotoViewGalleryPageOptions {
     this.onTapDown,
     this.gestureDetectorBehavior,
     this.tightMode,
+    this.filterQuality,
   })  : imageProvider = null,
         assert(child != null),
         assert(childSize != null);
@@ -361,4 +365,7 @@ class PhotoViewGalleryPageOptions {
 
   /// Mirror to [PhotoView.tightMode]
   final bool tightMode;
+
+  /// Quality levels for image filters.
+  final FilterQuality filterQuality;
 }
