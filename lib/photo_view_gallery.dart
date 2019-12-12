@@ -300,7 +300,7 @@ class PhotoViewGalleryPageOptions {
 
   PhotoViewGalleryPageOptions.customChild({
     @required this.child,
-    @required this.childSize,
+    this.childSize,
     this.heroAttributes,
     this.minScale,
     this.maxScale,
@@ -314,8 +314,7 @@ class PhotoViewGalleryPageOptions {
     this.gestureDetectorBehavior,
     this.tightMode,
   })  : imageProvider = null,
-        assert(child != null),
-        assert(childSize != null);
+        assert(child != null);
 
   /// Mirror to [PhotoView.imageProvider]
   final ImageProvider imageProvider;
