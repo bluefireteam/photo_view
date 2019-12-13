@@ -406,6 +406,10 @@ class _PhotoViewState extends State<PhotoView> {
         setState(() {
           _loadFailed = true;
         });
+        FlutterError.reportError(FlutterErrorDetails(
+            exception: exception,
+            stack: stackTrace
+        ));
       }
     );
     stream.addListener(listener);
