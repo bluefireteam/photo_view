@@ -80,6 +80,7 @@ class PhotoViewGallery extends StatefulWidget {
     Key key,
     @required this.pageOptions,
     this.loadingChild,
+    this.loadFailedChild,
     this.backgroundDecoration,
     this.gaplessPlayback = false,
     this.reverse = false,
@@ -104,6 +105,7 @@ class PhotoViewGallery extends StatefulWidget {
     @required this.itemCount,
     @required this.builder,
     this.loadingChild,
+    this.loadFailedChild,
     this.backgroundDecoration,
     this.gaplessPlayback = false,
     this.reverse = false,
@@ -134,6 +136,9 @@ class PhotoViewGallery extends StatefulWidget {
 
   /// Mirror to [PhotoView.loadingChild]
   final Widget loadingChild;
+
+  /// Mirror to [PhotoView.loadFailedChild]
+  final Widget loadFailedChild;
 
   /// Mirror to [PhotoView.backgroundDecoration]
   final Decoration backgroundDecoration;
@@ -242,6 +247,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             key: ObjectKey(index),
             imageProvider: pageOption.imageProvider,
             loadingChild: widget.loadingChild,
+            loadFailedChild: widget.loadFailedChild,
             backgroundDecoration: widget.backgroundDecoration,
             controller: pageOption.controller,
             scaleStateController: pageOption.scaleStateController,
