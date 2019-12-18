@@ -181,8 +181,8 @@ class PhotoViewGestureDetectorScope extends InheritedWidget {
   }) : super(child: child);
 
   static PhotoViewGestureDetectorScope of(BuildContext context) {
-    final PhotoViewGestureDetectorScope scope =
-        context.inheritFromWidgetOfExactType(PhotoViewGestureDetectorScope);
+    final PhotoViewGestureDetectorScope scope = context
+        .dependOnInheritedWidgetOfExactType<PhotoViewGestureDetectorScope>();
     return scope;
   }
 
