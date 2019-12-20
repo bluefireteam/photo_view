@@ -6,6 +6,7 @@ import 'package:photo_view/photo_view.dart'
         PhotoView,
         PhotoViewImageTapDownCallback,
         PhotoViewImageTapUpCallback,
+        PhotoViewImageScaleEndCallback,
         ScaleStateCycle;
 
 import 'package:photo_view/src/controller/photo_view_controller.dart';
@@ -235,6 +236,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             scaleStateCycle: pageOption.scaleStateCycle,
             onTapUp: pageOption.onTapUp,
             onTapDown: pageOption.onTapDown,
+            onScaleEnd: pageOption.onScaleEnd,
             gestureDetectorBehavior: pageOption.gestureDetectorBehavior,
             tightMode: pageOption.tightMode,
           )
@@ -256,6 +258,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             scaleStateCycle: pageOption.scaleStateCycle,
             onTapUp: pageOption.onTapUp,
             onTapDown: pageOption.onTapDown,
+            onScaleEnd: pageOption.onScaleEnd,
             gestureDetectorBehavior: pageOption.gestureDetectorBehavior,
             tightMode: pageOption.tightMode,
           );
@@ -292,6 +295,7 @@ class PhotoViewGalleryPageOptions {
     this.scaleStateCycle,
     this.onTapUp,
     this.onTapDown,
+    this.onScaleEnd,
     this.gestureDetectorBehavior,
     this.tightMode,
   })  : child = null,
@@ -311,6 +315,7 @@ class PhotoViewGalleryPageOptions {
     this.scaleStateCycle,
     this.onTapUp,
     this.onTapDown,
+    this.onScaleEnd,
     this.gestureDetectorBehavior,
     this.tightMode,
   })  : imageProvider = null,
@@ -355,6 +360,9 @@ class PhotoViewGalleryPageOptions {
 
   /// Mirror to [PhotoView.onTapDown]
   final PhotoViewImageTapDownCallback onTapDown;
+
+  /// Mirror to [PhotoView.onScaleEnd]
+  final PhotoViewImageScaleEndCallback onScaleEnd;
 
   /// Mirror to [PhotoView.gestureDetectorBehavior]
   final HitTestBehavior gestureDetectorBehavior;
