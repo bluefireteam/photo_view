@@ -245,6 +245,7 @@ class PhotoView extends StatefulWidget {
     this.customSize,
     this.gestureDetectorBehavior,
     this.tightMode,
+    this.filterQuality,
   })  : child = null,
         childSize = null,
         super(key: key);
@@ -275,6 +276,7 @@ class PhotoView extends StatefulWidget {
     this.customSize,
     this.gestureDetectorBehavior,
     this.tightMode,
+    this.filterQuality,
   })  : loadingChild = null,
         loadFailedChild = null,
         imageProvider = null,
@@ -361,6 +363,9 @@ class PhotoView extends StatefulWidget {
   /// Enables tight mode, making background container assume the size of the image/child.
   /// Useful when inside a [Dialog]
   final bool tightMode;
+
+  /// Quality levels for image filters.
+  final FilterQuality filterQuality;
 
   @override
   State<StatefulWidget> createState() {
@@ -532,6 +537,7 @@ class _PhotoViewState extends State<PhotoView> {
       onTapDown: widget.onTapDown,
       gestureDetectorBehavior: widget.gestureDetectorBehavior,
       tightMode: widget.tightMode ?? false,
+      filterQuality: widget.filterQuality ?? FilterQuality.none,
     );
   }
 
@@ -586,6 +592,7 @@ class _PhotoViewState extends State<PhotoView> {
       onTapDown: widget.onTapDown,
       gestureDetectorBehavior: widget.gestureDetectorBehavior,
       tightMode: widget.tightMode ?? false,
+      filterQuality: widget.filterQuality ?? FilterQuality.none,
     );
   }
 

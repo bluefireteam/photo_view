@@ -31,6 +31,21 @@ class FullScreenExamples extends StatelessWidget {
                   },
                 ),
                 ExampleButtonNode(
+                  title: "Large Image (filter quality: medium)",
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const FullScreenWrapper(
+                          imageProvider:
+                              const AssetImage("assets/large-image.jpg"),
+                          filterQuality: FilterQuality.medium,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                ExampleButtonNode(
                   title: "Small Image (custom background)",
                   onPressed: () {
                     Navigator.push(
@@ -200,6 +215,7 @@ class FullScreenWrapper extends StatelessWidget {
     this.maxScale,
     this.initialScale,
     this.basePosition = Alignment.center,
+    this.filterQuality = FilterQuality.none,
   });
 
   final ImageProvider imageProvider;
@@ -209,6 +225,7 @@ class FullScreenWrapper extends StatelessWidget {
   final dynamic maxScale;
   final dynamic initialScale;
   final Alignment basePosition;
+  final FilterQuality filterQuality;
 
   @override
   Widget build(BuildContext context) {
@@ -224,6 +241,7 @@ class FullScreenWrapper extends StatelessWidget {
         maxScale: maxScale,
         initialScale: initialScale,
         basePosition: basePosition,
+        filterQuality: filterQuality,
       ),
     );
   }

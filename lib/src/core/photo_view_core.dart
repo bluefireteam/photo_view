@@ -36,6 +36,7 @@ class PhotoViewCore extends StatefulWidget {
     @required this.scaleStateController,
     @required this.basePosition,
     @required this.tightMode,
+    @required this.filterQuality,
   })  : customChild = null,
         super(key: key);
 
@@ -54,6 +55,7 @@ class PhotoViewCore extends StatefulWidget {
     @required this.scaleStateController,
     @required this.basePosition,
     @required this.tightMode,
+    @required this.filterQuality,
   })  : imageProvider = null,
         gaplessPlayback = false,
         super(key: key);
@@ -76,6 +78,8 @@ class PhotoViewCore extends StatefulWidget {
 
   final HitTestBehavior gestureDetectorBehavior;
   final bool tightMode;
+
+  final FilterQuality filterQuality;
 
   @override
   State<StatefulWidget> createState() {
@@ -282,9 +286,10 @@ class PhotoViewCoreState extends State<PhotoViewCore>
         ) {
           if (snapshot.hasData) {
             final PhotoViewControllerValue value = snapshot.data;
+            final useImageScale = widget.filterQuality != FilterQuality.none;
             final matrix = Matrix4.identity()
               ..translate(value.position.dx, value.position.dy)
-              ..scale(scale);
+              ..scale(useImageScale ? 1.0 : scale);
             if (widget.enableRotation) {
               matrix..rotateZ(value.rotation);
             }
@@ -293,6 +298,7 @@ class PhotoViewCoreState extends State<PhotoViewCore>
               delegate: _CenterWithOriginalSizeDelegate(
                 scaleBoundaries.childSize,
                 basePosition,
+                useImageScale,
               ),
               child: _buildHero(),
             );
@@ -343,28 +349,37 @@ class PhotoViewCoreState extends State<PhotoViewCore>
         : Image(
             image: widget.imageProvider,
             gaplessPlayback: widget.gaplessPlayback ?? false,
+            filterQuality: widget.filterQuality,
+            width: scaleBoundaries.childSize.width * scale,
+            fit: BoxFit.contain,
           );
   }
 }
 
 class _CenterWithOriginalSizeDelegate extends SingleChildLayoutDelegate {
-  const _CenterWithOriginalSizeDelegate(this.subjectSize, this.basePosition);
+  const _CenterWithOriginalSizeDelegate(
+      this.subjectSize, this.basePosition, this.useImageScale);
 
   final Size subjectSize;
   final Alignment basePosition;
+  final bool useImageScale;
 
   @override
   Offset getPositionForChild(Size size, Size childSize) {
     final double offsetX =
-        ((size.width - subjectSize.width) / 2) * (basePosition.x + 1);
-    final double offsetY =
-        ((size.height - subjectSize.height) / 2) * (basePosition.y + 1);
+        ((size.width - (useImageScale ? childSize.width : subjectSize.width)) /
+                2) *
+            (basePosition.x + 1);
+    final double offsetY = ((size.height -
+                (useImageScale ? childSize.height : subjectSize.height)) /
+            2) *
+        (basePosition.y + 1);
     return Offset(offsetX, offsetY);
   }
 
   @override
   BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
-    return BoxConstraints.tight(subjectSize);
+    return useImageScale ? BoxConstraints() : BoxConstraints.tight(subjectSize);
   }
 
   @override
