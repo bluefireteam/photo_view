@@ -227,6 +227,7 @@ class PhotoView extends StatefulWidget {
     Key key,
     @required this.imageProvider,
     this.loadingChild,
+    this.loadFailedChild,
     this.backgroundDecoration,
     this.gaplessPlayback = false,
     this.heroAttributes,
@@ -275,6 +276,7 @@ class PhotoView extends StatefulWidget {
     this.gestureDetectorBehavior,
     this.tightMode,
   })  : loadingChild = null,
+        loadFailedChild = null,
         imageProvider = null,
         gaplessPlayback = false,
         super(key: key);
@@ -286,6 +288,9 @@ class PhotoView extends StatefulWidget {
   /// While [imageProvider] is not resolved, [loadingChild] is build by [PhotoView]
   /// into the screen, by default it is a centered [CircularProgressIndicator]
   final Widget loadingChild;
+
+  /// Show loadFailedChild when the image failed to load
+  final Widget loadFailedChild;
 
   /// Changes the background behind image, defaults to `Colors.black`.
   final Decoration backgroundDecoration;
@@ -366,6 +371,7 @@ class PhotoView extends StatefulWidget {
 class _PhotoViewState extends State<PhotoView> {
   bool _loading;
   Size _childSize;
+  bool _loadFailed;
 
   bool _controlledController;
   PhotoViewControllerBase _controller;
@@ -395,7 +401,17 @@ class _PhotoViewState extends State<PhotoView> {
           synchronousCall ? setupCallback() : setState(setupCallback);
         }
       }
-    });
+    },
+      onError: (exception, stackTrace) {
+        setState(() {
+          _loadFailed = true;
+        });
+        FlutterError.reportError(FlutterErrorDetails(
+            exception: exception,
+            stack: stackTrace
+        ));
+      }
+    );
     stream.addListener(listener);
     completer.future.then((_) {
       stream.removeListener(listener);
@@ -479,7 +495,7 @@ class _PhotoViewState extends State<PhotoView> {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
+    return _loadFailed == true ? _buildLoadFailed() : LayoutBuilder(
       builder: (
         BuildContext context,
         BoxConstraints constraints,
@@ -583,6 +599,15 @@ class _PhotoViewState extends State<PhotoView> {
               child: const CircularProgressIndicator(),
             ),
           );
+  }
+
+  Widget _buildLoadFailed() {
+    return widget.loadFailedChild ?? Center(
+      child: Icon(Icons.broken_image,
+        color: Colors.grey[400],
+        size: 40.0,
+      ),
+    );
   }
 }
 
