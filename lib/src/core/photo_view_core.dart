@@ -358,7 +358,10 @@ class PhotoViewCoreState extends State<PhotoViewCore>
 
 class _CenterWithOriginalSizeDelegate extends SingleChildLayoutDelegate {
   const _CenterWithOriginalSizeDelegate(
-      this.subjectSize, this.basePosition, this.useImageScale);
+    this.subjectSize,
+    this.basePosition,
+    this.useImageScale,
+  );
 
   final Size subjectSize;
   final Alignment basePosition;
