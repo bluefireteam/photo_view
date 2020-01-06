@@ -406,17 +406,13 @@ class _PhotoViewState extends State<PhotoView> {
           synchronousCall ? setupCallback() : setState(setupCallback);
         }
       }
-    },
-      onError: (exception, stackTrace) {
-        setState(() {
-          _loadFailed = true;
-        });
-        FlutterError.reportError(FlutterErrorDetails(
-            exception: exception,
-            stack: stackTrace
-        ));
-      }
-    );
+    }, onError: (exception, stackTrace) {
+      setState(() {
+        _loadFailed = true;
+      });
+      FlutterError.reportError(
+          FlutterErrorDetails(exception: exception, stack: stackTrace));
+    });
     stream.addListener(listener);
     completer.future.then((_) {
       stream.removeListener(listener);
@@ -500,16 +496,18 @@ class _PhotoViewState extends State<PhotoView> {
 
   @override
   Widget build(BuildContext context) {
-    return _loadFailed == true ? _buildLoadFailed() : LayoutBuilder(
-      builder: (
-        BuildContext context,
-        BoxConstraints constraints,
-      ) {
-        return widget.child == null
-            ? _buildImage(context, constraints)
-            : _buildCustomChild(context, constraints);
-      },
-    );
+    return _loadFailed == true
+        ? _buildLoadFailed()
+        : LayoutBuilder(
+            builder: (
+              BuildContext context,
+              BoxConstraints constraints,
+            ) {
+              return widget.child == null
+                  ? _buildImage(context, constraints)
+                  : _buildCustomChild(context, constraints);
+            },
+          );
   }
 
   Widget _buildCustomChild(BuildContext context, BoxConstraints constraints) {
@@ -609,12 +607,14 @@ class _PhotoViewState extends State<PhotoView> {
   }
 
   Widget _buildLoadFailed() {
-    return widget.loadFailedChild ?? Center(
-      child: Icon(Icons.broken_image,
-        color: Colors.grey[400],
-        size: 40.0,
-      ),
-    );
+    return widget.loadFailedChild ??
+        Center(
+          child: Icon(
+            Icons.broken_image,
+            color: Colors.grey[400],
+            size: 40.0,
+          ),
+        );
   }
 }
 
