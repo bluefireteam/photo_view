@@ -1,4 +1,4 @@
-name: Flutter test
+name: Test
 
 on: push
 
@@ -15,4 +15,5 @@ jobs:
         with:
           channel: 'stable'
       - run: flutter pub get
+      - run: ./format.sh
       - run: flutter test
