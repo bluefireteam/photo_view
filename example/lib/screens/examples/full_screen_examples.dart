@@ -209,7 +209,7 @@ class ExampleButtonNode extends StatelessWidget {
 class FullScreenWrapper extends StatelessWidget {
   const FullScreenWrapper({
     this.imageProvider,
-    this.loadingChild,
+    this.loadingBuilder,
     this.backgroundDecoration,
     this.minScale,
     this.maxScale,
@@ -219,7 +219,7 @@ class FullScreenWrapper extends StatelessWidget {
   });
 
   final ImageProvider imageProvider;
-  final Widget loadingChild;
+  final LoadingBuilder loadingBuilder;
   final Decoration backgroundDecoration;
   final dynamic minScale;
   final dynamic maxScale;
@@ -235,7 +235,7 @@ class FullScreenWrapper extends StatelessWidget {
       ),
       child: PhotoView(
         imageProvider: imageProvider,
-        loadingChild: loadingChild,
+        loadingBuilder: loadingBuilder,
         backgroundDecoration: backgroundDecoration,
         minScale: minScale,
         maxScale: maxScale,

@@ -44,14 +44,14 @@ class HeroExample extends StatelessWidget {
 class HeroPhotoViewWrapper extends StatelessWidget {
   const HeroPhotoViewWrapper({
     this.imageProvider,
-    this.loadingChild,
+    this.loadingBuilder,
     this.backgroundDecoration,
     this.minScale,
     this.maxScale,
   });
 
   final ImageProvider imageProvider;
-  final Widget loadingChild;
+  final LoadingBuilder loadingBuilder;
   final Decoration backgroundDecoration;
   final dynamic minScale;
   final dynamic maxScale;
@@ -64,7 +64,7 @@ class HeroPhotoViewWrapper extends StatelessWidget {
       ),
       child: PhotoView(
         imageProvider: imageProvider,
-        loadingChild: loadingChild,
+        loadingBuilder: loadingBuilder,
         backgroundDecoration: backgroundDecoration,
         minScale: minScale,
         maxScale: maxScale,

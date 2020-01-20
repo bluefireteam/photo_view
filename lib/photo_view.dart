@@ -20,6 +20,9 @@ export 'src/photo_view_computed_scale.dart';
 export 'src/photo_view_scale_state.dart';
 export 'src/utils/photo_view_hero_attributes.dart';
 
+typedef LoadingBuilder = Widget Function(
+    BuildContext context, ImageChunkEvent progress);
+
 /// A [StatefulWidget] that contains all the photo view rendering elements.
 ///
 /// Sample code to use within an image:
@@ -27,7 +30,18 @@ export 'src/utils/photo_view_hero_attributes.dart';
 /// ```
 /// PhotoView(
 ///  imageProvider: imageProvider,
-///  loadingChild: LoadingText(),
+///  loadingBuilder: (context, progress) => Center(
+///            child: Container(
+///              width: 20.0,
+///              height: 20.0,
+///              child: CircularProgressIndicator(
+///                value: _progress == null
+///                    ? null
+///                    : _progress.cumulativeBytesLoaded /
+///                        _progress.expectedTotalBytes,
+///              ),
+///            ),
+///          ),
 ///  backgroundDecoration: BoxDecoration(color: Colors.black),
 ///  gaplessPlayback: false,
 ///  customSize: MediaQuery.of(context).size,
@@ -226,7 +240,8 @@ class PhotoView extends StatefulWidget {
   PhotoView({
     Key key,
     @required this.imageProvider,
-    this.loadingChild,
+    @Deprecated("Use loadingBuilder instead") this.loadingChild,
+    this.loadingBuilder,
     this.loadFailedChild,
     this.backgroundDecoration,
     this.gaplessPlayback = false,
@@ -277,19 +292,23 @@ class PhotoView extends StatefulWidget {
     this.gestureDetectorBehavior,
     this.tightMode,
     this.filterQuality,
-  })  : loadingChild = null,
-        loadFailedChild = null,
+  })  : loadFailedChild = null,
         imageProvider = null,
         gaplessPlayback = false,
+        loadingBuilder = null,
+        loadingChild = null,
         super(key: key);
 
   /// Given a [imageProvider] it resolves into an zoomable image widget using. It
   /// is required
   final ImageProvider imageProvider;
 
-  /// While [imageProvider] is not resolved, [loadingChild] is build by [PhotoView]
-  /// into the screen, by default it is a centered [CircularProgressIndicator]
+  /// You should now use loadingBuilder(context, progress) => widget
   final Widget loadingChild;
+
+  /// While [imageProvider] is not resolved, [loadingBuilder] is called by [PhotoView]
+  /// into the screen, by default it is a centered [CircularProgressIndicator]
+  final LoadingBuilder loadingBuilder;
 
   /// Show loadFailedChild when the image failed to load
   final Widget loadFailedChild;
@@ -378,6 +397,8 @@ class _PhotoViewState extends State<PhotoView> {
   Size _childSize;
   bool _loadFailed;
 
+  ImageChunkEvent _progress;
+
   bool _controlledController;
   PhotoViewControllerBase _controller;
 
@@ -402,9 +423,14 @@ class _PhotoViewState extends State<PhotoView> {
               info.image.height.toDouble(),
             );
             _loading = false;
+            _progress = null;
           };
           synchronousCall ? setupCallback() : setState(setupCallback);
         }
+      }
+    }, onChunk: (event) {
+      if (mounted) {
+        setState(() => _progress = event);
       }
     }, onError: (exception, stackTrace) {
       setState(() {
@@ -428,6 +454,7 @@ class _PhotoViewState extends State<PhotoView> {
     } else {
       _childSize = widget.childSize;
       _loading = false;
+      _progress = null;
     }
     if (widget.controller == null) {
       _controlledController = true;
@@ -595,13 +622,22 @@ class _PhotoViewState extends State<PhotoView> {
   }
 
   Widget _buildLoading() {
-    return widget.loadingChild != null
-        ? widget.loadingChild
+    //TODO: Remove once loadingChild is deprecated
+    if (widget.loadingBuilder == null && widget.loadingChild != null) {
+      return widget.loadingChild;
+    }
+    return widget.loadingBuilder != null
+        ? widget.loadingBuilder(context, _progress)
         : Center(
             child: Container(
               width: 20.0,
               height: 20.0,
-              child: const CircularProgressIndicator(),
+              child: CircularProgressIndicator(
+                value: _progress == null
+                    ? null
+                    : _progress.cumulativeBytesLoaded /
+                        _progress.expectedTotalBytes,
+              ),
             ),
           );
   }
