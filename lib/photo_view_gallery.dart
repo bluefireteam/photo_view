@@ -277,7 +277,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             imageProvider: pageOption.imageProvider,
             loadingBuilder: widget.loadingBuilder ??
                 (widget.loadingChild == null
-                    ? (_) => widget.loadingChild
+                    ? (context, progress) => widget.loadingChild
                     : null),
             loadFailedChild: widget.loadFailedChild,
             backgroundDecoration: widget.backgroundDecoration,
