@@ -146,7 +146,7 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
             PhotoViewGallery.builder(
               scrollPhysics: const BouncingScrollPhysics(),
               builder: _buildItem,
-              itemCount: galleryItems.length,
+              itemCount: widget.galleryItems.length,
               loadingChild: widget.loadingChild,
               backgroundDecoration: widget.backgroundDecoration,
               pageController: widget.pageController,
