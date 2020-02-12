@@ -76,7 +76,18 @@ Widget build(BuildContext context) {
         );
       },
       itemCount: galleryItems.length,
-      loadingChild: widget.loadingChild,
+      loadingBuilder: (context, progress) => Center(
+        child: Container(
+          width: 20.0,
+          height: 20.0,
+          child: CircularProgressIndicator(
+            value: _progress == null
+              ? null
+              : _progress.cumulativeBytesLoaded /
+                _progress.expectedTotalBytes,
+          ),
+        ),
+      ),
       backgroundDecoration: widget.backgroundDecoration,
       pageController: widget.pageController,
       onPageChanged: onPageChanged,

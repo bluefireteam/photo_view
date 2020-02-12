@@ -3,6 +3,7 @@ library photo_view_gallery;
 import 'package:flutter/widgets.dart';
 import 'package:photo_view/photo_view.dart'
     show
+        LoadingBuilder,
         PhotoView,
         PhotoViewImageTapDownCallback,
         PhotoViewImageTapUpCallback,
@@ -47,7 +48,18 @@ typedef PhotoViewGalleryBuilder = PhotoViewGalleryPageOptions Function(
 ///       heroAttributes: const HeroAttributes(tag: "tag3"),
 ///     ),
 ///   ],
-///   loadingChild: widget.loadingChild,
+///   loadingBuilder: (context, progress) => Center(
+///            child: Container(
+///              width: 20.0,
+///              height: 20.0,
+///              child: CircularProgressIndicator(
+///                value: _progress == null
+///                    ? null
+///                    : _progress.cumulativeBytesLoaded /
+///                        _progress.expectedTotalBytes,
+///              ),
+///            ),
+///          ),
 ///   backgroundDecoration: widget.backgroundDecoration,
 ///   pageController: widget.pageController,
 ///   onPageChanged: onPageChanged,
@@ -68,7 +80,18 @@ typedef PhotoViewGalleryBuilder = PhotoViewGalleryPageOptions Function(
 ///     );
 ///   },
 ///   itemCount: galleryItems.length,
-///   loadingChild: widget.loadingChild,
+///   loadingBuilder: (context, progress) => Center(
+///            child: Container(
+///              width: 20.0,
+///              height: 20.0,
+///              child: CircularProgressIndicator(
+///                value: _progress == null
+///                    ? null
+///                    : _progress.cumulativeBytesLoaded /
+///                        _progress.expectedTotalBytes,
+///              ),
+///            ),
+///          ),
 ///   backgroundDecoration: widget.backgroundDecoration,
 ///   pageController: widget.pageController,
 ///   onPageChanged: onPageChanged,
@@ -79,7 +102,8 @@ class PhotoViewGallery extends StatefulWidget {
   const PhotoViewGallery({
     Key key,
     @required this.pageOptions,
-    this.loadingChild,
+    @Deprecated("Use loadingBuilder instead") this.loadingChild,
+    this.loadingBuilder,
     this.loadFailedChild,
     this.backgroundDecoration,
     this.gaplessPlayback = false,
@@ -104,7 +128,8 @@ class PhotoViewGallery extends StatefulWidget {
     Key key,
     @required this.itemCount,
     @required this.builder,
-    this.loadingChild,
+    @Deprecated("Use loadingBuilder instead") this.loadingChild,
+    this.loadingBuilder,
     this.loadFailedChild,
     this.backgroundDecoration,
     this.gaplessPlayback = false,
@@ -134,7 +159,10 @@ class PhotoViewGallery extends StatefulWidget {
   /// [ScrollPhysics] for the internal [PageView]
   final ScrollPhysics scrollPhysics;
 
-  /// Mirror to [PhotoView.loadingChild]
+  /// Mirror to [PhotoView.loadingBuilder]
+  final LoadingBuilder loadingBuilder;
+
+  /// Mirror to [PhotoView.loadingchild]
   final Widget loadingChild;
 
   /// Mirror to [PhotoView.loadFailedChild]
@@ -247,7 +275,10 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
         : PhotoView(
             key: ObjectKey(index),
             imageProvider: pageOption.imageProvider,
-            loadingChild: widget.loadingChild,
+            loadingBuilder: widget.loadingBuilder ??
+                (widget.loadingChild == null
+                    ? (context, progress) => widget.loadingChild
+                    : null),
             loadFailedChild: widget.loadFailedChild,
             backgroundDecoration: widget.backgroundDecoration,
             controller: pageOption.controller,
