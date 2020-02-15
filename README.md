@@ -76,15 +76,14 @@ Widget build(BuildContext context) {
         );
       },
       itemCount: galleryItems.length,
-      loadingBuilder: (context, progress) => Center(
+      loadingBuilder: (context, event) => Center(
         child: Container(
           width: 20.0,
           height: 20.0,
           child: CircularProgressIndicator(
-            value: _progress == null
-              ? null
-              : _progress.cumulativeBytesLoaded /
-                _progress.expectedTotalBytes,
+            value: event == null
+                ? 0
+                : event.cumulativeBytesLoaded / event.expectedTotalBytes,
           ),
         ),
       ),

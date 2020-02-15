@@ -83,7 +83,7 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
 
   double get scale {
     if (markNeedsScaleRecalc &&
-        !isScaleStateZooming(scaleStateController.scaleState)) {
+        !scaleStateController.scaleState.isScaleStateZooming) {
       scale = getScaleForScaleState(
         scaleStateController.scaleState,
         scaleBoundaries,
