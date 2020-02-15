@@ -623,14 +623,17 @@ class _PhotoViewState extends State<PhotoView> {
   }
 
   Widget _buildLoading() {
-    if (widget.loadingBuilder == null && widget.loadingChild != null) {
+    if (widget.loadingBuilder != null) {
+      return widget.loadingBuilder(context, _imageChunkEvent);
+    }
+
+    if (widget.loadingChild != null) {
       return widget.loadingChild;
     }
-    return widget.loadingBuilder != null
-        ? widget.loadingBuilder(context, _imageChunkEvent)
-        : PhotoViewDefaultLoading(
-            event: _imageChunkEvent,
-          );
+
+    return PhotoViewDefaultLoading(
+      event: _imageChunkEvent,
+    );
   }
 
   Widget _buildLoadFailed() {
