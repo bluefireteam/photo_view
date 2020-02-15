@@ -271,14 +271,13 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             gestureDetectorBehavior: pageOption.gestureDetectorBehavior,
             tightMode: pageOption.tightMode,
             filterQuality: pageOption.filterQuality,
+            basePosition: pageOption.basePosition,
           )
         : PhotoView(
             key: ObjectKey(index),
             imageProvider: pageOption.imageProvider,
-            loadingBuilder: widget.loadingBuilder ??
-                (widget.loadingChild != null
-                    ? (context, progress) => widget.loadingChild
-                    : null),
+            loadingBuilder: widget.loadingBuilder,
+            loadingChild: widget.loadingChild,
             loadFailedChild: widget.loadFailedChild,
             backgroundDecoration: widget.backgroundDecoration,
             controller: pageOption.controller,
@@ -297,6 +296,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             gestureDetectorBehavior: pageOption.gestureDetectorBehavior,
             tightMode: pageOption.tightMode,
             filterQuality: pageOption.filterQuality,
+            basePosition: pageOption.basePosition,
           );
 
     return ClipRect(
