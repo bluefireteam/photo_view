@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Photo View Example A[[',
+      title: 'Photo View Example App',
       theme: theme,
       home: Scaffold(
         body: HomeScreen(),

@@ -91,16 +91,19 @@ class FullScreenExamples extends StatelessWidget {
                       MaterialPageRoute(
                         builder: (context) => FullScreenWrapper(
                           imageProvider: const NetworkImage(
-                              "https://source.unsplash.com/900x1600/?camera,paper"),
-                          loadingBuilder: (context, progress) {
-                            final value = progress == null
-                                ? 0
-                                : (100 *
-                                        (progress.cumulativeBytesLoaded /
-                                            progress.expectedTotalBytes))
-                                    .floor();
+                              "https://source.unsplash.com/1900x3600/?camera,paper"),
+                          loadingBuilder: (context, event) {
+                            if (event == null) {
+                              return const Center(
+                                child: Text("Loading"),
+                              );
+                            }
+                            final value = event.cumulativeBytesLoaded /
+                                event.expectedTotalBytes;
+
+                            final percentage = (100 * value).floor();
                             return Center(
-                              child: Text("Loading $value%"),
+                              child: Text("$percentage%"),
                             );
                           },
                         ),
