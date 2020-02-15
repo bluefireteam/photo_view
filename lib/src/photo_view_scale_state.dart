@@ -7,10 +7,8 @@ enum PhotoViewScaleState {
   zoomedOut,
 }
 
-
 extension PhotoViewScaleStateIZoomingExtansion on PhotoViewScaleState {
   bool get isScaleStateZooming =>
       this == PhotoViewScaleState.zoomedIn ||
-          this == PhotoViewScaleState.zoomedOut;
-
+      this == PhotoViewScaleState.zoomedOut;
 }

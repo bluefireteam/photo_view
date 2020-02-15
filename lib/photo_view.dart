@@ -391,7 +391,6 @@ class PhotoView extends StatefulWidget {
 }
 
 class _PhotoViewState extends State<PhotoView> {
-
   Size _childSize;
   bool _loading;
   bool _loadFailed;
