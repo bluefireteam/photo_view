@@ -84,14 +84,25 @@ class FullScreenExamples extends StatelessWidget {
                   },
                 ),
                 ExampleButtonNode(
-                  title: "Image from the internet",
+                  title: "Image from the internet (with custom loader)",
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const FullScreenWrapper(
+                        builder: (context) => FullScreenWrapper(
                           imageProvider: const NetworkImage(
                               "https://source.unsplash.com/900x1600/?camera,paper"),
+                          loadingBuilder: (context, progress) {
+                            final value = progress == null
+                                ? 0
+                                : (100 *
+                                        (progress.cumulativeBytesLoaded /
+                                            progress.expectedTotalBytes))
+                                    .floor();
+                            return Center(
+                              child: Text("Loading $value%"),
+                            );
+                          },
                         ),
                       ),
                     );
@@ -229,19 +240,21 @@ class FullScreenWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      constraints: BoxConstraints.expand(
-        height: MediaQuery.of(context).size.height,
-      ),
-      child: PhotoView(
-        imageProvider: imageProvider,
-        loadingBuilder: loadingBuilder,
-        backgroundDecoration: backgroundDecoration,
-        minScale: minScale,
-        maxScale: maxScale,
-        initialScale: initialScale,
-        basePosition: basePosition,
-        filterQuality: filterQuality,
+    return Scaffold(
+      body: Container(
+        constraints: BoxConstraints.expand(
+          height: MediaQuery.of(context).size.height,
+        ),
+        child: PhotoView(
+          imageProvider: imageProvider,
+          loadingBuilder: loadingBuilder,
+          backgroundDecoration: backgroundDecoration,
+          minScale: minScale,
+          maxScale: maxScale,
+          initialScale: initialScale,
+          basePosition: basePosition,
+          filterQuality: filterQuality,
+        ),
       ),
     );
   }
@@ -256,16 +269,18 @@ class OneTapWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      constraints: BoxConstraints.expand(
-        height: MediaQuery.of(context).size.height,
-      ),
-      child: GestureDetector(
-        onTapDown: (_) {
-          Navigator.pop(context);
-        },
-        child: PhotoView(
-          imageProvider: imageProvider,
+    return Scaffold(
+      body: Container(
+        constraints: BoxConstraints.expand(
+          height: MediaQuery.of(context).size.height,
+        ),
+        child: GestureDetector(
+          onTapDown: (_) {
+            Navigator.pop(context);
+          },
+          child: PhotoView(
+            imageProvider: imageProvider,
+          ),
         ),
       ),
     );

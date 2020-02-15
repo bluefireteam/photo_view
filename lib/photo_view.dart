@@ -20,9 +20,6 @@ export 'src/photo_view_computed_scale.dart';
 export 'src/photo_view_scale_state.dart';
 export 'src/utils/photo_view_hero_attributes.dart';
 
-typedef LoadingBuilder = Widget Function(
-    BuildContext context, ImageChunkEvent progress);
-
 /// A [StatefulWidget] that contains all the photo view rendering elements.
 ///
 /// Sample code to use within an image:
@@ -437,7 +434,8 @@ class _PhotoViewState extends State<PhotoView> {
         _loadFailed = true;
       });
       FlutterError.reportError(
-          FlutterErrorDetails(exception: exception, stack: stackTrace));
+        FlutterErrorDetails(exception: exception, stack: stackTrace),
+      );
     });
     stream.addListener(listener);
     completer.future.then((_) {
@@ -690,4 +688,9 @@ typedef PhotoViewImageTapDownCallback = Function(
   BuildContext context,
   TapDownDetails details,
   PhotoViewControllerValue controllerValue,
+);
+
+typedef LoadingBuilder = Widget Function(
+  BuildContext context,
+  ImageChunkEvent progress,
 );
