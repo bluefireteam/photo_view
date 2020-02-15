@@ -430,6 +430,9 @@ class _PhotoViewState extends State<PhotoView> {
         setState(() => _imageChunkEvent = event);
       }
     }, onError: (exception, stackTrace) {
+      if (!mounted) {
+        return;
+      }
       setState(() {
         _loadFailed = true;
       });
