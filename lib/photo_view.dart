@@ -8,6 +8,7 @@ import 'package:photo_view/src/controller/photo_view_controller.dart';
 import 'package:photo_view/src/controller/photo_view_scalestate_controller.dart';
 import 'package:photo_view/src/core/photo_view_core.dart';
 import 'package:photo_view/src/photo_view_computed_scale.dart';
+import 'package:photo_view/src/photo_view_default_widgets.dart';
 import 'package:photo_view/src/photo_view_scale_state.dart';
 import 'package:photo_view/src/utils/photo_view_hero_attributes.dart';
 import 'package:photo_view/src/utils/photo_view_utils.dart';
@@ -19,9 +20,6 @@ export 'src/core/photo_view_gesture_detector.dart'
 export 'src/photo_view_computed_scale.dart';
 export 'src/photo_view_scale_state.dart';
 export 'src/utils/photo_view_hero_attributes.dart';
-
-typedef LoadingBuilder = Widget Function(
-    BuildContext context, ImageChunkEvent progress);
 
 /// A [StatefulWidget] that contains all the photo view rendering elements.
 ///
@@ -393,11 +391,10 @@ class PhotoView extends StatefulWidget {
 }
 
 class _PhotoViewState extends State<PhotoView> {
-  bool _loading;
   Size _childSize;
+  bool _loading;
   bool _loadFailed;
-
-  ImageChunkEvent _progress;
+  ImageChunkEvent _imageChunkEvent;
 
   bool _controlledController;
   PhotoViewControllerBase _controller;
@@ -423,21 +420,25 @@ class _PhotoViewState extends State<PhotoView> {
               info.image.height.toDouble(),
             );
             _loading = false;
-            _progress = null;
+            _imageChunkEvent = null;
           };
           synchronousCall ? setupCallback() : setState(setupCallback);
         }
       }
     }, onChunk: (event) {
       if (mounted) {
-        setState(() => _progress = event);
+        setState(() => _imageChunkEvent = event);
       }
     }, onError: (exception, stackTrace) {
+      if (!mounted) {
+        return;
+      }
       setState(() {
         _loadFailed = true;
       });
       FlutterError.reportError(
-          FlutterErrorDetails(exception: exception, stack: stackTrace));
+        FlutterErrorDetails(exception: exception, stack: stackTrace),
+      );
     });
     stream.addListener(listener);
     completer.future.then((_) {
@@ -454,7 +455,7 @@ class _PhotoViewState extends State<PhotoView> {
     } else {
       _childSize = widget.childSize;
       _loading = false;
-      _progress = null;
+      _imageChunkEvent = null;
     }
     if (widget.controller == null) {
       _controlledController = true;
@@ -622,35 +623,21 @@ class _PhotoViewState extends State<PhotoView> {
   }
 
   Widget _buildLoading() {
-    //TODO: Remove once loadingChild is deprecated
-    if (widget.loadingBuilder == null && widget.loadingChild != null) {
+    if (widget.loadingBuilder != null) {
+      return widget.loadingBuilder(context, _imageChunkEvent);
+    }
+
+    if (widget.loadingChild != null) {
       return widget.loadingChild;
     }
-    return widget.loadingBuilder != null
-        ? widget.loadingBuilder(context, _progress)
-        : Center(
-            child: Container(
-              width: 20.0,
-              height: 20.0,
-              child: CircularProgressIndicator(
-                value: _progress == null
-                    ? null
-                    : _progress.cumulativeBytesLoaded /
-                        _progress.expectedTotalBytes,
-              ),
-            ),
-          );
+
+    return PhotoViewDefaultLoading(
+      event: _imageChunkEvent,
+    );
   }
 
   Widget _buildLoadFailed() {
-    return widget.loadFailedChild ??
-        Center(
-          child: Icon(
-            Icons.broken_image,
-            color: Colors.grey[400],
-            size: 40.0,
-          ),
-        );
+    return widget.loadFailedChild ?? PhotoViewDefaultError();
   }
 }
 
@@ -678,16 +665,22 @@ typedef ScaleStateCycle = PhotoViewScaleState Function(
   PhotoViewScaleState actual,
 );
 
-/// A type definition for a callback when a user taps up the photoview region
+/// A type definition for a callback when the user taps up the photoview region
 typedef PhotoViewImageTapUpCallback = Function(
   BuildContext context,
   TapUpDetails details,
   PhotoViewControllerValue controllerValue,
 );
 
-/// A type definition for a callback when a user taps down the photoview region
+/// A type definition for a callback when the user taps down the photoview region
 typedef PhotoViewImageTapDownCallback = Function(
   BuildContext context,
   TapDownDetails details,
   PhotoViewControllerValue controllerValue,
+);
+
+/// A type definition for a callback to show a widget while a image is loading, a [ImageChunkEvent] is passed to inform progress
+typedef LoadingBuilder = Widget Function(
+  BuildContext context,
+  ImageChunkEvent event,
 );

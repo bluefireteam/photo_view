@@ -38,7 +38,7 @@ class _DialogExampleInnerState extends State<DialogExampleInner> {
         showBottomSheet(
           context: context,
           backgroundColor: Colors.transparent,
-          shape: ContinuousRectangleBorder(),
+          shape: const ContinuousRectangleBorder(),
           builder: (BuildContext context) {
             return PhotoViewGestureDetectorScope(
               axis: Axis.vertical,
@@ -56,7 +56,7 @@ class _DialogExampleInnerState extends State<DialogExampleInner> {
   VoidCallback openBottomSheetModal(BuildContext context) => () {
         showModalBottomSheet(
           context: context,
-          shape: ContinuousRectangleBorder(),
+          shape: const ContinuousRectangleBorder(),
           builder: (BuildContext context) {
             return SafeArea(
               child: Container(
@@ -96,12 +96,12 @@ class _DialogExampleInnerState extends State<DialogExampleInner> {
                 child: const Text("Dialog"),
                 onPressed: openDialog(context),
               ),
-              Divider(),
+              const Divider(),
               RaisedButton(
                 child: const Text("Bottom sheet"),
                 onPressed: openBottomSheet(context),
               ),
-              Divider(),
+              const Divider(),
               RaisedButton(
                 child: const Text("Bottom sheet tight mode"),
                 onPressed: openBottomSheetModal(context),
