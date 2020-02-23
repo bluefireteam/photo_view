@@ -7,7 +7,8 @@ import 'package:photo_view/photo_view.dart'
         PhotoView,
         PhotoViewImageTapDownCallback,
         PhotoViewImageTapUpCallback,
-        ScaleStateCycle;
+        ScaleStateCycle,
+        PhotoViewImageLongPressCallback;
 
 import 'package:photo_view/src/controller/photo_view_controller.dart';
 import 'package:photo_view/src/controller/photo_view_scalestate_controller.dart';
@@ -268,6 +269,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             scaleStateCycle: pageOption.scaleStateCycle,
             onTapUp: pageOption.onTapUp,
             onTapDown: pageOption.onTapDown,
+            onLongPress: pageOption.onLongPress,
             gestureDetectorBehavior: pageOption.gestureDetectorBehavior,
             tightMode: pageOption.tightMode,
             filterQuality: pageOption.filterQuality,
@@ -293,6 +295,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             scaleStateCycle: pageOption.scaleStateCycle,
             onTapUp: pageOption.onTapUp,
             onTapDown: pageOption.onTapDown,
+            onLongPress: pageOption.onLongPress,
             gestureDetectorBehavior: pageOption.gestureDetectorBehavior,
             tightMode: pageOption.tightMode,
             filterQuality: pageOption.filterQuality,
@@ -331,6 +334,7 @@ class PhotoViewGalleryPageOptions {
     this.scaleStateCycle,
     this.onTapUp,
     this.onTapDown,
+    this.onLongPress,
     this.gestureDetectorBehavior,
     this.tightMode,
     this.filterQuality,
@@ -351,6 +355,7 @@ class PhotoViewGalleryPageOptions {
     this.scaleStateCycle,
     this.onTapUp,
     this.onTapDown,
+    this.onLongPress,
     this.gestureDetectorBehavior,
     this.tightMode,
     this.filterQuality,
@@ -395,6 +400,9 @@ class PhotoViewGalleryPageOptions {
 
   /// Mirror to [PhotoView.onTapDown]
   final PhotoViewImageTapDownCallback onTapDown;
+
+  /// Mirror to [PhotoView.onLongPress]
+  final PhotoViewImageLongPressCallback onLongPress;
 
   /// Mirror to [PhotoView.gestureDetectorBehavior]
   final HitTestBehavior gestureDetectorBehavior;

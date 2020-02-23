@@ -5,7 +5,8 @@ import 'package:photo_view/photo_view.dart'
         PhotoViewHeroAttributes,
         PhotoViewImageTapDownCallback,
         PhotoViewImageTapUpCallback,
-        ScaleStateCycle;
+        ScaleStateCycle,
+        PhotoViewImageLongPressCallback;
 import 'package:photo_view/src/controller/photo_view_controller.dart';
 import 'package:photo_view/src/controller/photo_view_controller_delegate.dart';
 import 'package:photo_view/src/controller/photo_view_scalestate_controller.dart';
@@ -29,6 +30,7 @@ class PhotoViewCore extends StatefulWidget {
     @required this.enableRotation,
     @required this.onTapUp,
     @required this.onTapDown,
+    @required this.onLongPress,
     @required this.gestureDetectorBehavior,
     @required this.controller,
     @required this.scaleBoundaries,
@@ -48,6 +50,7 @@ class PhotoViewCore extends StatefulWidget {
     @required this.enableRotation,
     @required this.onTapUp,
     @required this.onTapDown,
+    @required this.onLongPress,
     @required this.gestureDetectorBehavior,
     @required this.controller,
     @required this.scaleBoundaries,
@@ -75,6 +78,8 @@ class PhotoViewCore extends StatefulWidget {
 
   final PhotoViewImageTapUpCallback onTapUp;
   final PhotoViewImageTapDownCallback onTapDown;
+
+  final PhotoViewImageLongPressCallback onLongPress;
 
   final HitTestBehavior gestureDetectorBehavior;
   final bool tightMode;
@@ -269,6 +274,10 @@ class PhotoViewCoreState extends State<PhotoViewCore>
     widget.onTapDown?.call(context, details, controller.value);
   }
 
+  void onLongPress() {
+    widget.onLongPress?.call(context, controller.value);
+  }
+
   @override
   Widget build(BuildContext context) {
     // Check if we need a recalc on the scale
@@ -326,6 +335,7 @@ class PhotoViewCoreState extends State<PhotoViewCore>
               hitDetector: this,
               onTapUp: widget.onTapUp == null ? null : onTapUp,
               onTapDown: widget.onTapDown == null ? null : onTapDown,
+              onLongPress: widget.onLongPress == null ? null : onLongPress,
             );
           } else {
             return Container();

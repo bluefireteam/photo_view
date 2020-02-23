@@ -255,6 +255,7 @@ class PhotoView extends StatefulWidget {
     this.scaleStateCycle,
     this.onTapUp,
     this.onTapDown,
+    this.onLongPress,
     this.customSize,
     this.gestureDetectorBehavior,
     this.tightMode,
@@ -286,6 +287,7 @@ class PhotoView extends StatefulWidget {
     this.scaleStateCycle,
     this.onTapUp,
     this.onTapDown,
+    this.onLongPress,
     this.customSize,
     this.gestureDetectorBehavior,
     this.tightMode,
@@ -373,6 +375,9 @@ class PhotoView extends StatefulWidget {
   /// A pointer that might cause a tap has contacted the screen at a particular
   /// location.
   final PhotoViewImageTapDownCallback onTapDown;
+
+  /// Triggered when a pointer has remained in contact with the screen at the same location for a long period of time.
+  final PhotoViewImageLongPressCallback onLongPress;
 
   /// [HitTestBehavior] to be passed to the internal gesture detector.
   final HitTestBehavior gestureDetectorBehavior;
@@ -561,6 +566,7 @@ class _PhotoViewState extends State<PhotoView> {
       scaleBoundaries: scaleBoundaries,
       onTapUp: widget.onTapUp,
       onTapDown: widget.onTapDown,
+      onLongPress: widget.onLongPress,
       gestureDetectorBehavior: widget.gestureDetectorBehavior,
       tightMode: widget.tightMode ?? false,
       filterQuality: widget.filterQuality ?? FilterQuality.none,
@@ -616,6 +622,7 @@ class _PhotoViewState extends State<PhotoView> {
       scaleBoundaries: scaleBoundaries,
       onTapUp: widget.onTapUp,
       onTapDown: widget.onTapDown,
+      onLongPress: widget.onLongPress,
       gestureDetectorBehavior: widget.gestureDetectorBehavior,
       tightMode: widget.tightMode ?? false,
       filterQuality: widget.filterQuality ?? FilterQuality.none,
@@ -678,6 +685,13 @@ typedef PhotoViewImageTapDownCallback = Function(
   TapDownDetails details,
   PhotoViewControllerValue controllerValue,
 );
+
+/// A type definition for a callback when the user long press the photoview region
+typedef PhotoViewImageLongPressCallback = Function(
+    BuildContext context,
+    PhotoViewControllerValue controllerValue,
+);
+
 
 /// A type definition for a callback to show a widget while a image is loading, a [ImageChunkEvent] is passed to inform progress
 typedef LoadingBuilder = Widget Function(
