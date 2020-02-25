@@ -93,7 +93,6 @@ class PhotoViewControllerValue {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is PhotoViewControllerValue &&
-          runtimeType == other.runtimeType &&
           position == other.position &&
           scale == other.scale &&
           rotation == other.rotation &&
@@ -110,6 +109,18 @@ class PhotoViewControllerValue {
   String toString() {
     return 'PhotoViewControllerValue{position: $position, scale: $scale, rotation: $rotation, rotationFocusPoint: $rotationFocusPoint}';
   }
+}
+
+/// The state value stored and streamed by [PhotoViewController] when a rotation is
+/// is explicitly applied, even if PhotoViewController.enabledRotation is not enabled.
+@immutable
+class PhotoViewControllerExplicitValue extends PhotoViewControllerValue {
+  const PhotoViewControllerExplicitValue({
+    @required Offset position,
+    @required double scale,
+    @required double rotation,
+    @required Offset rotationFocusPoint,
+  }) : super(position: position, scale: scale, rotation: rotation, rotationFocusPoint: rotationFocusPoint);
 }
 
 /// The default implementation of [PhotoViewControllerBase].
@@ -234,7 +245,7 @@ class PhotoViewController
       return;
     }
     prevValue = value;
-    value = PhotoViewControllerValue(
+    value = PhotoViewControllerExplicitValue(
       position: position,
       scale: scale,
       rotation: rotation,

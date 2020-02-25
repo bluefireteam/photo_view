@@ -293,7 +293,7 @@ class PhotoViewCoreState extends State<PhotoViewCore>
             final matrix = Matrix4.identity()
               ..translate(value.position.dx, value.position.dy)
               ..scale(computedScale);
-            if (widget.enableRotation) {
+            if (widget.enableRotation || value is PhotoViewControllerExplicitValue) {
               matrix..rotateZ(value.rotation);
             }
 
