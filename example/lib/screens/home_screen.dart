@@ -48,6 +48,30 @@ class HomeScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
+                        builder: (_) => GalleryExample(),
+                      ),
+                    );
+                  },
+                  text: "Gallery",
+                ),
+                _buildItem(
+                  context,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => HeroExample(),
+                      ),
+                    );
+                  },
+                  text: "Hero animation",
+                ),
+                _buildItem(
+                  context,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
                         builder: (context) => NetworkExamples(),
                       ),
                     );
@@ -84,42 +108,6 @@ class HomeScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => RotationExamples(),
-                      ),
-                    );
-                  },
-                  text: "Rotation Gesture",
-                ),
-                _buildItem(
-                  context,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => HeroExample(),
-                      ),
-                    );
-                  },
-                  text: "Hero animation",
-                ),
-                _buildItem(
-                  context,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => GalleryExample(),
-                      ),
-                    );
-                  },
-                  text: "Gallery",
-                ),
-                _buildItem(
-                  context,
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
                         builder: (_) => CustomChildExample(),
                       ),
                     );
@@ -137,6 +125,30 @@ class HomeScreen extends StatelessWidget {
                     );
                   },
                   text: "Integrated to dialogs",
+                ),
+                _buildItem(
+                  context,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => GestureRotationExample(),
+                      ),
+                    );
+                  },
+                  text: "Rotation Gesture",
+                ),
+                _buildItem(
+                  context,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProgrammaticRotationExample(),
+                      ),
+                    );
+                  },
+                  text: "Rotation Programmatic",
                 ),
               ],
             ),
