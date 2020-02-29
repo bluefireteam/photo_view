@@ -111,18 +111,6 @@ class PhotoViewControllerValue {
   }
 }
 
-/// The state value stored and streamed by [PhotoViewController] when a rotation is
-/// is explicitly applied, even if PhotoViewController.enabledRotation is not enabled.
-@immutable
-class PhotoViewControllerExplicitValue extends PhotoViewControllerValue {
-  const PhotoViewControllerExplicitValue({
-    @required Offset position,
-    @required double scale,
-    @required double rotation,
-    @required Offset rotationFocusPoint,
-  }) : super(position: position, scale: scale, rotation: rotation, rotationFocusPoint: rotationFocusPoint);
-}
-
 /// The default implementation of [PhotoViewControllerBase].
 ///
 /// Containing a [ValueNotifier] it stores the state in the [value] field and streams
@@ -245,7 +233,7 @@ class PhotoViewController
       return;
     }
     prevValue = value;
-    value = PhotoViewControllerExplicitValue(
+    value = PhotoViewControllerValue(
       position: position,
       scale: scale,
       rotation: rotation,
