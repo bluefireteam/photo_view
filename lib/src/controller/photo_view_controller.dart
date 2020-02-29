@@ -93,6 +93,7 @@ class PhotoViewControllerValue {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is PhotoViewControllerValue &&
+          runtimeType == other.runtimeType &&
           position == other.position &&
           scale == other.scale &&
           rotation == other.rotation &&
