@@ -26,16 +26,21 @@ class _ControllerExampleState extends State<ControllerExample> {
   void initState() {
     controller = PhotoViewController()
       ..scale = defScale
-      ..outputStateStream.listen(onControllerState);
+      ..outputStateStream.listen(onController);
 
-    scaleStateController = PhotoViewScaleStateController();
+    scaleStateController = PhotoViewScaleStateController()
+      ..outputScaleStateStream.listen(onScaleState);
     super.initState();
   }
 
-  void onControllerState(PhotoViewControllerValue value) {
+  void onController(PhotoViewControllerValue value) {
     setState(() {
       calls += 1;
     });
+  }
+
+  void onScaleState(PhotoViewScaleState scaleState) {
+    print(scaleState);
   }
 
   @override
@@ -69,7 +74,7 @@ class _ControllerExampleState extends State<ControllerExample> {
                         controller: controller,
                         scaleStateController: scaleStateController,
                         enableRotation: true,
-                        initialScale: defScale,
+                        initialScale: minScale,
                         minScale: minScale,
                         maxScale: maxScale,
                       ),

@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import 'package:photo_view/photo_view.dart'
     show
+        PhotoViewScaleState,
         PhotoViewHeroAttributes,
         PhotoViewImageTapDownCallback,
         PhotoViewImageTapUpCallback,
@@ -138,6 +139,7 @@ class PhotoViewCoreState extends State<PhotoViewCore>
 
     updateScaleStateFromNewScale(newScale);
 
+    //
     updateMultiple(
       scale: newScale,
       position: clampPosition(position: delta * details.scale),
@@ -188,8 +190,6 @@ class PhotoViewCoreState extends State<PhotoViewCore>
         clampPosition(position: _position + direction * 100.0),
       );
     }
-
-    checkGoBackToInitial();
   }
 
   void onDoubleTap() {
@@ -224,7 +224,15 @@ class PhotoViewCoreState extends State<PhotoViewCore>
 
   void onAnimationStatus(AnimationStatus status) {
     if (status == AnimationStatus.completed) {
-      checkGoBackToInitial();
+      onAnimationStatusCompleted();
+    }
+  }
+
+  /// Check if scale is equal to initial after scale animation update
+  void onAnimationStatusCompleted() {
+    if (scaleStateController.scaleState != PhotoViewScaleState.initial &&
+        scale == scaleBoundaries.initialScale) {
+      scaleStateController.setInvisibly(PhotoViewScaleState.initial);
     }
   }
 
