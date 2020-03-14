@@ -28,7 +28,8 @@ class _ControllerExampleState extends State<ControllerExample> {
       ..scale = defScale
       ..outputStateStream.listen(onController);
 
-    scaleStateController = PhotoViewScaleStateController()..outputScaleStateStream.listen(onScaleState);
+    scaleStateController = PhotoViewScaleStateController()
+      ..outputScaleStateStream.listen(onScaleState);
     super.initState();
   }
 

@@ -236,7 +236,6 @@ class PhotoViewCoreState extends State<PhotoViewCore>
     }
   }
 
-
   @override
   void initState() {
     super.initState();
