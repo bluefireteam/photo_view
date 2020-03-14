@@ -54,7 +54,8 @@ class PhotoViewGestureDetector extends StatelessWidget {
 
     gestures[PhotoViewGestureRecognizer] =
         GestureRecognizerFactoryWithHandlers<PhotoViewGestureRecognizer>(
-      () => PhotoViewGestureRecognizer(hitDetector, this, axis),
+      () => PhotoViewGestureRecognizer(
+          hitDetector: hitDetector, debugOwner: this, validateAxis: axis),
       (PhotoViewGestureRecognizer instance) {
         instance
           ..onStart = onScaleStart
@@ -80,11 +81,12 @@ class PhotoViewGestureDetector extends StatelessWidget {
 }
 
 class PhotoViewGestureRecognizer extends ScaleGestureRecognizer {
-  PhotoViewGestureRecognizer(
+  PhotoViewGestureRecognizer({
     this.hitDetector,
     Object debugOwner,
     this.validateAxis,
-  ) : super(debugOwner: debugOwner);
+    PointerDeviceKind kind,
+  }) : super(debugOwner: debugOwner, kind: kind);
   final HitCornersDetector hitDetector;
   final Axis validateAxis;
 
@@ -152,12 +154,12 @@ class PhotoViewGestureRecognizer extends ScaleGestureRecognizer {
         ? hitDetector.shouldMoveY(move)
         : hitDetector.shouldMoveX(move);
     if (shouldMove || _pointerLocations.keys.length > 1) {
-      resolve(GestureDisposition.accepted);
+      acceptGesture(event.pointer);
     }
   }
 }
 
-/// An [InheritedWidget] responsible to give a axis aware scope to the internal[GestureRecognizer].
+/// An [InheritedWidget] responsible to give a axis aware scope to [PhotoViewGestureRecognizer].
 ///
 /// When using this, PhotoView will test if the content zoomed has hit edge every time user pinches,
 /// if so, it will let parent gesture detectors win the gesture arena
