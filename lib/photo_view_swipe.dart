@@ -7,7 +7,6 @@ class PhotoViewSwipe extends StatefulWidget {
     @required this.imageProvider,
     this.dragBgColor, // default Colors.black.withOpacity(0.5)
     this.dragDistance, // default 160
-    this.photoBackground, // deafult Colors.black
 
     // Standard photo_view
     this.loadingBuilder,
@@ -37,7 +36,6 @@ class PhotoViewSwipe extends StatefulWidget {
   final ImageProvider imageProvider;
   final Color dragBgColor;
   final double dragDistance;
-  final Color photoBackground;
 
   // Standard photo_view
   final LoadingBuilder loadingBuilder;
@@ -95,9 +93,7 @@ class _PhotoViewSwipeState extends State<PhotoViewSwipe> {
               child: Container(
                 decoration: _position.dy == 0.0
                     ? (widget.backgroundDecoration ??
-                        BoxDecoration(
-                          color: (widget.photoBackground ?? Colors.black),
-                        ))
+                        BoxDecoration(color: Colors.black))
                     : null,
                 height: MediaQuery.of(context).size.height,
                 width: MediaQuery.of(context).size.width,
