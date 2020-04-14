@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 
@@ -17,7 +19,6 @@ class PhotoViewSwipe extends StatefulWidget {
     this.scaleStateChangedCallback,
     this.enableRotation = false,
     this.controller,
-    this.scaleStateController,
     this.maxScale,
     this.minScale,
     this.initialScale,
@@ -52,7 +53,6 @@ class PhotoViewSwipe extends StatefulWidget {
   final dynamic minScale;
   final dynamic initialScale;
   final PhotoViewControllerBase controller;
-  final PhotoViewScaleStateController scaleStateController;
   final Alignment basePosition;
   final ScaleStateCycle scaleStateCycle;
   final PhotoViewImageTapUpCallback onTapUp;
@@ -67,6 +67,27 @@ class PhotoViewSwipe extends StatefulWidget {
 
 class _PhotoViewSwipeState extends State<PhotoViewSwipe> {
   Offset _position = Offset(0.0, 0.0);
+  bool _isZoomed = false;
+  PhotoViewScaleStateController scaleStateController;
+
+  @override
+  void initState() {
+    scaleStateController = PhotoViewScaleStateController();
+    scaleStateController.outputScaleStateStream.listen((event) {
+      setState(() {
+        _isZoomed =
+            scaleStateController.scaleState == PhotoViewScaleState.zoomedIn;
+      });
+    });
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    scaleStateController?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,18 +99,22 @@ class _PhotoViewSwipeState extends State<PhotoViewSwipe> {
             left: _position.dx,
             top: _position.dy,
             child: GestureDetector(
-              onVerticalDragUpdate: (details) {
-                setState(() =>
-                    _position = Offset(0.0, _position.dy + details.delta.dy));
-              },
-              onVerticalDragEnd: (details) {
-                double pixelsPerSecond = _position.dy.abs();
-                if (pixelsPerSecond > (widget.dragDistance ?? 160)) {
-                  Navigator.pop(context);
-                } else {
-                  setState(() => _position = Offset(0.0, 0.0));
-                }
-              },
+              onVerticalDragUpdate: !_isZoomed
+                  ? (details) {
+                      setState(() => _position =
+                          Offset(0.0, _position.dy + details.delta.dy));
+                    }
+                  : null,
+              onVerticalDragEnd: !_isZoomed
+                  ? (details) {
+                      double pixelsPerSecond = _position.dy.abs();
+                      if (pixelsPerSecond > (widget.dragDistance ?? 160)) {
+                        Navigator.pop(context);
+                      } else {
+                        setState(() => _position = Offset(0.0, 0.0));
+                      }
+                    }
+                  : null,
               child: Container(
                 decoration: _position.dy == 0.0
                     ? (widget.backgroundDecoration ??
@@ -101,6 +126,7 @@ class _PhotoViewSwipeState extends State<PhotoViewSwipe> {
                   imageProvider: widget.imageProvider,
                   backgroundDecoration:
                       BoxDecoration(color: Colors.transparent),
+                  scaleStateController: scaleStateController,
                   loadingBuilder: widget.loadingBuilder,
                   loadFailedChild: widget.loadFailedChild,
                   gaplessPlayback: widget.gaplessPlayback,
@@ -108,7 +134,6 @@ class _PhotoViewSwipeState extends State<PhotoViewSwipe> {
                   scaleStateChangedCallback: widget.scaleStateChangedCallback,
                   enableRotation: widget.enableRotation,
                   controller: widget.controller,
-                  scaleStateController: widget.scaleStateController,
                   maxScale: widget.maxScale,
                   minScale: widget.minScale,
                   initialScale: widget.initialScale,
