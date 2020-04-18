@@ -73,8 +73,8 @@ class _PhotoViewSwipeState extends State<PhotoViewSwipe> {
     scaleStateController = PhotoViewScaleStateController();
     scaleStateController.outputScaleStateStream.listen((event) {
       setState(() {
-        _isZoomed =
-            scaleStateController.scaleState == PhotoViewScaleState.zoomedIn;
+        _isZoomed = event != PhotoViewScaleState.zoomedOut ||
+            event != PhotoViewScaleState.initial;
       });
     });
 
