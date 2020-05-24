@@ -7,8 +7,8 @@ enum PhotoViewScaleState {
   zoomedOut,
 }
 
-// Todo: change for extension when they arrive
-bool isScaleStateZooming(PhotoViewScaleState scaleState) {
-  return scaleState == PhotoViewScaleState.zoomedIn ||
-      scaleState == PhotoViewScaleState.zoomedOut;
+extension PhotoViewScaleStateIZoomingExtension on PhotoViewScaleState {
+  bool get isScaleStateZooming =>
+      this == PhotoViewScaleState.zoomedIn ||
+      this == PhotoViewScaleState.zoomedOut;
 }

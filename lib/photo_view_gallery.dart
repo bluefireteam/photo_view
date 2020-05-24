@@ -3,6 +3,7 @@ library photo_view_gallery;
 import 'package:flutter/widgets.dart';
 import 'package:photo_view/photo_view.dart'
     show
+        LoadingBuilder,
         PhotoView,
         PhotoViewImageTapDownCallback,
         PhotoViewImageTapUpCallback,
@@ -48,7 +49,18 @@ typedef PhotoViewGalleryBuilder = PhotoViewGalleryPageOptions Function(
 ///       heroAttributes: const HeroAttributes(tag: "tag3"),
 ///     ),
 ///   ],
-///   loadingChild: widget.loadingChild,
+///   loadingBuilder: (context, progress) => Center(
+///            child: Container(
+///              width: 20.0,
+///              height: 20.0,
+///              child: CircularProgressIndicator(
+///                value: _progress == null
+///                    ? null
+///                    : _progress.cumulativeBytesLoaded /
+///                        _progress.expectedTotalBytes,
+///              ),
+///            ),
+///          ),
 ///   backgroundDecoration: widget.backgroundDecoration,
 ///   pageController: widget.pageController,
 ///   onPageChanged: onPageChanged,
@@ -69,7 +81,18 @@ typedef PhotoViewGalleryBuilder = PhotoViewGalleryPageOptions Function(
 ///     );
 ///   },
 ///   itemCount: galleryItems.length,
-///   loadingChild: widget.loadingChild,
+///   loadingBuilder: (context, progress) => Center(
+///            child: Container(
+///              width: 20.0,
+///              height: 20.0,
+///              child: CircularProgressIndicator(
+///                value: _progress == null
+///                    ? null
+///                    : _progress.cumulativeBytesLoaded /
+///                        _progress.expectedTotalBytes,
+///              ),
+///            ),
+///          ),
 ///   backgroundDecoration: widget.backgroundDecoration,
 ///   pageController: widget.pageController,
 ///   onPageChanged: onPageChanged,
@@ -80,7 +103,9 @@ class PhotoViewGallery extends StatefulWidget {
   const PhotoViewGallery({
     Key key,
     @required this.pageOptions,
-    this.loadingChild,
+    @Deprecated("Use loadingBuilder instead") this.loadingChild,
+    this.loadingBuilder,
+    this.loadFailedChild,
     this.backgroundDecoration,
     this.gaplessPlayback = false,
     this.reverse = false,
@@ -104,7 +129,9 @@ class PhotoViewGallery extends StatefulWidget {
     Key key,
     @required this.itemCount,
     @required this.builder,
-    this.loadingChild,
+    @Deprecated("Use loadingBuilder instead") this.loadingChild,
+    this.loadingBuilder,
+    this.loadFailedChild,
     this.backgroundDecoration,
     this.gaplessPlayback = false,
     this.reverse = false,
@@ -133,8 +160,14 @@ class PhotoViewGallery extends StatefulWidget {
   /// [ScrollPhysics] for the internal [PageView]
   final ScrollPhysics scrollPhysics;
 
-  /// Mirror to [PhotoView.loadingChild]
+  /// Mirror to [PhotoView.loadingBuilder]
+  final LoadingBuilder loadingBuilder;
+
+  /// Mirror to [PhotoView.loadingchild]
   final Widget loadingChild;
+
+  /// Mirror to [PhotoView.loadFailedChild]
+  final Widget loadFailedChild;
 
   /// Mirror to [PhotoView.backgroundDecoration]
   final Decoration backgroundDecoration;
@@ -239,11 +272,15 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             onScaleEnd: pageOption.onScaleEnd,
             gestureDetectorBehavior: pageOption.gestureDetectorBehavior,
             tightMode: pageOption.tightMode,
+            filterQuality: pageOption.filterQuality,
+            basePosition: pageOption.basePosition,
           )
         : PhotoView(
             key: ObjectKey(index),
             imageProvider: pageOption.imageProvider,
+            loadingBuilder: widget.loadingBuilder,
             loadingChild: widget.loadingChild,
+            loadFailedChild: widget.loadFailedChild,
             backgroundDecoration: widget.backgroundDecoration,
             controller: pageOption.controller,
             scaleStateController: pageOption.scaleStateController,
@@ -261,6 +298,8 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             onScaleEnd: pageOption.onScaleEnd,
             gestureDetectorBehavior: pageOption.gestureDetectorBehavior,
             tightMode: pageOption.tightMode,
+            filterQuality: pageOption.filterQuality,
+            basePosition: pageOption.basePosition,
           );
 
     return ClipRect(
@@ -298,13 +337,14 @@ class PhotoViewGalleryPageOptions {
     this.onScaleEnd,
     this.gestureDetectorBehavior,
     this.tightMode,
+    this.filterQuality,
   })  : child = null,
         childSize = null,
         assert(imageProvider != null);
 
   PhotoViewGalleryPageOptions.customChild({
     @required this.child,
-    @required this.childSize,
+    this.childSize,
     this.heroAttributes,
     this.minScale,
     this.maxScale,
@@ -318,9 +358,9 @@ class PhotoViewGalleryPageOptions {
     this.onScaleEnd,
     this.gestureDetectorBehavior,
     this.tightMode,
+    this.filterQuality,
   })  : imageProvider = null,
-        assert(child != null),
-        assert(childSize != null);
+        assert(child != null);
 
   /// Mirror to [PhotoView.imageProvider]
   final ImageProvider imageProvider;
@@ -369,4 +409,7 @@ class PhotoViewGalleryPageOptions {
 
   /// Mirror to [PhotoView.tightMode]
   final bool tightMode;
+
+  /// Quality levels for image filters.
+  final FilterQuality filterQuality;
 }

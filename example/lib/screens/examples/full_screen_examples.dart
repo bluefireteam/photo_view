@@ -31,6 +31,21 @@ class FullScreenExamples extends StatelessWidget {
                   },
                 ),
                 ExampleButtonNode(
+                  title: "Large Image (filter quality: medium)",
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const FullScreenWrapper(
+                          imageProvider:
+                              const AssetImage("assets/large-image.jpg"),
+                          filterQuality: FilterQuality.medium,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                ExampleButtonNode(
                   title: "Small Image (custom background)",
                   onPressed: () {
                     Navigator.push(
@@ -69,14 +84,28 @@ class FullScreenExamples extends StatelessWidget {
                   },
                 ),
                 ExampleButtonNode(
-                  title: "Image from the internet",
+                  title: "Image from the internet (with custom loader)",
                   onPressed: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const FullScreenWrapper(
+                        builder: (context) => FullScreenWrapper(
                           imageProvider: const NetworkImage(
-                              "https://source.unsplash.com/900x1600/?camera,paper"),
+                              "https://source.unsplash.com/1900x3600/?camera,paper"),
+                          loadingBuilder: (context, event) {
+                            if (event == null) {
+                              return const Center(
+                                child: Text("Loading"),
+                              );
+                            }
+                            final value = event.cumulativeBytesLoaded /
+                                event.expectedTotalBytes;
+
+                            final percentage = (100 * value).floor();
+                            return Center(
+                              child: Text("$percentage%"),
+                            );
+                          },
                         ),
                       ),
                     );
@@ -194,36 +223,41 @@ class ExampleButtonNode extends StatelessWidget {
 class FullScreenWrapper extends StatelessWidget {
   const FullScreenWrapper({
     this.imageProvider,
-    this.loadingChild,
+    this.loadingBuilder,
     this.backgroundDecoration,
     this.minScale,
     this.maxScale,
     this.initialScale,
     this.basePosition = Alignment.center,
+    this.filterQuality = FilterQuality.none,
   });
 
   final ImageProvider imageProvider;
-  final Widget loadingChild;
+  final LoadingBuilder loadingBuilder;
   final Decoration backgroundDecoration;
   final dynamic minScale;
   final dynamic maxScale;
   final dynamic initialScale;
   final Alignment basePosition;
+  final FilterQuality filterQuality;
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      constraints: BoxConstraints.expand(
-        height: MediaQuery.of(context).size.height,
-      ),
-      child: PhotoView(
-        imageProvider: imageProvider,
-        loadingChild: loadingChild,
-        backgroundDecoration: backgroundDecoration,
-        minScale: minScale,
-        maxScale: maxScale,
-        initialScale: initialScale,
-        basePosition: basePosition,
+    return Scaffold(
+      body: Container(
+        constraints: BoxConstraints.expand(
+          height: MediaQuery.of(context).size.height,
+        ),
+        child: PhotoView(
+          imageProvider: imageProvider,
+          loadingBuilder: loadingBuilder,
+          backgroundDecoration: backgroundDecoration,
+          minScale: minScale,
+          maxScale: maxScale,
+          initialScale: initialScale,
+          basePosition: basePosition,
+          filterQuality: filterQuality,
+        ),
       ),
     );
   }
@@ -238,16 +272,18 @@ class OneTapWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      constraints: BoxConstraints.expand(
-        height: MediaQuery.of(context).size.height,
-      ),
-      child: GestureDetector(
-        onTapDown: (_) {
-          Navigator.pop(context);
-        },
-        child: PhotoView(
-          imageProvider: imageProvider,
+    return Scaffold(
+      body: Container(
+        constraints: BoxConstraints.expand(
+          height: MediaQuery.of(context).size.height,
+        ),
+        child: GestureDetector(
+          onTapDown: (_) {
+            Navigator.pop(context);
+          },
+          child: PhotoView(
+            imageProvider: imageProvider,
+          ),
         ),
       ),
     );

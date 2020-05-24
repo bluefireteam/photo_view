@@ -93,7 +93,7 @@ class _GalleryExampleState extends State<GalleryExample> {
 
 class GalleryPhotoViewWrapper extends StatefulWidget {
   GalleryPhotoViewWrapper({
-    this.loadingChild,
+    this.loadingBuilder,
     this.backgroundDecoration,
     this.minScale,
     this.maxScale,
@@ -102,7 +102,7 @@ class GalleryPhotoViewWrapper extends StatefulWidget {
     this.scrollDirection = Axis.horizontal,
   }) : pageController = PageController(initialPage: initialIndex);
 
-  final Widget loadingChild;
+  final LoadingBuilder loadingBuilder;
   final Decoration backgroundDecoration;
   final dynamic minScale;
   final dynamic maxScale;
@@ -146,8 +146,8 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
             PhotoViewGallery.builder(
               scrollPhysics: const BouncingScrollPhysics(),
               builder: _buildItem,
-              itemCount: galleryItems.length,
-              loadingChild: widget.loadingChild,
+              itemCount: widget.galleryItems.length,
+              loadingBuilder: widget.loadingBuilder,
               backgroundDecoration: widget.backgroundDecoration,
               pageController: widget.pageController,
               onPageChanged: onPageChanged,

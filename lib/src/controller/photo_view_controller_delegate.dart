@@ -17,7 +17,6 @@ import 'package:photo_view/src/controller/photo_view_scalestate_controller.dart'
 /// A  class to hold internal layout logic to sync both controller states
 ///
 /// It reacts to layout changes (eg: enter landscape or widget resize) and syncs the two controllers.
-/// It is responsible
 mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
   PhotoViewControllerBase get controller => widget.controller;
 
@@ -82,13 +81,17 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
   Offset get position => controller.position;
 
   double get scale {
-    if (markNeedsScaleRecalc &&
-        !isScaleStateZooming(scaleStateController.scaleState)) {
-      scale = getScaleForScaleState(
+    final needsRecalc = markNeedsScaleRecalc &&
+        !scaleStateController.scaleState.isScaleStateZooming;
+    final scaleExistsOnController = controller.scale != null;
+    if (needsRecalc || !scaleExistsOnController) {
+      final newScale = getScaleForScaleState(
         scaleStateController.scaleState,
         scaleBoundaries,
       );
       markNeedsScaleRecalc = false;
+      scale = newScale;
+      return newScale;
     }
     return controller.scale;
   }
@@ -109,19 +112,13 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
   }
 
   void updateScaleStateFromNewScale(double newScale) {
-    final PhotoViewScaleState newScaleState =
-        (newScale > scaleBoundaries.initialScale)
-            ? PhotoViewScaleState.zoomedIn
-            : PhotoViewScaleState.zoomedOut;
-
-    scaleStateController.setInvisibly(newScaleState);
-  }
-
-  void checkAndSetToInitialScaleState() {
-    if (scaleStateController.scaleState != PhotoViewScaleState.initial &&
-        scale == scaleBoundaries.initialScale) {
-      scaleStateController.setInvisibly(PhotoViewScaleState.initial);
+    PhotoViewScaleState newScaleState = PhotoViewScaleState.initial;
+    if (scale != scaleBoundaries.initialScale) {
+      newScaleState = (newScale > scaleBoundaries.initialScale)
+          ? PhotoViewScaleState.zoomedIn
+          : PhotoViewScaleState.zoomedOut;
     }
+    scaleStateController.setInvisibly(newScaleState);
   }
 
   void nextScaleState() {

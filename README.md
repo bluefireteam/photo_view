@@ -1,6 +1,6 @@
 # Flutter Photo View 
 
-[![Build Status - Travis](https://travis-ci.org/renancaraujo/photo_view.svg?branch=master)](https://travis-ci.org/renancaraujo/photo_view) [![Pub](https://img.shields.io/pub/v/photo_view.svg?style=popout)](https://pub.dartlang.org/packages/photo_view) [![Chat](https://badges.gitter.im/photo_view/Lobby.svg)](https://gitter.im/photo_view/Lobby)
+[![Tests status](https://img.shields.io/github/workflow/status/renancaraujo/photo_view/Test/master?label=tests)](https://github.com/renancaraujo/photo_view/actions) [![Pub](https://img.shields.io/pub/v/photo_view.svg?style=popout)](https://pub.dartlang.org/packages/photo_view) [![Chat](https://badges.gitter.im/photo_view/Lobby.svg)](https://gitter.im/photo_view/Lobby)
 
 A simple zoomable image/content widget for Flutter.
 
@@ -76,7 +76,17 @@ Widget build(BuildContext context) {
         );
       },
       itemCount: galleryItems.length,
-      loadingChild: widget.loadingChild,
+      loadingBuilder: (context, event) => Center(
+        child: Container(
+          width: 20.0,
+          height: 20.0,
+          child: CircularProgressIndicator(
+            value: event == null
+                ? 0
+                : event.cumulativeBytesLoaded / event.expectedTotalBytes,
+          ),
+        ),
+      ),
       backgroundDecoration: widget.backgroundDecoration,
       pageController: widget.pageController,
       onPageChanged: onPageChanged,

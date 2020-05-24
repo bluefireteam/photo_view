@@ -1,11 +1,10 @@
 name: photo_view
 description: Photo View provides a gesture sensitive zoomable widget. Photo View is largely used to show interacive images and other stuff such as SVG.
-version: 0.9.0
-author: Renan C. Araújo <renan@caraujo.me>
+version: 0.9.2
 homepage: https://github.com/renancaraujo/photo_view
 
 environment:
-  sdk: ">=2.2.0 <3.0.0"
+  sdk: ">=2.6.0 <3.0.0"
   flutter: ">=1.5.9-pre.94 <2.0.0"
 
 dependencies:

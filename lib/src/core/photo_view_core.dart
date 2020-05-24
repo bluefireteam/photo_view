@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 
 import 'package:photo_view/photo_view.dart'
     show
+        PhotoViewScaleState,
         PhotoViewHeroAttributes,
         PhotoViewImageTapDownCallback,
         PhotoViewImageTapUpCallback,
@@ -38,6 +39,7 @@ class PhotoViewCore extends StatefulWidget {
     @required this.scaleStateController,
     @required this.basePosition,
     @required this.tightMode,
+    @required this.filterQuality,
   })  : customChild = null,
         super(key: key);
 
@@ -57,6 +59,7 @@ class PhotoViewCore extends StatefulWidget {
     @required this.scaleStateController,
     @required this.basePosition,
     @required this.tightMode,
+    @required this.filterQuality,
   })  : imageProvider = null,
         gaplessPlayback = false,
         super(key: key);
@@ -80,6 +83,8 @@ class PhotoViewCore extends StatefulWidget {
 
   final HitTestBehavior gestureDetectorBehavior;
   final bool tightMode;
+
+  final FilterQuality filterQuality;
 
   @override
   State<StatefulWidget> createState() {
@@ -138,6 +143,7 @@ class PhotoViewCoreState extends State<PhotoViewCore>
 
     updateScaleStateFromNewScale(newScale);
 
+    //
     updateMultiple(
       scale: newScale,
       position: clampPosition(position: delta * details.scale),
@@ -190,8 +196,6 @@ class PhotoViewCoreState extends State<PhotoViewCore>
         clampPosition(position: _position + direction * 100.0),
       );
     }
-
-    checkAndSetToInitialScaleState();
   }
 
   void onDoubleTap() {
@@ -226,7 +230,15 @@ class PhotoViewCoreState extends State<PhotoViewCore>
 
   void onAnimationStatus(AnimationStatus status) {
     if (status == AnimationStatus.completed) {
-      checkAndSetToInitialScaleState();
+      onAnimationStatusCompleted();
+    }
+  }
+
+  /// Check if scale is equal to initial after scale animation update
+  void onAnimationStatusCompleted() {
+    if (scaleStateController.scaleState != PhotoViewScaleState.initial &&
+        scale == scaleBoundaries.initialScale) {
+      scaleStateController.setInvisibly(PhotoViewScaleState.initial);
     }
   }
 
@@ -288,9 +300,13 @@ class PhotoViewCoreState extends State<PhotoViewCore>
         ) {
           if (snapshot.hasData) {
             final PhotoViewControllerValue value = snapshot.data;
+            final useImageScale = widget.filterQuality != FilterQuality.none;
+
+            final computedScale = useImageScale ? 1.0 : scale;
+
             final matrix = Matrix4.identity()
               ..translate(value.position.dx, value.position.dy)
-              ..scale(scale);
+              ..scale(computedScale);
             if (widget.enableRotation) {
               matrix..rotateZ(value.rotation);
             }
@@ -299,6 +315,7 @@ class PhotoViewCoreState extends State<PhotoViewCore>
               delegate: _CenterWithOriginalSizeDelegate(
                 scaleBoundaries.childSize,
                 basePosition,
+                useImageScale,
               ),
               child: _buildHero(),
             );
@@ -349,28 +366,42 @@ class PhotoViewCoreState extends State<PhotoViewCore>
         : Image(
             image: widget.imageProvider,
             gaplessPlayback: widget.gaplessPlayback ?? false,
+            filterQuality: widget.filterQuality,
+            width: scaleBoundaries.childSize.width * scale,
+            fit: BoxFit.contain,
           );
   }
 }
 
 class _CenterWithOriginalSizeDelegate extends SingleChildLayoutDelegate {
-  const _CenterWithOriginalSizeDelegate(this.subjectSize, this.basePosition);
+  const _CenterWithOriginalSizeDelegate(
+    this.subjectSize,
+    this.basePosition,
+    this.useImageScale,
+  );
 
   final Size subjectSize;
   final Alignment basePosition;
+  final bool useImageScale;
 
   @override
   Offset getPositionForChild(Size size, Size childSize) {
-    final double offsetX =
-        ((size.width - subjectSize.width) / 2) * (basePosition.x + 1);
-    final double offsetY =
-        ((size.height - subjectSize.height) / 2) * (basePosition.y + 1);
+    final childWidth = useImageScale ? childSize.width : subjectSize.width;
+    final childHeight = useImageScale ? childSize.height : subjectSize.height;
+
+    final halfWidth = (size.width - childWidth) / 2;
+    final halfHeight = (size.height - childHeight) / 2;
+
+    final double offsetX = halfWidth * (basePosition.x + 1);
+    final double offsetY = halfHeight * (basePosition.y + 1);
     return Offset(offsetX, offsetY);
   }
 
   @override
   BoxConstraints getConstraintsForChild(BoxConstraints constraints) {
-    return BoxConstraints.tight(subjectSize);
+    return useImageScale
+        ? const BoxConstraints()
+        : BoxConstraints.tight(subjectSize);
   }
 
   @override
@@ -384,8 +415,10 @@ class _CenterWithOriginalSizeDelegate extends SingleChildLayoutDelegate {
       other is _CenterWithOriginalSizeDelegate &&
           runtimeType == other.runtimeType &&
           subjectSize == other.subjectSize &&
-          basePosition == other.basePosition;
+          basePosition == other.basePosition &&
+          useImageScale == other.useImageScale;
 
   @override
-  int get hashCode => subjectSize.hashCode ^ basePosition.hashCode;
+  int get hashCode =>
+      subjectSize.hashCode ^ basePosition.hashCode ^ useImageScale.hashCode;
 }
