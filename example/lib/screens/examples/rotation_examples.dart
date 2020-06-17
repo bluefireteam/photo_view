@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view_example/screens/app_bar.dart';
@@ -32,6 +34,17 @@ class RotationExamples extends StatelessWidget {
                       maxScale: PhotoViewComputedScale.covered,
                       initialScale: PhotoViewComputedScale.contained * 0.8,
                       enableRotation: true,
+                    ),
+                  )),
+              Container(
+                  margin: const EdgeInsets.symmetric(vertical: 20.0),
+                  height: 200.0,
+                  child: ClipRect(
+                    child: PhotoView(
+                      imageProvider: const AssetImage("assets/large-image.jpg"),
+                      maxScale: PhotoViewComputedScale.covered,
+                      initialScale: PhotoViewComputedScale.contained * 0.8,
+                      adjustImageAngleWithoutEnableRotation: math.pi / 2,
                     ),
                   )),
             ],

@@ -38,6 +38,7 @@ class PhotoViewCore extends StatefulWidget {
     @required this.basePosition,
     @required this.tightMode,
     @required this.filterQuality,
+    @required this.adjustImageAngleWithoutEnableRotation,
   })  : customChild = null,
         super(key: key);
 
@@ -57,6 +58,7 @@ class PhotoViewCore extends StatefulWidget {
     @required this.basePosition,
     @required this.tightMode,
     @required this.filterQuality,
+    @required this.adjustImageAngleWithoutEnableRotation,
   })  : imageProvider = null,
         gaplessPlayback = false,
         super(key: key);
@@ -81,6 +83,7 @@ class PhotoViewCore extends StatefulWidget {
   final bool tightMode;
 
   final FilterQuality filterQuality;
+  final double adjustImageAngleWithoutEnableRotation;
 
   @override
   State<StatefulWidget> createState() {
@@ -303,6 +306,8 @@ class PhotoViewCoreState extends State<PhotoViewCore>
               ..scale(computedScale);
             if (widget.enableRotation) {
               matrix..rotateZ(value.rotation);
+            } else if (widget.adjustImageAngleWithoutEnableRotation != null) {
+              matrix..rotateZ(widget.adjustImageAngleWithoutEnableRotation);
             }
 
             final Widget customChildLayout = CustomSingleChildLayout(

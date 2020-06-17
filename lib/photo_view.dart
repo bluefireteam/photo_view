@@ -259,6 +259,7 @@ class PhotoView extends StatefulWidget {
     this.gestureDetectorBehavior,
     this.tightMode,
     this.filterQuality,
+    this.adjustImageAngleWithoutEnableRotation,
   })  : child = null,
         childSize = null,
         super(key: key);
@@ -290,6 +291,7 @@ class PhotoView extends StatefulWidget {
     this.gestureDetectorBehavior,
     this.tightMode,
     this.filterQuality,
+    this.adjustImageAngleWithoutEnableRotation,
   })  : loadFailedChild = null,
         imageProvider = null,
         gaplessPlayback = false,
@@ -383,6 +385,9 @@ class PhotoView extends StatefulWidget {
 
   /// Quality levels for image filters.
   final FilterQuality filterQuality;
+
+  /// Fixed image with certain angle of rotation without enable rotation
+  final double adjustImageAngleWithoutEnableRotation;
 
   @override
   State<StatefulWidget> createState() {
@@ -564,6 +569,8 @@ class _PhotoViewState extends State<PhotoView> {
       gestureDetectorBehavior: widget.gestureDetectorBehavior,
       tightMode: widget.tightMode ?? false,
       filterQuality: widget.filterQuality ?? FilterQuality.none,
+      adjustImageAngleWithoutEnableRotation:
+          widget.adjustImageAngleWithoutEnableRotation,
     );
   }
 
@@ -619,6 +626,8 @@ class _PhotoViewState extends State<PhotoView> {
       gestureDetectorBehavior: widget.gestureDetectorBehavior,
       tightMode: widget.tightMode ?? false,
       filterQuality: widget.filterQuality ?? FilterQuality.none,
+      adjustImageAngleWithoutEnableRotation:
+          widget.adjustImageAngleWithoutEnableRotation,
     );
   }
 
