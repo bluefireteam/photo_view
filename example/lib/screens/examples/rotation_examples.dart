@@ -45,6 +45,7 @@ class RotationExamples extends StatelessWidget {
                       maxScale: PhotoViewComputedScale.covered,
                       initialScale: PhotoViewComputedScale.contained * 0.8,
                       adjustImageAngleWithoutEnableRotation: math.pi / 2,
+                      isNeedExchangedWidthAndHeight: true,
                     ),
                   )),
             ],

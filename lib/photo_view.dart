@@ -260,6 +260,7 @@ class PhotoView extends StatefulWidget {
     this.tightMode,
     this.filterQuality,
     this.adjustImageAngleWithoutEnableRotation,
+    this.isNeedExchangedWidthAndHeight = false,
   })  : child = null,
         childSize = null,
         super(key: key);
@@ -292,6 +293,7 @@ class PhotoView extends StatefulWidget {
     this.tightMode,
     this.filterQuality,
     this.adjustImageAngleWithoutEnableRotation,
+    this.isNeedExchangedWidthAndHeight = false,
   })  : loadFailedChild = null,
         imageProvider = null,
         gaplessPlayback = false,
@@ -389,6 +391,9 @@ class PhotoView extends StatefulWidget {
   /// Fixed image with certain angle of rotation without enable rotation
   final double adjustImageAngleWithoutEnableRotation;
 
+  /// exchange width and height using with adjustImageAngleWithoutEnableRotation
+  final bool isNeedExchangedWidthAndHeight;
+
   @override
   State<StatefulWidget> createState() {
     return _PhotoViewState();
@@ -424,6 +429,13 @@ class _PhotoViewState extends State<PhotoView> {
               info.image.width.toDouble(),
               info.image.height.toDouble(),
             );
+            if (widget.isNeedExchangedWidthAndHeight != null &&
+                widget.isNeedExchangedWidthAndHeight == true) {
+              _childSize = Size(
+                info.image.height.toDouble(),
+                info.image.width.toDouble(),
+              );
+            }
             _loading = false;
             _imageChunkEvent = null;
           };
