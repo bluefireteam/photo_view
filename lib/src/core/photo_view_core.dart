@@ -28,6 +28,7 @@ class PhotoViewCore extends StatefulWidget {
     @required this.gaplessPlayback,
     @required this.heroAttributes,
     @required this.enableRotation,
+    @required this.enableMoveOnMinScale,
     @required this.onTapUp,
     @required this.onTapDown,
     @required this.gestureDetectorBehavior,
@@ -47,6 +48,7 @@ class PhotoViewCore extends StatefulWidget {
     @required this.backgroundDecoration,
     @required this.heroAttributes,
     @required this.enableRotation,
+    @required this.enableMoveOnMinScale,
     @required this.onTapUp,
     @required this.onTapDown,
     @required this.gestureDetectorBehavior,
@@ -66,6 +68,7 @@ class PhotoViewCore extends StatefulWidget {
   final bool gaplessPlayback;
   final PhotoViewHeroAttributes heroAttributes;
   final bool enableRotation;
+  final bool enableMoveOnMinScale;
   final Widget customChild;
 
   final PhotoViewControllerBase controller;

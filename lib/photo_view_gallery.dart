@@ -112,6 +112,7 @@ class PhotoViewGallery extends StatefulWidget {
     this.onPageChanged,
     this.scaleStateChangedCallback,
     this.enableRotation = false,
+    this.enableMoveOnMinScale = false,
     this.scrollPhysics,
     this.scrollDirection = Axis.horizontal,
     this.customSize,
@@ -138,6 +139,7 @@ class PhotoViewGallery extends StatefulWidget {
     this.onPageChanged,
     this.scaleStateChangedCallback,
     this.enableRotation = false,
+    this.enableMoveOnMinScale = false,
     this.scrollPhysics,
     this.scrollDirection = Axis.horizontal,
     this.customSize,
@@ -188,6 +190,9 @@ class PhotoViewGallery extends StatefulWidget {
 
   /// Mirror to [PhotoView.enableRotation]
   final bool enableRotation;
+
+  /// Mirror to [PhotoView.enableMoveOnMinScale]
+  final bool enableMoveOnMinScale;
 
   /// Mirror to [PhotoView.customSize]
   final Size customSize;
@@ -262,6 +267,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             heroAttributes: pageOption.heroAttributes,
             scaleStateChangedCallback: scaleStateChangedCallback,
             enableRotation: widget.enableRotation,
+            enableMoveOnMinScale: widget.enableMoveOnMinScale,
             initialScale: pageOption.initialScale,
             minScale: pageOption.minScale,
             maxScale: pageOption.maxScale,
@@ -287,6 +293,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             heroAttributes: pageOption.heroAttributes,
             scaleStateChangedCallback: scaleStateChangedCallback,
             enableRotation: widget.enableRotation,
+            enableMoveOnMinScale: widget.enableMoveOnMinScale,
             initialScale: pageOption.initialScale,
             minScale: pageOption.minScale,
             maxScale: pageOption.maxScale,
