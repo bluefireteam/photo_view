@@ -5,7 +5,7 @@ homepage: https://github.com/renancaraujo/photo_view
 
 environment:
   sdk: ">=2.6.0 <3.0.0"
-  flutter: ">=1.5.9-pre.94 <2.0.0"
+  flutter: ">=1.6.0 <2.0.0"
 
 dependencies:
   flutter:
