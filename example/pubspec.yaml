@@ -23,7 +23,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/peanut.gif
+    - assets/neat.gif
     - assets/large-image.jpg
     - assets/small-image.jpg
     - assets/gallery1.jpg
