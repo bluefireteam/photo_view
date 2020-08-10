@@ -238,7 +238,6 @@ class PhotoView extends StatefulWidget {
   PhotoView({
     Key key,
     @required this.imageProvider,
-    @Deprecated("Use loadingBuilder instead") this.loadingChild,
     this.loadingBuilder,
     this.loadFailedChild,
     this.backgroundDecoration,
@@ -294,15 +293,11 @@ class PhotoView extends StatefulWidget {
         imageProvider = null,
         gaplessPlayback = false,
         loadingBuilder = null,
-        loadingChild = null,
         super(key: key);
 
   /// Given a [imageProvider] it resolves into an zoomable image widget using. It
   /// is required
   final ImageProvider imageProvider;
-
-  /// You should now use loadingBuilder(context, progress) => widget
-  final Widget loadingChild;
 
   /// While [imageProvider] is not resolved, [loadingBuilder] is called by [PhotoView]
   /// into the screen, by default it is a centered [CircularProgressIndicator]
@@ -625,10 +620,6 @@ class _PhotoViewState extends State<PhotoView> {
   Widget _buildLoading() {
     if (widget.loadingBuilder != null) {
       return widget.loadingBuilder(context, _imageChunkEvent);
-    }
-
-    if (widget.loadingChild != null) {
-      return widget.loadingChild;
     }
 
     return PhotoViewDefaultLoading(
