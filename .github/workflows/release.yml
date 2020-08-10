@@ -18,7 +18,8 @@ jobs:
         channel: 'stable'
     - run: flutter pub get
     - run: flutter test
-    - run: cd example && flutter build apk --debug --split-per-abi
+    - run: cd example && flutter create .
+    - run: flutter build apk --debug --split-per-abi
     - uses: montudor/action-zip@v0.1.0
       with:
         args: zip -qq -r ./apks.zip . -i ./build/app/outputs/apk/debug
