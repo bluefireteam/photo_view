@@ -393,7 +393,6 @@ class PhotoView extends StatefulWidget {
 class _PhotoViewState extends State<PhotoView> {
   Size _childSize;
   bool _loading;
-  bool _loadFailed;
   ImageChunkEvent _imageChunkEvent;
 
   bool _controlledController;
@@ -411,34 +410,30 @@ class _PhotoViewState extends State<PhotoView> {
       ImageInfo info,
       bool synchronousCall,
     ) {
-      if (!completer.isCompleted) {
-        completer.complete(info);
-        if (mounted) {
-          final setupCallback = () {
-            _childSize = Size(
-              info.image.width.toDouble(),
-              info.image.height.toDouble(),
-            );
-            _loading = false;
-            _imageChunkEvent = null;
-          };
-          synchronousCall ? setupCallback() : setState(setupCallback);
-        }
+      if (completer.isCompleted) {
+        return;
+      }
+      completer.complete(info);
+      if (mounted) {
+        final setupCallback = () {
+          _childSize = Size(
+            info.image.width.toDouble(),
+            info.image.height.toDouble(),
+          );
+          _loading = false;
+          _imageChunkEvent = null;
+        };
+        synchronousCall ? setupCallback() : setState(setupCallback);
       }
     }, onChunk: (event) {
       if (mounted) {
         setState(() => _imageChunkEvent = event);
       }
     }, onError: (exception, stackTrace) {
-      if (!mounted) {
+      if (completer.isCompleted) {
         return;
       }
-      setState(() {
-        _loadFailed = true;
-      });
-      FlutterError.reportError(
-        FlutterErrorDetails(exception: exception, stack: stackTrace),
-      );
+      completer.completeError(exception, stackTrace);
     });
     stream.addListener(listener);
     completer.future.then((_) {
@@ -524,18 +519,16 @@ class _PhotoViewState extends State<PhotoView> {
 
   @override
   Widget build(BuildContext context) {
-    return _loadFailed == true
-        ? _buildLoadFailed()
-        : LayoutBuilder(
-            builder: (
-              BuildContext context,
-              BoxConstraints constraints,
-            ) {
-              return widget.child == null
-                  ? _buildImage(context, constraints)
-                  : _buildCustomChild(context, constraints);
-            },
-          );
+    return LayoutBuilder(
+      builder: (
+        BuildContext context,
+        BoxConstraints constraints,
+      ) {
+        return widget.child == null
+            ? _buildImage(context, constraints)
+            : _buildCustomChild(context, constraints);
+      },
+    );
   }
 
   Widget _buildCustomChild(BuildContext context, BoxConstraints constraints) {
@@ -577,11 +570,13 @@ class _PhotoViewState extends State<PhotoView> {
     return FutureBuilder(
         future: _getImage(),
         builder: (BuildContext context, AsyncSnapshot<ImageInfo> info) {
+          if (info.hasError) {
+            return _buildLoadFailed();
+          }
           if (info.hasData) {
             return _buildWrapperImage(context, constraints);
-          } else {
-            return _buildLoading();
           }
+          return _buildLoading();
         });
   }
 

@@ -1,48 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:photo_view_example/screens/app_bar.dart';
+import 'package:photo_view_example/screens/common/app_bar.dart';
 
 class HeroExample extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          const ExampleAppBar(
-            title: "Hero Example",
-            showGoBack: true,
-          ),
-          Expanded(
-            child: Center(
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const HeroPhotoViewWrapper(
-                        imageProvider: AssetImage("assets/large-image.jpg"),
-                      ),
-                    ),
-                  );
-                },
-                child: Container(
-                  child: Hero(
-                    tag: "someTag",
-                    child: Image.asset("assets/large-image.jpg", width: 150.0),
-                  ),
+    return ExampleAppBarLayout(
+      title: "Hero",
+      showGoBack: true,
+      child: Center(
+        child: GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const HeroPhotoViewRouteWrapper(
+                  imageProvider: AssetImage("assets/large-image.jpg"),
                 ),
               ),
+            );
+          },
+          child: Container(
+            child: Hero(
+              tag: "someTag",
+              child: Image.asset("assets/large-image.jpg", width: 150.0),
             ),
-          )
-        ],
+          ),
+        ),
       ),
     );
   }
 }
 
-class HeroPhotoViewWrapper extends StatelessWidget {
-  const HeroPhotoViewWrapper({
+class HeroPhotoViewRouteWrapper extends StatelessWidget {
+  const HeroPhotoViewRouteWrapper({
     this.imageProvider,
     this.loadingBuilder,
     this.backgroundDecoration,
