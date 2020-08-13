@@ -143,8 +143,9 @@ class PhotoViewCoreState extends State<PhotoViewCore>
     updateMultiple(
       scale: newScale,
       position: clampPosition(position: delta * details.scale),
-      rotation: _rotationBefore + details.rotation,
-      rotationFocusPoint: details.focalPoint,
+      rotation:
+          widget.enableRotation ? _rotationBefore + details.rotation : null,
+      rotationFocusPoint: widget.enableRotation ? details.focalPoint : null,
     );
   }
 
@@ -300,10 +301,8 @@ class PhotoViewCoreState extends State<PhotoViewCore>
 
             final matrix = Matrix4.identity()
               ..translate(value.position.dx, value.position.dy)
-              ..scale(computedScale);
-            if (widget.enableRotation) {
-              matrix..rotateZ(value.rotation);
-            }
+              ..scale(computedScale)
+              ..rotateZ(value.rotation);
 
             final Widget customChildLayout = CustomSingleChildLayout(
               delegate: _CenterWithOriginalSizeDelegate(
