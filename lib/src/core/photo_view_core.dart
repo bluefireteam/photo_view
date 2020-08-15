@@ -326,7 +326,7 @@ class PhotoViewCoreState extends State<PhotoViewCore>
                 ),
                 decoration: widget.backgroundDecoration ?? _defaultDecoration,
               ),
-              onDoubleTap: nextScaleState,
+              //onDoubleTap: nextScaleState,
               onScaleStart: onScaleStart,
               onScaleUpdate: onScaleUpdate,
               onScaleEnd: onScaleEnd,
