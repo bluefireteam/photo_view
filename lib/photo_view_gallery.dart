@@ -114,6 +114,7 @@ class PhotoViewGallery extends StatefulWidget {
     this.scrollPhysics,
     this.scrollDirection = Axis.horizontal,
     this.customSize,
+    this.doubleTapDisabled
   })  : itemCount = null,
         builder = null,
         assert(pageOptions != null),
@@ -138,6 +139,7 @@ class PhotoViewGallery extends StatefulWidget {
     this.scrollPhysics,
     this.scrollDirection = Axis.horizontal,
     this.customSize,
+    this.doubleTapDisabled,
   })  : pageOptions = null,
         assert(itemCount != null),
         assert(builder != null),
@@ -187,6 +189,9 @@ class PhotoViewGallery extends StatefulWidget {
 
   /// The axis along which the [PageView] scrolls. Mirror to [PageView.scrollDirection]
   final Axis scrollDirection;
+
+  /// disabled double tap zoom
+  final bool doubleTapDisabled;
 
   bool get _isBuilder => builder != null;
 
@@ -265,6 +270,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             tightMode: pageOption.tightMode,
             filterQuality: pageOption.filterQuality,
             basePosition: pageOption.basePosition,
+            doubleTapDisabled: widget.doubleTapDisabled,
           )
         : PhotoView(
             key: ObjectKey(index),
@@ -289,6 +295,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             tightMode: pageOption.tightMode,
             filterQuality: pageOption.filterQuality,
             basePosition: pageOption.basePosition,
+            doubleTapDisabled: widget.doubleTapDisabled,
           );
 
     return ClipRect(
@@ -326,6 +333,7 @@ class PhotoViewGalleryPageOptions {
     this.gestureDetectorBehavior,
     this.tightMode,
     this.filterQuality,
+    this.doubleTapDisabled
   })  : child = null,
         childSize = null,
         assert(imageProvider != null);
@@ -346,6 +354,7 @@ class PhotoViewGalleryPageOptions {
     this.gestureDetectorBehavior,
     this.tightMode,
     this.filterQuality,
+    this.doubleTapDisabled
   })  : imageProvider = null,
         assert(child != null);
 
@@ -396,4 +405,7 @@ class PhotoViewGalleryPageOptions {
 
   /// Quality levels for image filters.
   final FilterQuality filterQuality;
+
+  /// disabled double tap zoom
+  final bool doubleTapDisabled;
 }

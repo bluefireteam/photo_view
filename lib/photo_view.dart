@@ -258,6 +258,7 @@ class PhotoView extends StatefulWidget {
     this.gestureDetectorBehavior,
     this.tightMode,
     this.filterQuality,
+    this.doubleTapDisabled
   })  : child = null,
         childSize = null,
         super(key: key);
@@ -289,6 +290,7 @@ class PhotoView extends StatefulWidget {
     this.gestureDetectorBehavior,
     this.tightMode,
     this.filterQuality,
+    this.doubleTapDisabled,
   })  : loadFailedChild = null,
         imageProvider = null,
         gaplessPlayback = false,
@@ -378,6 +380,9 @@ class PhotoView extends StatefulWidget {
 
   /// Quality levels for image filters.
   final FilterQuality filterQuality;
+
+  ///disables double tap zoom
+  final bool doubleTapDisabled;
 
   @override
   State<StatefulWidget> createState() {
@@ -552,6 +557,7 @@ class _PhotoViewState extends State<PhotoView> {
       gestureDetectorBehavior: widget.gestureDetectorBehavior,
       tightMode: widget.tightMode ?? false,
       filterQuality: widget.filterQuality ?? FilterQuality.none,
+      doubleTapDisabled: widget.doubleTapDisabled,
     );
   }
 
@@ -609,6 +615,7 @@ class _PhotoViewState extends State<PhotoView> {
       gestureDetectorBehavior: widget.gestureDetectorBehavior,
       tightMode: widget.tightMode ?? false,
       filterQuality: widget.filterQuality ?? FilterQuality.none,
+      doubleTapDisabled: widget.doubleTapDisabled,
     );
   }
 
