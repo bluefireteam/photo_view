@@ -333,7 +333,6 @@ class PhotoViewGalleryPageOptions {
     this.gestureDetectorBehavior,
     this.tightMode,
     this.filterQuality,
-    this.doubleTapDisabled
   })  : child = null,
         childSize = null,
         assert(imageProvider != null);
@@ -354,7 +353,6 @@ class PhotoViewGalleryPageOptions {
     this.gestureDetectorBehavior,
     this.tightMode,
     this.filterQuality,
-    this.doubleTapDisabled
   })  : imageProvider = null,
         assert(child != null);
 
@@ -405,7 +403,4 @@ class PhotoViewGalleryPageOptions {
 
   /// Quality levels for image filters.
   final FilterQuality filterQuality;
-
-  /// disabled double tap zoom
-  final bool doubleTapDisabled;
 }
