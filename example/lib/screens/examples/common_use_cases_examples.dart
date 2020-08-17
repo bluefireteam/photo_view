@@ -131,6 +131,20 @@ class CommonUseCasesExamples extends StatelessWidget {
               );
             },
           ),
+          ExampleButtonNode(
+            title: "No gesture ",
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const CommonExampleRouteWrapper(
+                    imageProvider: const AssetImage("assets/large-image.jpg"),
+                    disableGestures: true,
+                  ),
+                ),
+              );
+            },
+          ),
         ],
       ),
     );
