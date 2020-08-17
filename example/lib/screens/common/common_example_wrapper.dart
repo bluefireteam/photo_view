@@ -11,6 +11,7 @@ class CommonExampleRouteWrapper extends StatelessWidget {
     this.initialScale,
     this.basePosition = Alignment.center,
     this.filterQuality = FilterQuality.none,
+    this.disableGestures,
   });
 
   final ImageProvider imageProvider;
@@ -21,6 +22,7 @@ class CommonExampleRouteWrapper extends StatelessWidget {
   final dynamic initialScale;
   final Alignment basePosition;
   final FilterQuality filterQuality;
+  final bool disableGestures;
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +40,7 @@ class CommonExampleRouteWrapper extends StatelessWidget {
           initialScale: initialScale,
           basePosition: basePosition,
           filterQuality: filterQuality,
+          disableGestures: disableGestures,
         ),
       ),
     );
