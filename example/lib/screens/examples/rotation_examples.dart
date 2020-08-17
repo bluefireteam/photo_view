@@ -21,16 +21,17 @@ class GestureRotationExample extends StatelessWidget {
           ),
           Expanded(
             child: Container(
-                margin: const EdgeInsets.symmetric(vertical: 20.0),
-                height: 300.0,
-                child: ClipRect(
-                  child: PhotoView(
-                    imageProvider: const AssetImage("assets/large-image.jpg"),
-                    maxScale: PhotoViewComputedScale.covered,
-                    initialScale: PhotoViewComputedScale.contained * 0.8,
-                    enableRotation: true,
-                  ),
-                )),
+              margin: const EdgeInsets.symmetric(vertical: 20.0),
+              height: 300.0,
+              child: ClipRect(
+                child: PhotoView(
+                  imageProvider: const AssetImage("assets/large-image.jpg"),
+                  maxScale: PhotoViewComputedScale.covered,
+                  initialScale: PhotoViewComputedScale.contained * 0.8,
+                  enableRotation: true,
+                ),
+              ),
+            ),
           ),
         ],
       ),
@@ -66,17 +67,17 @@ class _ProgrammaticRotationExampleState
             showGoBack: true,
           ),
           Expanded(
-              child: Column(
-            children: <Widget>[
-              Container(
-                padding: const EdgeInsets.all(20.0),
-                child: const Text(
-                  "Example without manual rotation, click the button to rotate",
-                  style: const TextStyle(fontSize: 18.0),
+            child: Column(
+              children: <Widget>[
+                Container(
+                  padding: const EdgeInsets.all(20.0),
+                  child: const Text(
+                    "Example without manual rotation, click the button to rotate",
+                    style: const TextStyle(fontSize: 18.0),
+                  ),
                 ),
-              ),
-              Expanded(
-                child: Container(
+                Expanded(
+                  child: Container(
                     margin: const EdgeInsets.symmetric(vertical: 20.0),
                     height: 300.0,
                     child: ClipRect(
@@ -88,10 +89,12 @@ class _ProgrammaticRotationExampleState
                         initialScale: PhotoViewComputedScale.contained * 0.8,
                         enableRotation: false,
                       ),
-                    )),
-              ),
-            ],
-          ))
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )
         ],
       ),
       floatingActionButton: FloatingActionButton(
