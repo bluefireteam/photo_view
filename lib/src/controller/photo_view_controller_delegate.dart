@@ -61,7 +61,8 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
   }
 
   void addAnimateOnScaleStateUpdate(
-      void animateScale(double prevScale, double nextScale)) {
+    void animateScale(double prevScale, double nextScale),
+  ) {
     _animateScale = animateScale;
   }
 

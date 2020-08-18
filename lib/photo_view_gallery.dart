@@ -333,7 +333,7 @@ class PhotoViewGalleryPageOptions {
         childSize = null,
         assert(imageProvider != null);
 
-  PhotoViewGalleryPageOptions.customChild( {
+  PhotoViewGalleryPageOptions.customChild({
     @required this.child,
     this.childSize,
     this.heroAttributes,
