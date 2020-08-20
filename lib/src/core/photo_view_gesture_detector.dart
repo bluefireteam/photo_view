@@ -150,6 +150,7 @@ class PhotoViewGestureRecognizer extends ScaleGestureRecognizer {
       return;
     }
     final move = _initialFocalPoint - _currentFocalPoint;
+    if (move == Offset.zero) return;
     final bool shouldMove = validateAxis == Axis.vertical
         ? hitDetector.shouldMoveY(move)
         : hitDetector.shouldMoveX(move);
