@@ -33,7 +33,7 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
   /// Mark if scale need recalculation, useful for scale boundaries changes.
   bool markNeedsScaleRecalc = true;
 
-  void startListeners() {
+  void initDelegate() {
     controller.addIgnorableListener(_blindScaleListener);
     scaleStateController.addIgnorableListener(_blindScaleStateListener);
   }
@@ -82,8 +82,10 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
   Offset get position => controller.position;
 
   double get scale {
+    // for initial scale figreing out,
     final needsRecalc = markNeedsScaleRecalc &&
         !scaleStateController.scaleState.isScaleStateZooming;
+
     final scaleExistsOnController = controller.scale != null;
     if (needsRecalc || !scaleExistsOnController) {
       final newScale = getScaleForScaleState(
@@ -106,10 +108,11 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
     Offset rotationFocusPoint,
   }) {
     controller.updateMultiple(
-        position: position,
-        scale: scale,
-        rotation: rotation,
-        rotationFocusPoint: rotationFocusPoint);
+      position: position,
+      scale: scale,
+      rotation: rotation,
+      rotationFocusPoint: rotationFocusPoint,
+    );
   }
 
   void updateScaleStateFromNewScale(double newScale) {
