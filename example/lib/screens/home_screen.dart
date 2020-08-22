@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:photo_view_example/screens/common/app_bar.dart';
 import 'package:photo_view_example/screens/examples/controller_example.dart';
 import 'package:photo_view_example/screens/examples/custom_child_examples.dart';
 import 'package:photo_view_example/screens/examples/dialog_example.dart';
-import 'package:photo_view_example/screens/examples/full_screen_examples.dart';
+import 'package:photo_view_example/screens/examples/common_use_cases_examples.dart';
 import 'package:photo_view_example/screens/examples/gallery/gallery_example.dart';
 import 'package:photo_view_example/screens/examples/hero_example.dart';
 import 'package:photo_view_example/screens/examples/inline_examples.dart';
 import 'package:photo_view_example/screens/examples/rotation_examples.dart';
-import './app_bar.dart';
+
+import 'examples/network-images.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -28,70 +30,126 @@ class HomeScreen extends StatelessWidget {
           Expanded(
             child: ListView(
               children: <Widget>[
-                _buildItem(context, onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => FullScreenExamples(),
-                    ),
-                  );
-                }, text: "Full screen"),
-                _buildItem(context, onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ControllerExample(),
-                    ),
-                  );
-                }, text: "Controller"),
-                _buildItem(context, onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => InlineExample(),
-                    ),
-                  );
-                }, text: "Part of the screen"),
-                _buildItem(context, onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => RotationExamples(),
-                    ),
-                  );
-                }, text: "Rotation Gesture"),
-                _buildItem(context, onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => HeroExample(),
-                    ),
-                  );
-                }, text: "Hero animation"),
-                _buildItem(context, onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => GalleryExample(),
-                    ),
-                  );
-                }, text: "Gallery"),
-                _buildItem(context, onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => CustomChildExample(),
-                    ),
-                  );
-                }, text: "Custom child"),
-                _buildItem(context, onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DialogExample(),
-                    ),
-                  );
-                }, text: "Integrated to dialogs"),
+                _buildItem(
+                  context,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => CommonUseCasesExamples(),
+                      ),
+                    );
+                  },
+                  text: "Common use cases",
+                ),
+                _buildItem(
+                  context,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => GalleryExample(),
+                      ),
+                    );
+                  },
+                  text: "Gallery",
+                ),
+                _buildItem(
+                  context,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => HeroExample(),
+                      ),
+                    );
+                  },
+                  text: "Hero animation",
+                ),
+                _buildItem(
+                  context,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NetworkExamples(),
+                      ),
+                    );
+                  },
+                  text: "Network images",
+                ),
+                _buildItem(
+                  context,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ControllerExample(),
+                      ),
+                    );
+                  },
+                  text: "Controller",
+                ),
+                _buildItem(
+                  context,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => InlineExample(),
+                      ),
+                    );
+                  },
+                  text: "Part of the screen",
+                ),
+                _buildItem(
+                  context,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => CustomChildExample(),
+                      ),
+                    );
+                  },
+                  text: "Custom child",
+                ),
+                _buildItem(
+                  context,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DialogExample(),
+                      ),
+                    );
+                  },
+                  text: "Integrated to dialogs",
+                ),
+                _buildItem(
+                  context,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => GestureRotationExample(),
+                      ),
+                    );
+                  },
+                  text: "Rotation Gesture",
+                ),
+                _buildItem(
+                  context,
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ProgrammaticRotationExample(),
+                      ),
+                    );
+                  },
+                  text: "Rotation Programmatic",
+                ),
               ],
             ),
           ),

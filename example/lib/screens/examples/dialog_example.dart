@@ -1,22 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:photo_view_example/screens/app_bar.dart';
+import 'package:photo_view_example/screens/common/app_bar.dart';
 
-class DialogExample extends StatelessWidget {
+class DialogExample extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: DialogExampleInner(),
-    );
-  }
+  _DialogExampleState createState() => _DialogExampleState();
 }
 
-class DialogExampleInner extends StatefulWidget {
-  @override
-  _DialogExampleInnerState createState() => _DialogExampleInnerState();
-}
-
-class _DialogExampleInnerState extends State<DialogExampleInner> {
+class _DialogExampleState extends State<DialogExample> {
   VoidCallback openDialog(BuildContext context) => () {
         showDialog(
           context: context,
@@ -43,8 +34,9 @@ class _DialogExampleInnerState extends State<DialogExampleInner> {
             return PhotoViewGestureDetectorScope(
               axis: Axis.vertical,
               child: PhotoView(
-                backgroundDecoration:
-                    BoxDecoration(color: Colors.black.withAlpha(240)),
+                backgroundDecoration: BoxDecoration(
+                  color: Colors.black.withAlpha(240),
+                ),
                 imageProvider: const AssetImage("assets/large-image.jpg"),
                 heroAttributes: const PhotoViewHeroAttributes(tag: "someTag"),
               ),
@@ -78,38 +70,31 @@ class _DialogExampleInnerState extends State<DialogExampleInner> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: <Widget>[
-        const ExampleAppBar(
-          title: "Dialog Example",
-          showGoBack: true,
-        ),
-        Expanded(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                decoration: BoxDecoration(color: Colors.red),
-              ),
-              RaisedButton(
-                child: const Text("Dialog"),
-                onPressed: openDialog(context),
-              ),
-              const Divider(),
-              RaisedButton(
-                child: const Text("Bottom sheet"),
-                onPressed: openBottomSheet(context),
-              ),
-              const Divider(),
-              RaisedButton(
-                child: const Text("Bottom sheet tight mode"),
-                onPressed: openBottomSheetModal(context),
-              ),
-            ],
+    return ExampleAppBarLayout(
+      title: "Dialogs integration",
+      showGoBack: true,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Container(
+            decoration: const BoxDecoration(color: Colors.red),
           ),
-        ),
-      ],
+          RaisedButton(
+            child: const Text("Dialog"),
+            onPressed: openDialog(context),
+          ),
+          const Divider(),
+          RaisedButton(
+            child: const Text("Bottom sheet"),
+            onPressed: openBottomSheet(context),
+          ),
+          const Divider(),
+          RaisedButton(
+            child: const Text("Bottom sheet tight mode"),
+            onPressed: openBottomSheetModal(context),
+          ),
+        ],
+      ),
     );
   }
 }
