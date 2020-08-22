@@ -15,7 +15,9 @@ class HeroExample extends StatelessWidget {
               context,
               MaterialPageRoute(
                 builder: (context) => const HeroPhotoViewRouteWrapper(
-                  imageProvider: AssetImage("assets/large-image.jpg"),
+                  imageProvider: NetworkImage(
+                    "https://source.unsplash.com/4900x3600/?camera,paper",
+                  ),
                 ),
               ),
             );
@@ -23,7 +25,12 @@ class HeroExample extends StatelessWidget {
           child: Container(
             child: Hero(
               tag: "someTag",
-              child: Image.asset("assets/large-image.jpg", width: 150.0),
+              child: Image.network(
+                "https://source.unsplash.com/4900x3600/?camera,paper",
+                width: 350.0,
+                loadingBuilder: (_, child, chunk) =>
+                    chunk != null ? const Text("loading") : child,
+              ),
             ),
           ),
         ),
@@ -35,14 +42,12 @@ class HeroExample extends StatelessWidget {
 class HeroPhotoViewRouteWrapper extends StatelessWidget {
   const HeroPhotoViewRouteWrapper({
     this.imageProvider,
-    this.loadingBuilder,
     this.backgroundDecoration,
     this.minScale,
     this.maxScale,
   });
 
   final ImageProvider imageProvider;
-  final LoadingBuilder loadingBuilder;
   final Decoration backgroundDecoration;
   final dynamic minScale;
   final dynamic maxScale;
@@ -55,7 +60,6 @@ class HeroPhotoViewRouteWrapper extends StatelessWidget {
       ),
       child: PhotoView(
         imageProvider: imageProvider,
-        loadingBuilder: loadingBuilder,
         backgroundDecoration: backgroundDecoration,
         minScale: minScale,
         maxScale: maxScale,
