@@ -19,7 +19,8 @@ class NetworkExamples extends StatelessWidget {
                 MaterialPageRoute(
                   builder: (context) => CommonExampleRouteWrapper(
                     imageProvider: const NetworkImage(
-                        "https://source.unsplash.com/1900x3600/?camera,paper"),
+                      "https://source.unsplash.com/1900x3600/?camera,paper",
+                    ),
                     loadingBuilder: (context, event) {
                       if (event == null) {
                         return const Center(
@@ -40,7 +41,7 @@ class NetworkExamples extends StatelessWidget {
             },
           ),
           ExampleButtonNode(
-            title: "Image from the internet (with custom loader)",
+            title: "Error image",
             onPressed: () {
               Navigator.push(
                 context,
