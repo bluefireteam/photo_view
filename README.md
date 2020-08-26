@@ -1,6 +1,6 @@
 # Flutter Photo View 
 
-[![Tests status](https://img.shields.io/github/workflow/status/renancaraujo/photo_view/Test/master?label=tests)](https://github.com/renancaraujo/photo_view/actions) [![Pub](https://img.shields.io/pub/v/photo_view.svg?style=popout)](https://pub.dartlang.org/packages/photo_view) [![Chat](https://badges.gitter.im/photo_view/Lobby.svg)](https://gitter.im/photo_view/Lobby)
+[![Tests status](https://img.shields.io/github/workflow/status/renancaraujo/photo_view/Test/master?label=tests)](https://github.com/renancaraujo/photo_view/actions) [![Pub](https://img.shields.io/pub/v/photo_view.svg?style=popout)](https://pub.dartlang.org/packages/photo_view) [![Chat](https://img.shields.io/discord/509714518008528896)](https://discord.gg/pxrBmy4)
 
 A simple zoomable image/content widget for Flutter.
 
