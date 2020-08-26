@@ -102,7 +102,6 @@ class PhotoViewGallery extends StatefulWidget {
   const PhotoViewGallery({
     Key key,
     @required this.pageOptions,
-    @Deprecated("Use loadingBuilder instead") this.loadingChild,
     this.loadingBuilder,
     this.loadFailedChild,
     this.backgroundDecoration,
@@ -116,8 +115,7 @@ class PhotoViewGallery extends StatefulWidget {
     this.scrollPhysics,
     this.scrollDirection = Axis.horizontal,
     this.customSize,
-  })  : _isBuilder = false,
-        itemCount = null,
+  })  : itemCount = null,
         builder = null,
         assert(pageOptions != null),
         super(key: key);
@@ -129,7 +127,6 @@ class PhotoViewGallery extends StatefulWidget {
     Key key,
     @required this.itemCount,
     @required this.builder,
-    @Deprecated("Use loadingBuilder instead") this.loadingChild,
     this.loadingBuilder,
     this.loadFailedChild,
     this.backgroundDecoration,
@@ -143,8 +140,7 @@ class PhotoViewGallery extends StatefulWidget {
     this.scrollPhysics,
     this.scrollDirection = Axis.horizontal,
     this.customSize,
-  })  : _isBuilder = true,
-        pageOptions = null,
+  })  : pageOptions = null,
         assert(itemCount != null),
         assert(builder != null),
         super(key: key);
@@ -163,9 +159,6 @@ class PhotoViewGallery extends StatefulWidget {
 
   /// Mirror to [PhotoView.loadingBuilder]
   final LoadingBuilder loadingBuilder;
-
-  /// Mirror to [PhotoView.loadingchild]
-  final Widget loadingChild;
 
   /// Mirror to [PhotoView.loadFailedChild]
   final Widget loadFailedChild;
@@ -200,7 +193,7 @@ class PhotoViewGallery extends StatefulWidget {
   /// The axis along which the [PageView] scrolls. Mirror to [PageView.scrollDirection]
   final Axis scrollDirection;
 
-  final bool _isBuilder;
+  bool get _isBuilder => builder != null;
 
   @override
   State<StatefulWidget> createState() {
@@ -278,12 +271,12 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             tightMode: pageOption.tightMode,
             filterQuality: pageOption.filterQuality,
             basePosition: pageOption.basePosition,
+            disableGestures: pageOption.disableGestures,
           )
         : PhotoView(
             key: ObjectKey(index),
             imageProvider: pageOption.imageProvider,
             loadingBuilder: widget.loadingBuilder,
-            loadingChild: widget.loadingChild,
             loadFailedChild: widget.loadFailedChild,
             backgroundDecoration: widget.backgroundDecoration,
             controller: pageOption.controller,
@@ -304,6 +297,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             tightMode: pageOption.tightMode,
             filterQuality: pageOption.filterQuality,
             basePosition: pageOption.basePosition,
+            disableGestures: pageOption.disableGestures,
           );
 
     return ClipRect(
@@ -341,6 +335,7 @@ class PhotoViewGalleryPageOptions {
     this.gestureDetectorBehavior,
     this.tightMode,
     this.filterQuality,
+    this.disableGestures,
   })  : child = null,
         childSize = null,
         assert(imageProvider != null);
@@ -361,6 +356,7 @@ class PhotoViewGalleryPageOptions {
     this.gestureDetectorBehavior,
     this.tightMode,
     this.filterQuality,
+    this.disableGestures,
   })  : imageProvider = null,
         assert(child != null);
 
@@ -408,6 +404,9 @@ class PhotoViewGalleryPageOptions {
 
   /// Mirror to [PhotoView.tightMode]
   final bool tightMode;
+
+  /// Mirror to [PhotoView.disableGestures]
+  final bool disableGestures;
 
   /// Quality levels for image filters.
   final FilterQuality filterQuality;
