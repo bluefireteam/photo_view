@@ -195,7 +195,7 @@ class _ImageWrapperState extends State<ImageWrapper> {
   }
 }
 
-class CustomChildWrapper extends StatefulWidget {
+class CustomChildWrapper extends StatelessWidget {
   const CustomChildWrapper({
     Key key,
     this.child,
@@ -245,36 +245,31 @@ class CustomChildWrapper extends StatefulWidget {
   final bool disableGestures;
 
   @override
-  _CustomChildWrapperState createState() => _CustomChildWrapperState();
-}
-
-class _CustomChildWrapperState extends State<CustomChildWrapper> {
-  @override
   Widget build(BuildContext context) {
     final scaleBoundaries = ScaleBoundaries(
-      widget.minScale ?? 0.0,
-      widget.maxScale ?? double.infinity,
-      widget.initialScale ?? PhotoViewComputedScale.contained,
-      widget.outerSize,
-      widget.childSize ?? widget.outerSize,
+      minScale ?? 0.0,
+      maxScale ?? double.infinity,
+      initialScale ?? PhotoViewComputedScale.contained,
+      outerSize,
+      childSize ?? outerSize,
     );
 
     return PhotoViewCore.customChild(
-      customChild: widget.child,
-      backgroundDecoration: widget.backgroundDecoration,
-      enableRotation: widget.enableRotation,
-      heroAttributes: widget.heroAttributes,
-      controller: widget.controller,
-      scaleStateController: widget.scaleStateController,
-      scaleStateCycle: widget.scaleStateCycle ?? defaultScaleStateCycle,
-      basePosition: widget.basePosition ?? Alignment.center,
+      customChild: child,
+      backgroundDecoration: backgroundDecoration,
+      enableRotation: enableRotation,
+      heroAttributes: heroAttributes,
+      controller: controller,
+      scaleStateController: scaleStateController,
+      scaleStateCycle: scaleStateCycle ?? defaultScaleStateCycle,
+      basePosition: basePosition ?? Alignment.center,
       scaleBoundaries: scaleBoundaries,
-      onTapUp: widget.onTapUp,
-      onTapDown: widget.onTapDown,
-      gestureDetectorBehavior: widget.gestureDetectorBehavior,
-      tightMode: widget.tightMode ?? false,
-      filterQuality: widget.filterQuality ?? FilterQuality.none,
-      disableGestures: widget.disableGestures ?? false,
+      onTapUp: onTapUp,
+      onTapDown: onTapDown,
+      gestureDetectorBehavior: gestureDetectorBehavior,
+      tightMode: tightMode ?? false,
+      filterQuality: filterQuality ?? FilterQuality.none,
+      disableGestures: disableGestures ?? false,
     );
   }
 }
