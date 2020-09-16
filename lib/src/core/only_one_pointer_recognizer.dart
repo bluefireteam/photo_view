@@ -2,22 +2,21 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 
 class OnlyOnePointerRecognizer extends ScaleGestureRecognizer {
-    OnlyOnePointerRecognizer({
+  OnlyOnePointerRecognizer({
     Object debugOwner,
     PointerDeviceKind kind,
   }) : super(debugOwner: debugOwner, kind: kind);
-
 
   int _p = 0;
   @override
   void addPointer(PointerDownEvent event) {
     // startTrackingPointer(event.pointer);
-    
+
     if (_p == 0) {
-      resolve(GestureDisposition.rejected);
+      resolve(GestureDisposition.accepted);
       _p = event.pointer;
     } else {
-      resolve(GestureDisposition.accepted);
+      resolve(GestureDisposition.rejected);
     }
   }
 
