@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
-import 'package:photo_view_example/screens/app_bar.dart';
+import 'package:photo_view_example/screens/common/app_bar.dart';
 import 'package:photo_view_example/screens/examples/gallery/gallery_example_item.dart';
 
 class GalleryExample extends StatefulWidget {
@@ -15,61 +15,52 @@ class _GalleryExampleState extends State<GalleryExample> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          const ExampleAppBar(
-            title: "Gallery Example",
-            showGoBack: true,
-          ),
-          Expanded(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      GalleryExampleItemThumbnail(
-                        galleryExampleItem: galleryItems[0],
-                        onTap: () {
-                          open(context, 0);
-                        },
-                      ),
-                      GalleryExampleItemThumbnail(
-                        galleryExampleItem: galleryItems[2],
-                        onTap: () {
-                          open(context, 2);
-                        },
-                      ),
-                      GalleryExampleItemThumbnail(
-                        galleryExampleItem: galleryItems[3],
-                        onTap: () {
-                          open(context, 3);
-                        },
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      const Text("Vertical"),
-                      Checkbox(
-                        value: verticalGallery,
-                        onChanged: (value) {
-                          setState(() {
-                            verticalGallery = value;
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+    return ExampleAppBarLayout(
+      title: "Gallery Example",
+      showGoBack: true,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                GalleryExampleItemThumbnail(
+                  galleryExampleItem: galleryItems[0],
+                  onTap: () {
+                    open(context, 0);
+                  },
+                ),
+                GalleryExampleItemThumbnail(
+                  galleryExampleItem: galleryItems[2],
+                  onTap: () {
+                    open(context, 2);
+                  },
+                ),
+                GalleryExampleItemThumbnail(
+                  galleryExampleItem: galleryItems[3],
+                  onTap: () {
+                    open(context, 3);
+                  },
+                ),
+              ],
             ),
-          ),
-        ],
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                const Text("Vertical"),
+                Checkbox(
+                  value: verticalGallery,
+                  onChanged: (value) {
+                    setState(() {
+                      verticalGallery = value;
+                    });
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -185,14 +176,14 @@ class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
             childSize: const Size(300, 300),
             initialScale: PhotoViewComputedScale.contained,
             minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
-            maxScale: PhotoViewComputedScale.covered * 1.1,
+            maxScale: PhotoViewComputedScale.covered * 4.1,
             heroAttributes: PhotoViewHeroAttributes(tag: item.id),
           )
         : PhotoViewGalleryPageOptions(
             imageProvider: AssetImage(item.resource),
             initialScale: PhotoViewComputedScale.contained,
             minScale: PhotoViewComputedScale.contained * (0.5 + index / 10),
-            maxScale: PhotoViewComputedScale.covered * 1.1,
+            maxScale: PhotoViewComputedScale.covered * 4.1,
             heroAttributes: PhotoViewHeroAttributes(tag: item.id),
           );
   }
