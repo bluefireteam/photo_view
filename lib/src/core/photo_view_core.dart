@@ -38,6 +38,7 @@ class PhotoViewCore extends StatefulWidget {
     @required this.basePosition,
     @required this.tightMode,
     @required this.filterQuality,
+    @required this.disableGestures,
   })  : customChild = null,
         super(key: key);
 
@@ -57,6 +58,7 @@ class PhotoViewCore extends StatefulWidget {
     @required this.basePosition,
     @required this.tightMode,
     @required this.filterQuality,
+    @required this.disableGestures,
   })  : imageProvider = null,
         gaplessPlayback = false,
         super(key: key);
@@ -79,6 +81,7 @@ class PhotoViewCore extends StatefulWidget {
 
   final HitTestBehavior gestureDetectorBehavior;
   final bool tightMode;
+  final bool disableGestures;
 
   final FilterQuality filterQuality;
 
@@ -143,8 +146,9 @@ class PhotoViewCoreState extends State<PhotoViewCore>
     updateMultiple(
       scale: newScale,
       position: clampPosition(position: delta * details.scale),
-      rotation: _rotationBefore + details.rotation,
-      rotationFocusPoint: details.focalPoint,
+      rotation:
+          widget.enableRotation ? _rotationBefore + details.rotation : null,
+      rotationFocusPoint: widget.enableRotation ? details.focalPoint : null,
     );
   }
 
@@ -300,10 +304,8 @@ class PhotoViewCoreState extends State<PhotoViewCore>
 
             final matrix = Matrix4.identity()
               ..translate(value.position.dx, value.position.dy)
-              ..scale(computedScale);
-            if (widget.enableRotation) {
-              matrix..rotateZ(value.rotation);
-            }
+              ..scale(computedScale)
+              ..rotateZ(value.rotation);
 
             final Widget customChildLayout = CustomSingleChildLayout(
               delegate: _CenterWithOriginalSizeDelegate(
@@ -313,20 +315,27 @@ class PhotoViewCoreState extends State<PhotoViewCore>
               ),
               child: _buildHero(),
             );
-            return PhotoViewGestureDetector(
-              child: Container(
-                constraints: widget.tightMode
-                    ? BoxConstraints.tight(scaleBoundaries.childSize * scale)
-                    : null,
-                child: Center(
-                  child: Transform(
-                    child: customChildLayout,
-                    transform: matrix,
-                    alignment: basePosition,
-                  ),
+
+            final child = Container(
+              constraints: widget.tightMode
+                  ? BoxConstraints.tight(scaleBoundaries.childSize * scale)
+                  : null,
+              child: Center(
+                child: Transform(
+                  child: customChildLayout,
+                  transform: matrix,
+                  alignment: basePosition,
                 ),
-                decoration: widget.backgroundDecoration ?? _defaultDecoration,
               ),
+              decoration: widget.backgroundDecoration ?? _defaultDecoration,
+            );
+
+            if (widget.disableGestures) {
+              return child;
+            }
+
+            return PhotoViewGestureDetector(
+              child: child,
               onDoubleTap: nextScaleState,
               onScaleStart: onScaleStart,
               onScaleUpdate: onScaleUpdate,
