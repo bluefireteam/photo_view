@@ -1,5 +1,5 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/widgets.dart';
 
 class OnlyOnePointerRecognizer extends ScaleGestureRecognizer {
   OnlyOnePointerRecognizer({
@@ -10,46 +10,21 @@ class OnlyOnePointerRecognizer extends ScaleGestureRecognizer {
   int _p = 0;
   @override
   void addPointer(PointerDownEvent event) {
-    // startTrackingPointer(event.pointer);
-
     if (_p == 0) {
-      resolve(GestureDisposition.accepted);
+      resolve(GestureDisposition.rejected);
       _p = event.pointer;
     } else {
-      resolve(GestureDisposition.rejected);
+      resolve(GestureDisposition.accepted);
     }
+
+    super.addPointer(event);
   }
-
-  // @override
-  // String get debugDescription => 'only one pointer recognizer';
-
-  // @override
-  // void didStopTrackingLastPointer(int pointer) {}
 
   @override
   void handleEvent(PointerEvent event) {
     if (!event.down && event.pointer == _p) {
       _p = 0;
     }
-
     super.handleEvent(event);
-  }
-}
-
-class OnlyOnePointerRecognizerWidget extends StatelessWidget {
-  final Widget child;
-  OnlyOnePointerRecognizerWidget({this.child});
-  @override
-  Widget build(BuildContext context) {
-    return RawGestureDetector(
-      gestures: <Type, GestureRecognizerFactory>{
-        OnlyOnePointerRecognizer:
-            GestureRecognizerFactoryWithHandlers<OnlyOnePointerRecognizer>(
-          () => OnlyOnePointerRecognizer(),
-          (OnlyOnePointerRecognizer instance) {},
-        ),
-      },
-      child: child,
-    );
   }
 }
