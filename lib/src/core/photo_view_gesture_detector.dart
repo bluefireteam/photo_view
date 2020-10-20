@@ -52,14 +52,6 @@ class PhotoViewGestureDetector extends StatelessWidget {
       );
     }
 
-    gestures[DoubleTapGestureRecognizer] =
-        GestureRecognizerFactoryWithHandlers<DoubleTapGestureRecognizer>(
-      () => DoubleTapGestureRecognizer(debugOwner: this),
-      (DoubleTapGestureRecognizer instance) {
-        instance..onDoubleTap = onDoubleTap;
-      },
-    );
-
     gestures[PhotoViewGestureRecognizer] =
         GestureRecognizerFactoryWithHandlers<PhotoViewGestureRecognizer>(
       () => PhotoViewGestureRecognizer(
@@ -72,8 +64,16 @@ class PhotoViewGestureDetector extends StatelessWidget {
       },
     );
 
+    gestures[DoubleTapGestureRecognizer] =
+        GestureRecognizerFactoryWithHandlers<DoubleTapGestureRecognizer>(
+      () => DoubleTapGestureRecognizer(debugOwner: this),
+      (DoubleTapGestureRecognizer instance) {
+        instance..onDoubleTap = onDoubleTap;
+      },
+    );
+
     return RawGestureDetector(
-      behavior: behavior,
+      behavior: behavior ?? HitTestBehavior.translucent,
       child: child,
       gestures: gestures,
     );
@@ -150,7 +150,10 @@ class PhotoViewGestureRecognizer extends ScaleGestureRecognizer {
       return;
     }
     final move = _initialFocalPoint - _currentFocalPoint;
-    final bool shouldMove = hitDetector.shouldMove(move, validateAxis);
+    if (move == Offset.zero) return;
+    final bool shouldMove = validateAxis == Axis.vertical
+        ? hitDetector.shouldMoveY(move)
+        : hitDetector.shouldMoveX(move);
     if (shouldMove || _pointerLocations.keys.length > 1) {
       acceptGesture(event.pointer);
     }
