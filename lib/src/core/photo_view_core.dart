@@ -142,10 +142,9 @@ class PhotoViewCoreState extends State<PhotoViewCore>
 
     updateScaleStateFromNewScale(newScale);
 
-    //
     updateMultiple(
       scale: newScale,
-      position: clampPosition(position: delta * details.scale),
+      position: clampPosition(position: delta),
       rotation:
           widget.enableRotation ? _rotationBefore + details.rotation : null,
       rotationFocusPoint: widget.enableRotation ? details.focalPoint : null,
