@@ -17,6 +17,7 @@ class ImageWrapper extends StatefulWidget {
     this.scaleStateChangedCallback,
     this.enableRotation = false,
     this.enableMoveOnMinScale = false,
+    this.enableDoubleTap,
     this.controller,
     this.scaleStateController,
     this.maxScale,
@@ -60,6 +61,7 @@ class ImageWrapper extends StatefulWidget {
   final bool tightMode;
   final FilterQuality filterQuality;
   final bool disableGestures;
+  final bool enableDoubleTap;
 
   @override
   _ImageWrapperState createState() => _ImageWrapperState();
@@ -172,6 +174,7 @@ class _ImageWrapperState extends State<ImageWrapper> {
       tightMode: widget.tightMode ?? false,
       filterQuality: widget.filterQuality ?? FilterQuality.none,
       disableGestures: widget.disableGestures ?? false,
+      enableDoubleTap: widget.enableDoubleTap ?? true,
     );
   }
 
@@ -222,6 +225,7 @@ class CustomChildWrapper extends StatefulWidget {
     this.tightMode,
     this.filterQuality,
     this.disableGestures,
+    this.enableDoubleTap,
   }) : super(key: key);
 
   final Widget child;
@@ -248,6 +252,7 @@ class CustomChildWrapper extends StatefulWidget {
   final bool tightMode;
   final FilterQuality filterQuality;
   final bool disableGestures;
+  final bool enableDoubleTap;
 
   @override
   _CustomChildWrapperState createState() => _CustomChildWrapperState();
@@ -281,6 +286,7 @@ class _CustomChildWrapperState extends State<CustomChildWrapper> {
       tightMode: widget.tightMode ?? false,
       filterQuality: widget.filterQuality ?? FilterQuality.none,
       disableGestures: widget.disableGestures ?? false,
+      enableDoubleTap: widget.enableDoubleTap ?? true,
     );
   }
 }

@@ -40,6 +40,7 @@ class PhotoViewCore extends StatefulWidget {
     @required this.tightMode,
     @required this.filterQuality,
     @required this.disableGestures,
+    @required this.enableDoubleTap,
   })  : customChild = null,
         super(key: key);
 
@@ -61,6 +62,7 @@ class PhotoViewCore extends StatefulWidget {
     @required this.tightMode,
     @required this.filterQuality,
     @required this.disableGestures,
+    @required this.enableDoubleTap,
   })  : imageProvider = null,
         gaplessPlayback = false,
         super(key: key);
@@ -85,6 +87,7 @@ class PhotoViewCore extends StatefulWidget {
   final HitTestBehavior gestureDetectorBehavior;
   final bool tightMode;
   final bool disableGestures;
+  final bool enableDoubleTap;
 
   final FilterQuality filterQuality;
 
@@ -339,7 +342,7 @@ class PhotoViewCoreState extends State<PhotoViewCore>
 
             return PhotoViewGestureDetector(
               child: child,
-              onDoubleTap: nextScaleState,
+              onDoubleTap: widget.enableDoubleTap ? nextScaleState : null,
               onScaleStart: onScaleStart,
               onScaleUpdate: onScaleUpdate,
               onScaleEnd: onScaleEnd,

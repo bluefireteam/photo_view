@@ -261,6 +261,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             scaleStateChangedCallback: scaleStateChangedCallback,
             enableRotation: widget.enableRotation,
             enableMoveOnMinScale: widget.enableMoveOnMinScale,
+            enableDoubleTap: pageOption.enableDoubleTap,
             initialScale: pageOption.initialScale,
             minScale: pageOption.minScale,
             maxScale: pageOption.maxScale,
@@ -287,6 +288,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             scaleStateChangedCallback: scaleStateChangedCallback,
             enableRotation: widget.enableRotation,
             enableMoveOnMinScale: widget.enableMoveOnMinScale,
+            enableDoubleTap: pageOption.enableDoubleTap,
             initialScale: pageOption.initialScale,
             minScale: pageOption.minScale,
             maxScale: pageOption.maxScale,
@@ -336,6 +338,7 @@ class PhotoViewGalleryPageOptions {
     this.tightMode,
     this.filterQuality,
     this.disableGestures,
+    this.enableDoubleTap,
   })  : child = null,
         childSize = null,
         assert(imageProvider != null);
@@ -357,6 +360,7 @@ class PhotoViewGalleryPageOptions {
     this.tightMode,
     this.filterQuality,
     this.disableGestures,
+    this.enableDoubleTap,
   })  : imageProvider = null,
         assert(child != null);
 
@@ -407,6 +411,9 @@ class PhotoViewGalleryPageOptions {
 
   /// Mirror to [PhotoView.disableGestures]
   final bool disableGestures;
+
+  /// Mirror to [PhotoView.enableDoubleTap]
+  final bool enableDoubleTap;
 
   /// Quality levels for image filters.
   final FilterQuality filterQuality;
