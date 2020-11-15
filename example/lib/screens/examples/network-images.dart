@@ -50,11 +50,39 @@ class NetworkExamples extends StatelessWidget {
                     imageProvider: const NetworkImage(
                       "https://pudim.com.br/sss.jpg",
                     ),
+                    backgroundDecoration: BoxDecoration(
+                      color: Color(0xffa1a1a1),
+                    ),
                   ),
                 ),
               );
             },
-          )
+          ),
+          ExampleButtonNode(
+            title: "Error image with custom error screen",
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => CommonExampleRouteWrapper(
+                    imageProvider: const NetworkImage(
+                      "https://pudim.com.br/sss.jpg",
+                    ),
+                    errorBuilder: (_, __, ___) {
+                      return Container(
+                        child: Column(
+                          children: [
+                            Image.asset("assets/neat.gif"),
+                            const Text("well, that went badly"),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              );
+            },
+          ),
         ],
       ),
     );

@@ -14,8 +14,9 @@ class ExampleAppBar extends StatelessWidget {
         decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: const BorderRadius.only(
-                bottomLeft: const Radius.circular(10.0),
-                bottomRight: const Radius.circular(10.0)),
+              bottomLeft: const Radius.circular(10.0),
+              bottomRight: const Radius.circular(10.0),
+            ),
             boxShadow: <BoxShadow>[
               const BoxShadow(
                   color: Colors.black12, spreadRadius: 10.0, blurRadius: 20.0)
