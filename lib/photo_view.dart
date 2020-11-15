@@ -213,7 +213,7 @@ export 'src/utils/photo_view_hero_attributes.dart';
 ///             child: PhotoView(
 ///               imageProvider: AssetImage("assets/pudim.png"),
 ///               scaleStateController: scaleStateController,
-///               );
+///             );
 ///         ),
 ///         FlatButton(
 ///           child: Text("Go to original size"),

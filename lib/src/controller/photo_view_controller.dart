@@ -124,11 +124,12 @@ class PhotoViewController
   PhotoViewController({
     Offset initialPosition = Offset.zero,
     double initialRotation = 0.0,
+    double initialScale,
   })  : _valueNotifier = IgnorableValueNotifier(
           PhotoViewControllerValue(
             position: initialPosition,
             rotation: initialRotation,
-            scale: null, // initial  scale is obtained via PhotoViewScaleState
+            scale: initialScale,
             rotationFocusPoint: null,
           ),
         ),

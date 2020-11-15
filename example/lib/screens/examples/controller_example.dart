@@ -64,7 +64,7 @@ class _ControllerExampleState extends State<ControllerExample> {
                 controller: controller,
                 scaleStateController: scaleStateController,
                 enableRotation: true,
-                initialScale: minScale,
+                initialScale: minScale * 1.5,
                 minScale: minScale,
                 maxScale: maxScale,
               ),
