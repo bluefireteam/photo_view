@@ -65,7 +65,7 @@ class ImageWrapper extends StatefulWidget {
 
 class _ImageWrapperState extends State<ImageWrapper> {
   ImageStreamListener _imageStreamListener;
-  ImageStream _stream;
+  ImageStream _imageStream;
   ImageChunkEvent _imageChunkEvent;
   ImageInfo _imageInfo;
   bool _loading = true;
@@ -75,10 +75,13 @@ class _ImageWrapperState extends State<ImageWrapper> {
 
   // retrieve image from the provider
   void _getImage() {
-    _stream = widget.imageProvider.resolve(
+    final ImageStream newStream = widget.imageProvider.resolve(
       const ImageConfiguration(),
     );
+    _updateSourceStream(newStream);
+  }
 
+  ImageStreamListener _getOrCreateListener() {
     void handleImageChunk(ImageChunkEvent event) {
       assert(widget.loadingBuilder != null);
       setState(() => _imageChunkEvent = event);
@@ -113,19 +116,39 @@ class _ImageWrapperState extends State<ImageWrapper> {
       onChunk: handleImageChunk,
       onError: handleError,
     );
-    _stream.addListener(_imageStreamListener);
+
+    return _imageStreamListener;
+  }
+
+  void _updateSourceStream(ImageStream newStream) {
+    if (_imageStream != null) {
+      if (_imageStream?.key == newStream.key) {
+        return;
+      }
+      _imageStream.removeListener(_imageStreamListener);
+    }
+    _imageStream = newStream;
+    _imageStream.addListener(_getOrCreateListener());
   }
 
   void _stopImageStream() {
-    if (_stream != null) {
-      _stream.removeListener(_imageStreamListener);
+    if (_imageStream != null) {
+      _imageStream.removeListener(_imageStreamListener);
     }
   }
 
   @override
-  void initState() {
-    super.initState();
+  void didUpdateWidget(ImageWrapper oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.imageProvider != oldWidget.imageProvider) {
+      _getImage();
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
     _getImage();
+    super.didChangeDependencies();
   }
 
   @override
