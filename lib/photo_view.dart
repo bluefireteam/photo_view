@@ -9,6 +9,7 @@ import 'package:photo_view/src/photo_view_computed_scale.dart';
 import 'package:photo_view/src/photo_view_scale_state.dart';
 import 'package:photo_view/src/photo_view_wrappers.dart';
 import 'package:photo_view/src/utils/photo_view_hero_attributes.dart';
+import 'package:photo_view/src/utils/photoview_options.dart';
 
 export 'src/controller/photo_view_controller.dart';
 export 'src/controller/photo_view_scalestate_controller.dart';
@@ -225,7 +226,7 @@ export 'src/utils/photo_view_hero_attributes.dart';
 /// }
 /// ```
 ///
-class PhotoView extends StatefulWidget {
+class PhotoView extends StatefulWidget implements PhotoViewOptions {
   /// Creates a widget that displays a zoomable image.
   ///
   /// To show an image from the network or from an asset bundle, use their respective
@@ -238,10 +239,10 @@ class PhotoView extends StatefulWidget {
     this.loadingBuilder,
     this.loadFailedChild,
     this.backgroundDecoration,
-    this.gaplessPlayback = false,
+    this.gaplessPlayback,
     this.heroAttributes,
     this.scaleStateChangedCallback,
-    this.enableRotation = false,
+    this.enableRotation,
     this.controller,
     this.scaleStateController,
     this.maxScale,
@@ -274,7 +275,7 @@ class PhotoView extends StatefulWidget {
     this.backgroundDecoration,
     this.heroAttributes,
     this.scaleStateChangedCallback,
-    this.enableRotation = false,
+    this.enableRotation,
     this.controller,
     this.scaleStateController,
     this.maxScale,
@@ -289,6 +290,7 @@ class PhotoView extends StatefulWidget {
     this.tightMode,
     this.filterQuality,
     this.disableGestures,
+  // ignore: deprecated_member_use_from_same_package
   })  : loadFailedChild = null,
         errorBuilder = null,
         imageProvider = null,
@@ -298,95 +300,119 @@ class PhotoView extends StatefulWidget {
 
   /// Given a [imageProvider] it resolves into an zoomable image widget using. It
   /// is required
+  @override
   final ImageProvider imageProvider;
 
   /// While [imageProvider] is not resolved, [loadingBuilder] is called by [PhotoView]
   /// into the screen, by default it is a centered [CircularProgressIndicator]
+  @override
   final LoadingBuilder loadingBuilder;
 
   /// Show loadFailedChild when the image failed to load
+  @override
   final ImageErrorWidgetBuilder errorBuilder;
 
   /// Show loadFailedChild when the image failed to load
+  @override
   @Deprecated("Use errorBuilder instead")
   final Widget loadFailedChild;
 
   /// Changes the background behind image, defaults to `Colors.black`.
+  @override
   final Decoration backgroundDecoration;
 
   /// This is used to continue showing the old image (`true`), or briefly show
   /// nothing (`false`), when the `imageProvider` changes. By default it's set
   /// to `false`.
+  @override
   final bool gaplessPlayback;
 
   /// Attributes that are going to be passed to [PhotoViewCore]'s
   /// [Hero]. Leave this property undefined if you don't want a hero animation.
+  @override
   final PhotoViewHeroAttributes heroAttributes;
 
-  /// Defines the size of the scaling base of the image inside [PhotoView],
-  /// by default it is `MediaQuery.of(context).size`.
-  final Size customSize;
-
   /// A [Function] to be called whenever the scaleState changes, this happens when the user double taps the content ou start to pinch-in.
+  @override
   final ValueChanged<PhotoViewScaleState> scaleStateChangedCallback;
 
   /// A flag that enables the rotation gesture support
+  @override
   final bool enableRotation;
 
   /// The specified custom child to be shown instead of a image
+  @override
   final Widget child;
 
   /// The size of the custom [child]. [PhotoView] uses this value to compute the relation between the child and the container's size to calculate the scale value.
+  @override
   final Size childSize;
 
   /// Defines the maximum size in which the image will be allowed to assume, it
   /// is proportional to the original image size. Can be either a double (absolute value) or a
   /// [PhotoViewComputedScale], that can be multiplied by a double
+  @override
   final dynamic maxScale;
 
   /// Defines the minimum size in which the image will be allowed to assume, it
   /// is proportional to the original image size. Can be either a double (absolute value) or a
   /// [PhotoViewComputedScale], that can be multiplied by a double
+  @override
   final dynamic minScale;
 
   /// Defines the initial size in which the image will be assume in the mounting of the component, it
   /// is proportional to the original image size. Can be either a double (absolute value) or a
   /// [PhotoViewComputedScale], that can be multiplied by a double
+  @override
   final dynamic initialScale;
 
   /// A way to control PhotoView transformation factors externally and listen to its updates
+  @override
   final PhotoViewControllerBase controller;
 
   /// A way to control PhotoViewScaleState value externally and listen to its updates
+  @override
   final PhotoViewScaleStateController scaleStateController;
 
   /// The alignment of the scale origin in relation to the widget size. Default is [Alignment.center]
+  @override
   final Alignment basePosition;
 
   /// Defines de next [PhotoViewScaleState] given the actual one. Default is [defaultScaleStateCycle]
+  @override
   final ScaleStateCycle scaleStateCycle;
 
   /// A pointer that will trigger a tap has stopped contacting the screen at a
   /// particular location.
+  @override
   final PhotoViewImageTapUpCallback onTapUp;
 
   /// A pointer that might cause a tap has contacted the screen at a particular
   /// location.
+  @override
   final PhotoViewImageTapDownCallback onTapDown;
 
   /// [HitTestBehavior] to be passed to the internal gesture detector.
+  @override
   final HitTestBehavior gestureDetectorBehavior;
 
   /// Enables tight mode, making background container assume the size of the image/child.
   /// Useful when inside a [Dialog]
+  @override
   final bool tightMode;
 
   /// Quality levels for image filters.
+  @override
   final FilterQuality filterQuality;
 
   // Removes gesture detector if `true`.
   // Useful when custom gesture detector is used in child widget.
+  @override
   final bool disableGestures;
+
+  /// Defines the size of the scaling base of the image inside [PhotoView],
+  /// by default it is `MediaQuery.of(context).size`.
+  final Size customSize;
 
   bool get _isCustomChild {
     return child != null;
@@ -478,7 +504,7 @@ class _PhotoViewState extends State<PhotoView> {
         BuildContext context,
         BoxConstraints constraints,
       ) {
-        final computedOuterSize = widget.customSize ?? constraints.biggest;
+
 
         return widget._isCustomChild
             ? CustomChildWrapper(
@@ -487,7 +513,7 @@ class _PhotoViewState extends State<PhotoView> {
                 backgroundDecoration: widget.backgroundDecoration,
                 heroAttributes: widget.heroAttributes,
                 scaleStateChangedCallback: widget.scaleStateChangedCallback,
-                enableRotation: widget.enableRotation,
+                enableRotation: widget.enableRotation ?? false,
                 controller: _controller,
                 scaleStateController: _scaleStateController,
                 maxScale: widget.maxScale,
@@ -497,7 +523,7 @@ class _PhotoViewState extends State<PhotoView> {
                 scaleStateCycle: widget.scaleStateCycle,
                 onTapUp: widget.onTapUp,
                 onTapDown: widget.onTapDown,
-                outerSize: computedOuterSize,
+                outerSize: widget.customSize ?? constraints.biggest,
                 gestureDetectorBehavior: widget.gestureDetectorBehavior,
                 tightMode: widget.tightMode,
                 filterQuality: widget.filterQuality,
@@ -508,10 +534,10 @@ class _PhotoViewState extends State<PhotoView> {
                 loadingBuilder: widget.loadingBuilder,
                 loadFailedChild: widget.loadFailedChild,
                 backgroundDecoration: widget.backgroundDecoration,
-                gaplessPlayback: widget.gaplessPlayback,
+                gaplessPlayback: widget.gaplessPlayback ?? false,
                 heroAttributes: widget.heroAttributes,
                 scaleStateChangedCallback: widget.scaleStateChangedCallback,
-                enableRotation: widget.enableRotation,
+                enableRotation: widget.enableRotation ?? false,
                 controller: _controller,
                 scaleStateController: _scaleStateController,
                 maxScale: widget.maxScale,
@@ -521,7 +547,7 @@ class _PhotoViewState extends State<PhotoView> {
                 scaleStateCycle: widget.scaleStateCycle,
                 onTapUp: widget.onTapUp,
                 onTapDown: widget.onTapDown,
-                outerSize: computedOuterSize,
+                outerSize: widget.customSize ?? constraints.biggest,
                 gestureDetectorBehavior: widget.gestureDetectorBehavior,
                 tightMode: widget.tightMode,
                 filterQuality: widget.filterQuality,

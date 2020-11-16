@@ -14,6 +14,7 @@ import 'package:photo_view/src/controller/photo_view_scalestate_controller.dart'
 import 'package:photo_view/src/core/photo_view_gesture_detector.dart';
 import 'package:photo_view/src/photo_view_scale_state.dart';
 import 'package:photo_view/src/utils/photo_view_hero_attributes.dart';
+import 'package:photo_view/src/utils/photoview_options.dart';
 
 /// A type definition for a [Function] that receives a index after a page change in [PhotoViewGallery]
 typedef PhotoViewGalleryPageChangedCallback = void Function(int index);
@@ -30,37 +31,40 @@ typedef PhotoViewGalleryBuilder = PhotoViewGalleryPageOptions Function(
 ///
 /// Example of usage as a list of options:
 /// ```
+///
+/// final loadingBuilder = (context, progress) => Center(
+///   child: Container(
+///     width: 20.0,
+///     height: 20.0,
+///     child: CircularProgressIndicator(
+///       value: _progress == null
+///           ? null
+///           : _progress.cumulativeBytesLoaded /
+///           _progress.expectedTotalBytes,
+///     ),
+///   ),
+/// );
 /// PhotoViewGallery(
 ///   pageOptions: <PhotoViewGalleryPageOptions>[
 ///     PhotoViewGalleryPageOptions(
 ///       imageProvider: AssetImage("assets/gallery1.jpg"),
 ///       heroAttributes: const HeroAttributes(tag: "tag1"),
+///       loadingBuilder: loadingBuilder,
 ///     ),
 ///     PhotoViewGalleryPageOptions(
 ///       imageProvider: AssetImage("assets/gallery2.jpg"),
 ///       heroAttributes: const HeroAttributes(tag: "tag2"),
-///       maxScale: PhotoViewComputedScale.contained * 0.3
+///       maxScale: PhotoViewComputedScale.contained * 0.3,
+///       loadingBuilder: loadingBuilder,
 ///     ),
 ///     PhotoViewGalleryPageOptions(
 ///       imageProvider: AssetImage("assets/gallery3.jpg"),
 ///       minScale: PhotoViewComputedScale.contained * 0.8,
 ///       maxScale: PhotoViewComputedScale.covered * 1.1,
 ///       heroAttributes: const HeroAttributes(tag: "tag3"),
+///       loadingBuilder: loadingBuilder,
 ///     ),
 ///   ],
-///   loadingBuilder: (context, progress) => Center(
-///            child: Container(
-///              width: 20.0,
-///              height: 20.0,
-///              child: CircularProgressIndicator(
-///                value: _progress == null
-///                    ? null
-///                    : _progress.cumulativeBytesLoaded /
-///                        _progress.expectedTotalBytes,
-///              ),
-///            ),
-///          ),
-///   backgroundDecoration: widget.backgroundDecoration,
 ///   pageController: widget.pageController,
 ///   onPageChanged: onPageChanged,
 /// )
@@ -68,6 +72,18 @@ typedef PhotoViewGalleryBuilder = PhotoViewGalleryPageOptions Function(
 ///
 /// Example of usage with builder pattern:
 /// ```
+/// final loadingBuilder = (context, progress) => Center(
+///   child: Container(
+///     width: 20.0,
+///     height: 20.0,
+///     child: CircularProgressIndicator(
+///       value: _progress == null
+///           ? null
+///           : _progress.cumulativeBytesLoaded /
+///           _progress.expectedTotalBytes,
+///     ),
+///   ),
+/// );
 /// PhotoViewGallery.builder(
 ///   scrollPhysics: const BouncingScrollPhysics(),
 ///   builder: (BuildContext context, int index) {
@@ -77,22 +93,10 @@ typedef PhotoViewGalleryBuilder = PhotoViewGalleryPageOptions Function(
 ///       minScale: PhotoViewComputedScale.contained * 0.8,
 ///       maxScale: PhotoViewComputedScale.covered * 1.1,
 ///       heroAttributes: HeroAttributes(tag: galleryItems[index].id),
+///       loadingBuilder: loadingBuilder
 ///     );
 ///   },
 ///   itemCount: galleryItems.length,
-///   loadingBuilder: (context, progress) => Center(
-///            child: Container(
-///              width: 20.0,
-///              height: 20.0,
-///              child: CircularProgressIndicator(
-///                value: _progress == null
-///                    ? null
-///                    : _progress.cumulativeBytesLoaded /
-///                        _progress.expectedTotalBytes,
-///              ),
-///            ),
-///          ),
-///   backgroundDecoration: widget.backgroundDecoration,
 ///   pageController: widget.pageController,
 ///   onPageChanged: onPageChanged,
 /// )
@@ -102,7 +106,6 @@ class PhotoViewGallery extends StatefulWidget {
   const PhotoViewGallery({
     Key key,
     @required this.pageOptions,
-    this.loadingBuilder,
     this.loadFailedChild,
     this.backgroundDecoration,
     this.gaplessPlayback = false,
@@ -110,10 +113,8 @@ class PhotoViewGallery extends StatefulWidget {
     this.pageController,
     this.onPageChanged,
     this.scaleStateChangedCallback,
-    this.enableRotation = false,
     this.scrollPhysics,
     this.scrollDirection = Axis.horizontal,
-    this.customSize,
   })  : itemCount = null,
         builder = null,
         assert(pageOptions != null),
@@ -126,7 +127,6 @@ class PhotoViewGallery extends StatefulWidget {
     Key key,
     @required this.itemCount,
     @required this.builder,
-    this.loadingBuilder,
     this.loadFailedChild,
     this.backgroundDecoration,
     this.gaplessPlayback = false,
@@ -134,10 +134,8 @@ class PhotoViewGallery extends StatefulWidget {
     this.pageController,
     this.onPageChanged,
     this.scaleStateChangedCallback,
-    this.enableRotation = false,
     this.scrollPhysics,
     this.scrollDirection = Axis.horizontal,
-    this.customSize,
   })  : pageOptions = null,
         assert(itemCount != null),
         assert(builder != null),
@@ -154,12 +152,6 @@ class PhotoViewGallery extends StatefulWidget {
 
   /// [ScrollPhysics] for the internal [PageView]
   final ScrollPhysics scrollPhysics;
-
-  /// Mirror to [PhotoView.loadingBuilder]
-  final LoadingBuilder loadingBuilder;
-
-  /// Mirror to [PhotoView.loadFailedChild]
-  final Widget loadFailedChild;
 
   /// Mirror to [PhotoView.backgroundDecoration]
   final Decoration backgroundDecoration;
@@ -178,12 +170,6 @@ class PhotoViewGallery extends StatefulWidget {
 
   /// Mirror to [PhotoView.scaleStateChangedCallback]
   final ValueChanged<PhotoViewScaleState> scaleStateChangedCallback;
-
-  /// Mirror to [PhotoView.enableRotation]
-  final bool enableRotation;
-
-  /// Mirror to [PhotoView.customSize]
-  final Size customSize;
 
   /// The axis along which the [PageView] scrolls. Mirror to [PageView.scrollDirection]
   final Axis scrollDirection;
@@ -251,10 +237,10 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             backgroundDecoration: widget.backgroundDecoration,
             controller: pageOption.controller,
             scaleStateController: pageOption.scaleStateController,
-            customSize: widget.customSize,
+            customSize: pageOption.customSize,
             heroAttributes: pageOption.heroAttributes,
             scaleStateChangedCallback: scaleStateChangedCallback,
-            enableRotation: widget.enableRotation,
+            enableRotation: pageOption.enableRotation,
             initialScale: pageOption.initialScale,
             minScale: pageOption.minScale,
             maxScale: pageOption.maxScale,
@@ -270,16 +256,16 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
         : PhotoView(
             key: ObjectKey(index),
             imageProvider: pageOption.imageProvider,
-            loadingBuilder: widget.loadingBuilder,
-            loadFailedChild: widget.loadFailedChild,
+            loadingBuilder: pageOption.loadingBuilder,
+            loadFailedChild: pageOption.loadFailedChild,
             backgroundDecoration: widget.backgroundDecoration,
             controller: pageOption.controller,
             scaleStateController: pageOption.scaleStateController,
-            customSize: widget.customSize,
+            customSize: pageOption.customSize,
             gaplessPlayback: widget.gaplessPlayback,
             heroAttributes: pageOption.heroAttributes,
             scaleStateChangedCallback: scaleStateChangedCallback,
-            enableRotation: widget.enableRotation,
+            enableRotation: pageOption.enableRotation,
             initialScale: pageOption.initialScale,
             minScale: pageOption.minScale,
             maxScale: pageOption.maxScale,
@@ -291,6 +277,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             filterQuality: pageOption.filterQuality,
             basePosition: pageOption.basePosition,
             disableGestures: pageOption.disableGestures,
+            errorBuilder: pageOption.errorBuilder,
           );
 
     return ClipRect(
@@ -311,24 +298,32 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
 ///
 /// The [maxScale], [minScale] and [initialScale] options may be [double] or a [PhotoViewComputedScale] constant
 ///
-class PhotoViewGalleryPageOptions {
+class PhotoViewGalleryPageOptions implements PhotoViewOptions {
   PhotoViewGalleryPageOptions({
     Key key,
     @required this.imageProvider,
+    this.loadingBuilder,
+    this.loadFailedChild,
+    this.backgroundDecoration,
+    this.gaplessPlayback,
     this.heroAttributes,
-    this.minScale,
-    this.maxScale,
-    this.initialScale,
+    this.scaleStateChangedCallback,
+    this.enableRotation,
     this.controller,
     this.scaleStateController,
+    this.maxScale,
+    this.minScale,
+    this.initialScale,
     this.basePosition,
     this.scaleStateCycle,
     this.onTapUp,
     this.onTapDown,
+    this.customSize,
     this.gestureDetectorBehavior,
     this.tightMode,
     this.filterQuality,
     this.disableGestures,
+    this.errorBuilder,
   })  : child = null,
         childSize = null,
         assert(imageProvider != null);
@@ -336,71 +331,127 @@ class PhotoViewGalleryPageOptions {
   PhotoViewGalleryPageOptions.customChild({
     @required this.child,
     this.childSize,
+    this.backgroundDecoration,
     this.heroAttributes,
-    this.minScale,
-    this.maxScale,
-    this.initialScale,
+    this.scaleStateChangedCallback,
+    this.enableRotation,
     this.controller,
     this.scaleStateController,
+    this.maxScale,
+    this.minScale,
+    this.initialScale,
     this.basePosition,
     this.scaleStateCycle,
     this.onTapUp,
     this.onTapDown,
+    this.customSize,
     this.gestureDetectorBehavior,
     this.tightMode,
     this.filterQuality,
     this.disableGestures,
-  })  : imageProvider = null,
+  })  : loadFailedChild = null,
+        errorBuilder = null,
+        imageProvider = null,
+        gaplessPlayback = false,
+        loadingBuilder = null,
         assert(child != null);
 
   /// Mirror to [PhotoView.imageProvider]
+  @override
   final ImageProvider imageProvider;
 
   /// Mirror to [PhotoView.heroAttributes]
+  @override
   final PhotoViewHeroAttributes heroAttributes;
 
   /// Mirror to [PhotoView.minScale]
+  @override
   final dynamic minScale;
 
   /// Mirror to [PhotoView.maxScale]
+  @override
   final dynamic maxScale;
 
   /// Mirror to [PhotoView.initialScale]
+  @override
   final dynamic initialScale;
 
   /// Mirror to [PhotoView.controller]
+  @override
   final PhotoViewController controller;
 
   /// Mirror to [PhotoView.scaleStateController]
+  @override
   final PhotoViewScaleStateController scaleStateController;
 
   /// Mirror to [PhotoView.basePosition]
+  @override
   final Alignment basePosition;
 
   /// Mirror to [PhotoView.child]
+  @override
   final Widget child;
 
   /// Mirror to [PhotoView.childSize]
+  @override
   final Size childSize;
 
   /// Mirror to [PhotoView.scaleStateCycle]
+  @override
   final ScaleStateCycle scaleStateCycle;
 
   /// Mirror to [PhotoView.onTapUp]
+  @override
   final PhotoViewImageTapUpCallback onTapUp;
 
   /// Mirror to [PhotoView.onTapDown]
+  @override
   final PhotoViewImageTapDownCallback onTapDown;
 
   /// Mirror to [PhotoView.gestureDetectorBehavior]
+  @override
   final HitTestBehavior gestureDetectorBehavior;
 
   /// Mirror to [PhotoView.tightMode]
+  @override
   final bool tightMode;
 
   /// Mirror to [PhotoView.disableGestures]
+  @override
   final bool disableGestures;
 
-  /// Quality levels for image filters.
+  /// Mirror to [PhotoView.filterQuality]
+  @override
   final FilterQuality filterQuality;
+
+  /// Mirror to [PhotoView.backgroundDecoration]
+  @override
+  final Decoration backgroundDecoration;
+
+  /// Mirror to [PhotoView.enableRotation]
+  @override
+  final bool enableRotation;
+
+  /// Mirror to [PhotoView.errorBuilder]
+  @override
+  final ImageErrorWidgetBuilder errorBuilder;
+
+  /// Mirror to [PhotoView.gaplessPlayback]
+  @override
+  final bool gaplessPlayback;
+
+  @override
+  final Widget loadFailedChild;
+
+  /// Mirror to [PhotoView.loadingBuilder]
+  @override
+  final LoadingBuilder loadingBuilder;
+
+  @override
+  // TODO: implement scaleStateChangedCallback
+  get scaleStateChangedCallback => throw UnimplementedError();
+
+  @override
+  // TODO: implement customSize
+  Size get customSize => throw UnimplementedError();
 }
