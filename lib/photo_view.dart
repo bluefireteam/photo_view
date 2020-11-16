@@ -236,7 +236,6 @@ class PhotoView extends StatefulWidget {
     Key key,
     @required this.imageProvider,
     this.loadingBuilder,
-    this.loadFailedChild,
     this.backgroundDecoration,
     this.gaplessPlayback = false,
     this.heroAttributes,
@@ -289,8 +288,7 @@ class PhotoView extends StatefulWidget {
     this.tightMode,
     this.filterQuality,
     this.disableGestures,
-  })  : loadFailedChild = null,
-        errorBuilder = null,
+  })  : errorBuilder = null,
         imageProvider = null,
         gaplessPlayback = false,
         loadingBuilder = null,
@@ -306,10 +304,6 @@ class PhotoView extends StatefulWidget {
 
   /// Show loadFailedChild when the image failed to load
   final ImageErrorWidgetBuilder errorBuilder;
-
-  /// Show loadFailedChild when the image failed to load
-  @Deprecated("Use errorBuilder instead")
-  final Widget loadFailedChild;
 
   /// Changes the background behind image, defaults to `Colors.black`.
   final Decoration backgroundDecoration;
@@ -506,7 +500,6 @@ class _PhotoViewState extends State<PhotoView> {
             : ImageWrapper(
                 imageProvider: widget.imageProvider,
                 loadingBuilder: widget.loadingBuilder,
-                loadFailedChild: widget.loadFailedChild,
                 backgroundDecoration: widget.backgroundDecoration,
                 gaplessPlayback: widget.gaplessPlayback,
                 heroAttributes: widget.heroAttributes,
@@ -526,6 +519,7 @@ class _PhotoViewState extends State<PhotoView> {
                 tightMode: widget.tightMode,
                 filterQuality: widget.filterQuality,
                 disableGestures: widget.disableGestures,
+                errorBuilder: widget.errorBuilder,
               );
       },
     );

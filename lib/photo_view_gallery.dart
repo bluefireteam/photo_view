@@ -103,7 +103,6 @@ class PhotoViewGallery extends StatefulWidget {
     Key key,
     @required this.pageOptions,
     this.loadingBuilder,
-    this.loadFailedChild,
     this.backgroundDecoration,
     this.gaplessPlayback = false,
     this.reverse = false,
@@ -127,7 +126,6 @@ class PhotoViewGallery extends StatefulWidget {
     @required this.itemCount,
     @required this.builder,
     this.loadingBuilder,
-    this.loadFailedChild,
     this.backgroundDecoration,
     this.gaplessPlayback = false,
     this.reverse = false,
@@ -157,9 +155,6 @@ class PhotoViewGallery extends StatefulWidget {
 
   /// Mirror to [PhotoView.loadingBuilder]
   final LoadingBuilder loadingBuilder;
-
-  /// Mirror to [PhotoView.loadFailedChild]
-  final Widget loadFailedChild;
 
   /// Mirror to [PhotoView.backgroundDecoration]
   final Decoration backgroundDecoration;
@@ -271,7 +266,6 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             key: ObjectKey(index),
             imageProvider: pageOption.imageProvider,
             loadingBuilder: widget.loadingBuilder,
-            loadFailedChild: widget.loadFailedChild,
             backgroundDecoration: widget.backgroundDecoration,
             controller: pageOption.controller,
             scaleStateController: pageOption.scaleStateController,
@@ -291,6 +285,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             filterQuality: pageOption.filterQuality,
             basePosition: pageOption.basePosition,
             disableGestures: pageOption.disableGestures,
+            errorBuilder: pageOption.errorBuilder,
           );
 
     return ClipRect(
@@ -329,6 +324,7 @@ class PhotoViewGalleryPageOptions {
     this.tightMode,
     this.filterQuality,
     this.disableGestures,
+    this.errorBuilder,
   })  : child = null,
         childSize = null,
         assert(imageProvider != null);
@@ -350,7 +346,8 @@ class PhotoViewGalleryPageOptions {
     this.tightMode,
     this.filterQuality,
     this.disableGestures,
-  })  : imageProvider = null,
+  })  : errorBuilder = null,
+        imageProvider = null,
         assert(child != null);
 
   /// Mirror to [PhotoView.imageProvider]
@@ -403,4 +400,7 @@ class PhotoViewGalleryPageOptions {
 
   /// Quality levels for image filters.
   final FilterQuality filterQuality;
+
+  /// Mirror to [PhotoView.errorBuilder]
+  final ImageErrorWidgetBuilder errorBuilder;
 }

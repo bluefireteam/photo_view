@@ -98,7 +98,7 @@ class _ProgrammaticRotationExampleState
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.rotate_right),
+        child: const Icon(Icons.rotate_right),
         onPressed: _rotateRight90Degrees,
       ),
     );

@@ -12,6 +12,7 @@ class CommonExampleRouteWrapper extends StatelessWidget {
     this.basePosition = Alignment.center,
     this.filterQuality = FilterQuality.none,
     this.disableGestures,
+    this.errorBuilder,
   });
 
   final ImageProvider imageProvider;
@@ -23,6 +24,7 @@ class CommonExampleRouteWrapper extends StatelessWidget {
   final Alignment basePosition;
   final FilterQuality filterQuality;
   final bool disableGestures;
+  final ImageErrorWidgetBuilder errorBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -41,6 +43,7 @@ class CommonExampleRouteWrapper extends StatelessWidget {
           basePosition: basePosition,
           filterQuality: filterQuality,
           disableGestures: disableGestures,
+          errorBuilder: errorBuilder,
         ),
       ),
     );

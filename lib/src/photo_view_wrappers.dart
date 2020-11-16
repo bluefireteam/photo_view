@@ -8,35 +8,33 @@ import 'utils/photo_view_utils.dart';
 class ImageWrapper extends StatefulWidget {
   const ImageWrapper({
     Key key,
-    this.imageProvider,
-    this.loadingBuilder,
-    this.loadFailedChild,
-    this.backgroundDecoration,
-    this.gaplessPlayback = false,
-    this.heroAttributes,
-    this.scaleStateChangedCallback,
-    this.enableRotation = false,
-    this.controller,
-    this.scaleStateController,
-    this.maxScale,
-    this.minScale,
-    this.initialScale,
-    this.basePosition,
-    this.scaleStateCycle,
-    this.onTapUp,
-    this.onTapDown,
-    this.outerSize,
-    this.gestureDetectorBehavior,
-    this.tightMode,
-    this.filterQuality,
-    this.disableGestures,
-    this.errorBuilder,
+    @required this.imageProvider,
+    @required this.loadingBuilder,
+    @required this.backgroundDecoration,
+    @required this.gaplessPlayback,
+    @required this.heroAttributes,
+    @required this.scaleStateChangedCallback,
+    @required this.enableRotation,
+    @required this.controller,
+    @required this.scaleStateController,
+    @required this.maxScale,
+    @required this.minScale,
+    @required this.initialScale,
+    @required this.basePosition,
+    @required this.scaleStateCycle,
+    @required this.onTapUp,
+    @required this.onTapDown,
+    @required this.outerSize,
+    @required this.gestureDetectorBehavior,
+    @required this.tightMode,
+    @required this.filterQuality,
+    @required this.disableGestures,
+    @required this.errorBuilder,
   }) : super(key: key);
 
   final ImageProvider imageProvider;
   final LoadingBuilder loadingBuilder;
   final ImageErrorWidgetBuilder errorBuilder;
-  final Widget loadFailedChild;
   final Decoration backgroundDecoration;
   final bool gaplessPlayback;
   final PhotoViewHeroAttributes heroAttributes;
@@ -49,10 +47,8 @@ class ImageWrapper extends StatefulWidget {
   final PhotoViewScaleStateController scaleStateController;
   final Alignment basePosition;
   final ScaleStateCycle scaleStateCycle;
-
   final PhotoViewImageTapUpCallback onTapUp;
   final PhotoViewImageTapDownCallback onTapDown;
-
   final Size outerSize;
   final HitTestBehavior gestureDetectorBehavior;
   final bool tightMode;
@@ -121,12 +117,10 @@ class _ImageWrapperState extends State<ImageWrapper> {
   }
 
   void _updateSourceStream(ImageStream newStream) {
-    if (_imageStream != null) {
-      if (_imageStream?.key == newStream.key) {
-        return;
-      }
-      _imageStream.removeListener(_imageStreamListener);
+    if (_imageStream?.key == newStream.key) {
+      return;
     }
+    _imageStream?.removeListener(_imageStreamListener);
     _imageStream = newStream;
     _imageStream.addListener(_getOrCreateListener());
   }
@@ -208,39 +202,38 @@ class _ImageWrapperState extends State<ImageWrapper> {
   Widget _buildError(
     BuildContext context,
   ) {
-    if (widget.loadFailedChild != null) {
-      return widget.loadFailedChild;
-    }
     if (widget.errorBuilder != null) {
       return widget.errorBuilder(context, _lastException, _stackTrace);
     }
-    return PhotoViewDefaultError();
+    return PhotoViewDefaultError(
+      decoration: widget.backgroundDecoration,
+    );
   }
 }
 
 class CustomChildWrapper extends StatelessWidget {
   const CustomChildWrapper({
     Key key,
-    this.child,
-    this.childSize,
-    this.backgroundDecoration,
-    this.heroAttributes,
-    this.scaleStateChangedCallback,
-    this.enableRotation,
-    this.controller,
-    this.scaleStateController,
-    this.maxScale,
-    this.minScale,
-    this.initialScale,
-    this.basePosition,
-    this.scaleStateCycle,
-    this.onTapUp,
-    this.onTapDown,
-    this.outerSize,
-    this.gestureDetectorBehavior,
-    this.tightMode,
-    this.filterQuality,
-    this.disableGestures,
+    @required this.child,
+    @required this.childSize,
+    @required this.backgroundDecoration,
+    @required this.heroAttributes,
+    @required this.scaleStateChangedCallback,
+    @required this.enableRotation,
+    @required this.controller,
+    @required this.scaleStateController,
+    @required this.maxScale,
+    @required this.minScale,
+    @required this.initialScale,
+    @required this.basePosition,
+    @required this.scaleStateCycle,
+    @required this.onTapUp,
+    @required this.onTapDown,
+    @required this.outerSize,
+    @required this.gestureDetectorBehavior,
+    @required this.tightMode,
+    @required this.filterQuality,
+    @required this.disableGestures,
   }) : super(key: key);
 
   final Widget child;
