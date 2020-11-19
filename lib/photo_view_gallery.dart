@@ -153,8 +153,10 @@ class PhotoViewGallery extends StatefulWidget {
   /// [ScrollPhysics] for the internal [PageView]
   final ScrollPhysics scrollPhysics;
 
-  /// Mirror to [PhotoView.loadingBuilder]
-  final LoadingBuilder loadingBuilder;
+  /// While [imageProvider] is not resolved, [loadingBuilder] is called by [PhotoView]
+  /// into the screen, by default it is a centered [CircularProgressIndicator] and
+  /// the index of the currently loading image is passed
+  final LoadingBuilderWithIndex loadingBuilder;
 
   /// Mirror to [PhotoView.backgroundDecoration]
   final Decoration backgroundDecoration;
@@ -265,7 +267,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
         : PhotoView(
             key: ObjectKey(index),
             imageProvider: pageOption.imageProvider,
-            loadingBuilder: widget.loadingBuilder,
+            loadingBuilder: (context, imageChunkEvent) => widget.loadingBuilder(context, imageChunkEvent, index),
             backgroundDecoration: widget.backgroundDecoration,
             controller: pageOption.controller,
             scaleStateController: pageOption.scaleStateController,
@@ -404,3 +406,10 @@ class PhotoViewGalleryPageOptions {
   /// Mirror to [PhotoView.errorBuilder]
   final ImageErrorWidgetBuilder errorBuilder;
 }
+
+/// A type definition for a callback to show a widget while the image is loading, an index and [ImageChunkEvent] is passed to inform progress
+typedef LoadingBuilderWithIndex = Widget Function(
+  BuildContext context,
+  ImageChunkEvent event,
+  int index,
+);
