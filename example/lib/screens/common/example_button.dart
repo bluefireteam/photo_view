@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 class ExampleButtonNode extends StatelessWidget {
   const ExampleButtonNode({
-    this.title,
-    this.onPressed,
+    required this.title,
+    required this.onPressed,
   });
 
   final String title;
-  final Function onPressed;
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {

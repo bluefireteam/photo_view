@@ -53,7 +53,7 @@ class _GalleryExampleState extends State<GalleryExample> {
                   value: verticalGallery,
                   onChanged: (value) {
                     setState(() {
-                      verticalGallery = value;
+                      verticalGallery = value!;
                     });
                   },
                 ),
@@ -88,13 +88,13 @@ class GalleryPhotoViewWrapper extends StatefulWidget {
     this.backgroundDecoration,
     this.minScale,
     this.maxScale,
-    this.initialIndex,
-    @required this.galleryItems,
+    this.initialIndex = 0,
+    required this.galleryItems,
     this.scrollDirection = Axis.horizontal,
   }) : pageController = PageController(initialPage: initialIndex);
 
-  final LoadingBuilder loadingBuilder;
-  final Decoration backgroundDecoration;
+  final LoadingBuilder? loadingBuilder;
+  final BoxDecoration? backgroundDecoration;
   final dynamic minScale;
   final dynamic maxScale;
   final int initialIndex;
@@ -109,13 +109,7 @@ class GalleryPhotoViewWrapper extends StatefulWidget {
 }
 
 class _GalleryPhotoViewWrapperState extends State<GalleryPhotoViewWrapper> {
-  int currentIndex;
-
-  @override
-  void initState() {
-    currentIndex = widget.initialIndex;
-    super.initState();
-  }
+  late int currentIndex = widget.initialIndex;
 
   void onPageChanged(int index) {
     setState(() {

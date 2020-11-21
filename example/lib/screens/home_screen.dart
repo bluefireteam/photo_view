@@ -9,7 +9,7 @@ import 'package:photo_view_example/screens/examples/hero_example.dart';
 import 'package:photo_view_example/screens/examples/inline_examples.dart';
 import 'package:photo_view_example/screens/examples/rotation_examples.dart';
 
-import 'examples/network-images.dart';
+import 'examples/network_images.dart';
 
 class HomeScreen extends StatelessWidget {
   @override
@@ -158,7 +158,7 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildItem(context, {String text, Function onPressed}) {
+  Widget _buildItem(context, {required String text, required VoidCallback onPressed}) {
     return FlatButton(
       padding: const EdgeInsets.symmetric(vertical: 25.0, horizontal: 20.0),
       child: Text(
