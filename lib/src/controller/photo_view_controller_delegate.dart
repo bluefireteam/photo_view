@@ -67,7 +67,7 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
   }
 
   void _blindScaleListener() {
-    controller.position = clampPosition();
+    //controller.position = clampPosition();
     if (controller.scale == controller.prevValue.scale) {
       return;
     }
