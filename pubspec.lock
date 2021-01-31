@@ -330,7 +330,7 @@ packages:
       name: test
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.16.0-nullsafety.12"
+    version: "1.16.0-nullsafety.17"
   test_api:
     dependency: transitive
     description:
@@ -344,7 +344,7 @@ packages:
       name: test_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.12-nullsafety.11"
+    version: "0.3.12-nullsafety.15"
   typed_data:
     dependency: transitive
     description:
@@ -395,5 +395,5 @@ packages:
     source: hosted
     version: "2.1.16"
 sdks:
-  dart: ">=2.12.0-0.0 <=2.12.0-31.0.dev"
-  flutter: ">=1.6.0 <2.0.0"
+  dart: ">=2.12.0-0.0 <=2.12.0-224.0.dev"
+  flutter: ">=1.6.0"

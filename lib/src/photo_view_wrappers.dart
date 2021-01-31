@@ -193,7 +193,7 @@ class _ImageWrapperState extends State<ImageWrapper> {
     }
 
     return PhotoViewDefaultLoading(
-      event: _imageChunkEvent!,
+      event: _imageChunkEvent,
     );
   }
 

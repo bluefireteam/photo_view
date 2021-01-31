@@ -158,9 +158,14 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildItem(context, {required String text, required VoidCallback onPressed}) {
-    return FlatButton(
-      padding: const EdgeInsets.symmetric(vertical: 25.0, horizontal: 20.0),
+  Widget _buildItem(context,
+      {required String text, required VoidCallback onPressed}) {
+    return TextButton(
+      style: ButtonStyle(
+        padding: MaterialStateProperty.all(
+          const EdgeInsets.symmetric(vertical: 25.0, horizontal: 20.0),
+        ),
+      ),
       child: Text(
         text,
         style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.w700),
