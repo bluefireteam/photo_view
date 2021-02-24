@@ -258,7 +258,7 @@ class PhotoViewCoreState extends State<PhotoViewCore>
 
     _rotationAnimationController = AnimationController(vsync: this)
       ..addListener(handleRotationAnimation);
-    startListeners();
+    initDelegate();
     addAnimateOnScaleStateUpdate(animateOnScaleStateUpdate);
 
     cachedScaleBoundaries = widget.scaleBoundaries;

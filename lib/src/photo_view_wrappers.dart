@@ -8,31 +8,31 @@ import 'utils/photo_view_utils.dart';
 class ImageWrapper extends StatefulWidget {
   const ImageWrapper({
     Key key,
-    this.imageProvider,
-    this.loadingBuilder,
-    this.loadFailedChild,
-    this.backgroundDecoration,
-    this.gaplessPlayback = false,
-    this.heroAttributes,
-    this.scaleStateChangedCallback,
-    this.enableRotation = false,
-    this.enableMoveOnMinScale = false,
-    this.enableDoubleTap,
-    this.controller,
-    this.scaleStateController,
-    this.maxScale,
-    this.minScale,
-    this.initialScale,
-    this.basePosition,
-    this.scaleStateCycle,
-    this.onTapUp,
-    this.onTapDown,
-    this.outerSize,
-    this.gestureDetectorBehavior,
-    this.tightMode,
-    this.filterQuality,
-    this.disableGestures,
-    this.errorBuilder,
+    @required this.imageProvider,
+    @required this.loadingBuilder,
+    @required this.loadFailedChild,
+    @required this.backgroundDecoration,
+    @required this.gaplessPlayback,
+    @required this.heroAttributes,
+    @required this.scaleStateChangedCallback,
+    @required this.enableRotation,
+    @required this.enableMoveOnMinScale,
+    @required this.enableDoubleTap,
+    @required this.controller,
+    @required this.scaleStateController,
+    @required this.maxScale,
+    @required this.minScale,
+    @required this.initialScale,
+    @required this.basePosition,
+    @required this.scaleStateCycle,
+    @required this.onTapUp,
+    @required this.onTapDown,
+    @required this.outerSize,
+    @required this.gestureDetectorBehavior,
+    @required this.tightMode,
+    @required this.filterQuality,
+    @required this.disableGestures,
+    @required this.errorBuilder,
   }) : super(key: key);
 
   final ImageProvider imageProvider;
@@ -69,7 +69,7 @@ class ImageWrapper extends StatefulWidget {
 
 class _ImageWrapperState extends State<ImageWrapper> {
   ImageStreamListener _imageStreamListener;
-  ImageStream _stream;
+  ImageStream _imageStream;
   ImageChunkEvent _imageChunkEvent;
   ImageInfo _imageInfo;
   bool _loading = true;
@@ -79,10 +79,13 @@ class _ImageWrapperState extends State<ImageWrapper> {
 
   // retrieve image from the provider
   void _getImage() {
-    _stream = widget.imageProvider.resolve(
+    final ImageStream newStream = widget.imageProvider.resolve(
       const ImageConfiguration(),
     );
+    _updateSourceStream(newStream);
+  }
 
+  ImageStreamListener _getOrCreateListener() {
     void handleImageChunk(ImageChunkEvent event) {
       assert(widget.loadingBuilder != null);
       setState(() => _imageChunkEvent = event);
@@ -117,19 +120,37 @@ class _ImageWrapperState extends State<ImageWrapper> {
       onChunk: handleImageChunk,
       onError: handleError,
     );
-    _stream.addListener(_imageStreamListener);
+
+    return _imageStreamListener;
+  }
+
+  void _updateSourceStream(ImageStream newStream) {
+    if (_imageStream?.key == newStream.key) {
+      return;
+    }
+    _imageStream?.removeListener(_imageStreamListener);
+    _imageStream = newStream;
+    _imageStream.addListener(_getOrCreateListener());
   }
 
   void _stopImageStream() {
-    if (_stream != null) {
-      _stream.removeListener(_imageStreamListener);
+    if (_imageStream != null) {
+      _imageStream.removeListener(_imageStreamListener);
     }
   }
 
   @override
-  void initState() {
-    super.initState();
+  void didUpdateWidget(ImageWrapper oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.imageProvider != oldWidget.imageProvider) {
+      _getImage();
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
     _getImage();
+    super.didChangeDependencies();
   }
 
   @override
@@ -159,9 +180,9 @@ class _ImageWrapperState extends State<ImageWrapper> {
     return PhotoViewCore(
       imageProvider: widget.imageProvider,
       backgroundDecoration: widget.backgroundDecoration,
-      gaplessPlayback: widget.gaplessPlayback,
-      enableRotation: widget.enableRotation,
-      enableMoveOnMinScale: widget.enableMoveOnMinScale,
+      gaplessPlayback: widget.gaplessPlayback ?? false,
+      enableRotation: widget.enableRotation ?? false,
+      enableMoveOnMinScale: widget.enableMoveOnMinScale ?? false,
       heroAttributes: widget.heroAttributes,
       basePosition: widget.basePosition ?? Alignment.center,
       controller: widget.controller,
@@ -197,35 +218,37 @@ class _ImageWrapperState extends State<ImageWrapper> {
     if (widget.errorBuilder != null) {
       return widget.errorBuilder(context, _lastException, _stackTrace);
     }
-    return PhotoViewDefaultError();
+    return PhotoViewDefaultError(
+      decoration: widget.backgroundDecoration,
+    );
   }
 }
 
 class CustomChildWrapper extends StatefulWidget {
   const CustomChildWrapper({
     Key key,
-    this.child,
-    this.childSize,
-    this.backgroundDecoration,
-    this.heroAttributes,
-    this.scaleStateChangedCallback,
-    this.enableRotation,
-    this.enableMoveOnMinScale,
-    this.controller,
-    this.scaleStateController,
-    this.maxScale,
-    this.minScale,
-    this.initialScale,
-    this.basePosition,
-    this.scaleStateCycle,
-    this.onTapUp,
-    this.onTapDown,
-    this.outerSize,
-    this.gestureDetectorBehavior,
-    this.tightMode,
-    this.filterQuality,
-    this.disableGestures,
-    this.enableDoubleTap,
+    @required this.child,
+    @required this.childSize,
+    @required this.backgroundDecoration,
+    @required this.heroAttributes,
+    @required this.scaleStateChangedCallback,
+    @required this.enableRotation,
+    @required this.enableMoveOnMinScale,
+    @required this.controller,
+    @required this.scaleStateController,
+    @required this.maxScale,
+    @required this.minScale,
+    @required this.initialScale,
+    @required this.basePosition,
+    @required this.scaleStateCycle,
+    @required this.onTapUp,
+    @required this.onTapDown,
+    @required this.outerSize,
+    @required this.gestureDetectorBehavior,
+    @required this.tightMode,
+    @required this.filterQuality,
+    @required this.disableGestures,
+    @required this.enableDoubleTap,
   }) : super(key: key);
 
   final Widget child;
@@ -272,8 +295,8 @@ class _CustomChildWrapperState extends State<CustomChildWrapper> {
     return PhotoViewCore.customChild(
       customChild: widget.child,
       backgroundDecoration: widget.backgroundDecoration,
-      enableRotation: widget.enableRotation,
-      enableMoveOnMinScale: widget.enableMoveOnMinScale,
+      enableRotation: widget.enableRotation ?? false,
+      enableMoveOnMinScale: widget.enableMoveOnMinScale ?? false,
       heroAttributes: widget.heroAttributes,
       controller: widget.controller,
       scaleStateController: widget.scaleStateController,
