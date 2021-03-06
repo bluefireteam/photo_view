@@ -189,7 +189,7 @@ class _ImageWrapperState extends State<ImageWrapper> {
 
   Widget _buildLoading(BuildContext context) {
     if (widget.loadingBuilder != null) {
-      return widget.loadingBuilder!(context, _imageChunkEvent!);
+      return widget.loadingBuilder!(context, _imageChunkEvent);
     }
 
     return PhotoViewDefaultLoading(
