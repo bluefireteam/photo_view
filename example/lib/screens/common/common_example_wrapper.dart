@@ -15,16 +15,16 @@ class CommonExampleRouteWrapper extends StatelessWidget {
     this.errorBuilder,
   });
 
-  final ImageProvider imageProvider;
-  final LoadingBuilder loadingBuilder;
-  final Decoration backgroundDecoration;
+  final ImageProvider? imageProvider;
+  final LoadingBuilder? loadingBuilder;
+  final BoxDecoration? backgroundDecoration;
   final dynamic minScale;
   final dynamic maxScale;
   final dynamic initialScale;
   final Alignment basePosition;
   final FilterQuality filterQuality;
-  final bool disableGestures;
-  final ImageErrorWidgetBuilder errorBuilder;
+  final bool? disableGestures;
+  final ImageErrorWidgetBuilder? errorBuilder;
 
   @override
   Widget build(BuildContext context) {

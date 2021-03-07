@@ -7,67 +7,67 @@ import 'utils/photo_view_utils.dart';
 
 class ImageWrapper extends StatefulWidget {
   const ImageWrapper({
-    Key key,
-    @required this.imageProvider,
-    @required this.loadingBuilder,
-    @required this.backgroundDecoration,
-    @required this.gaplessPlayback,
-    @required this.heroAttributes,
-    @required this.scaleStateChangedCallback,
-    @required this.enableRotation,
-    @required this.controller,
-    @required this.scaleStateController,
-    @required this.maxScale,
-    @required this.minScale,
-    @required this.initialScale,
-    @required this.basePosition,
-    @required this.scaleStateCycle,
-    @required this.onTapUp,
-    @required this.onTapDown,
-    @required this.outerSize,
-    @required this.gestureDetectorBehavior,
-    @required this.tightMode,
-    @required this.filterQuality,
-    @required this.disableGestures,
-    @required this.errorBuilder,
+    Key? key,
+    required this.imageProvider,
+    required this.loadingBuilder,
+    required this.backgroundDecoration,
+    required this.gaplessPlayback,
+    required this.heroAttributes,
+    required this.scaleStateChangedCallback,
+    required this.enableRotation,
+    required this.controller,
+    required this.scaleStateController,
+    required this.maxScale,
+    required this.minScale,
+    required this.initialScale,
+    required this.basePosition,
+    required this.scaleStateCycle,
+    required this.onTapUp,
+    required this.onTapDown,
+    required this.outerSize,
+    required this.gestureDetectorBehavior,
+    required this.tightMode,
+    required this.filterQuality,
+    required this.disableGestures,
+    required this.errorBuilder,
   }) : super(key: key);
 
   final ImageProvider imageProvider;
-  final LoadingBuilder loadingBuilder;
-  final ImageErrorWidgetBuilder errorBuilder;
-  final Decoration backgroundDecoration;
+  final LoadingBuilder? loadingBuilder;
+  final ImageErrorWidgetBuilder? errorBuilder;
+  final BoxDecoration backgroundDecoration;
   final bool gaplessPlayback;
-  final PhotoViewHeroAttributes heroAttributes;
-  final ValueChanged<PhotoViewScaleState> scaleStateChangedCallback;
+  final PhotoViewHeroAttributes? heroAttributes;
+  final ValueChanged<PhotoViewScaleState>? scaleStateChangedCallback;
   final bool enableRotation;
   final dynamic maxScale;
   final dynamic minScale;
   final dynamic initialScale;
   final PhotoViewControllerBase controller;
   final PhotoViewScaleStateController scaleStateController;
-  final Alignment basePosition;
-  final ScaleStateCycle scaleStateCycle;
-  final PhotoViewImageTapUpCallback onTapUp;
-  final PhotoViewImageTapDownCallback onTapDown;
+  final Alignment? basePosition;
+  final ScaleStateCycle? scaleStateCycle;
+  final PhotoViewImageTapUpCallback? onTapUp;
+  final PhotoViewImageTapDownCallback? onTapDown;
   final Size outerSize;
-  final HitTestBehavior gestureDetectorBehavior;
-  final bool tightMode;
-  final FilterQuality filterQuality;
-  final bool disableGestures;
+  final HitTestBehavior? gestureDetectorBehavior;
+  final bool? tightMode;
+  final FilterQuality? filterQuality;
+  final bool? disableGestures;
 
   @override
   _ImageWrapperState createState() => _ImageWrapperState();
 }
 
 class _ImageWrapperState extends State<ImageWrapper> {
-  ImageStreamListener _imageStreamListener;
-  ImageStream _imageStream;
-  ImageChunkEvent _imageChunkEvent;
-  ImageInfo _imageInfo;
+  ImageStreamListener? _imageStreamListener;
+  ImageStream? _imageStream;
+  ImageChunkEvent? _imageChunkEvent;
+  ImageInfo? _imageInfo;
   bool _loading = true;
-  Size _imageSize;
-  Object _lastException;
-  StackTrace _stackTrace;
+  Size? _imageSize;
+  Object? _lastException;
+  StackTrace? _stackTrace;
 
   // retrieve image from the provider
   void _getImage() {
@@ -99,7 +99,7 @@ class _ImageWrapperState extends State<ImageWrapper> {
       synchronousCall ? setupCB() : setState(setupCB);
     }
 
-    void handleError(dynamic error, StackTrace stackTrace) {
+    void handleError(dynamic error, StackTrace? stackTrace) {
       setState(() {
         _loading = false;
         _lastException = error;
@@ -113,22 +113,20 @@ class _ImageWrapperState extends State<ImageWrapper> {
       onError: handleError,
     );
 
-    return _imageStreamListener;
+    return _imageStreamListener!;
   }
 
   void _updateSourceStream(ImageStream newStream) {
     if (_imageStream?.key == newStream.key) {
       return;
     }
-    _imageStream?.removeListener(_imageStreamListener);
+    _imageStream?.removeListener(_imageStreamListener!);
     _imageStream = newStream;
-    _imageStream.addListener(_getOrCreateListener());
+    _imageStream!.addListener(_getOrCreateListener());
   }
 
   void _stopImageStream() {
-    if (_imageStream != null) {
-      _imageStream.removeListener(_imageStreamListener);
-    }
+    _imageStream?.removeListener(_imageStreamListener!);
   }
 
   @override
@@ -166,7 +164,7 @@ class _ImageWrapperState extends State<ImageWrapper> {
       widget.maxScale ?? double.infinity,
       widget.initialScale ?? PhotoViewComputedScale.contained,
       widget.outerSize,
-      _imageSize,
+      _imageSize!,
     );
 
     return PhotoViewCore(
@@ -191,7 +189,7 @@ class _ImageWrapperState extends State<ImageWrapper> {
 
   Widget _buildLoading(BuildContext context) {
     if (widget.loadingBuilder != null) {
-      return widget.loadingBuilder(context, _imageChunkEvent);
+      return widget.loadingBuilder!(context, _imageChunkEvent);
     }
 
     return PhotoViewDefaultLoading(
@@ -203,7 +201,7 @@ class _ImageWrapperState extends State<ImageWrapper> {
     BuildContext context,
   ) {
     if (widget.errorBuilder != null) {
-      return widget.errorBuilder(context, _lastException, _stackTrace);
+      return widget.errorBuilder!(context, _lastException!, _stackTrace);
     }
     return PhotoViewDefaultError(
       decoration: widget.backgroundDecoration,
@@ -213,34 +211,34 @@ class _ImageWrapperState extends State<ImageWrapper> {
 
 class CustomChildWrapper extends StatelessWidget {
   const CustomChildWrapper({
-    Key key,
-    @required this.child,
-    @required this.childSize,
-    @required this.backgroundDecoration,
-    @required this.heroAttributes,
-    @required this.scaleStateChangedCallback,
-    @required this.enableRotation,
-    @required this.controller,
-    @required this.scaleStateController,
-    @required this.maxScale,
-    @required this.minScale,
-    @required this.initialScale,
-    @required this.basePosition,
-    @required this.scaleStateCycle,
-    @required this.onTapUp,
-    @required this.onTapDown,
-    @required this.outerSize,
-    @required this.gestureDetectorBehavior,
-    @required this.tightMode,
-    @required this.filterQuality,
-    @required this.disableGestures,
+    Key? key,
+    this.child,
+    required this.childSize,
+    required this.backgroundDecoration,
+    this.heroAttributes,
+    this.scaleStateChangedCallback,
+    required this.enableRotation,
+    required this.controller,
+    required this.scaleStateController,
+    required this.maxScale,
+    required this.minScale,
+    required this.initialScale,
+    required this.basePosition,
+    required this.scaleStateCycle,
+    this.onTapUp,
+    this.onTapDown,
+    required this.outerSize,
+    this.gestureDetectorBehavior,
+    required this.tightMode,
+    required this.filterQuality,
+    required this.disableGestures,
   }) : super(key: key);
 
-  final Widget child;
-  final Size childSize;
+  final Widget? child;
+  final Size? childSize;
   final Decoration backgroundDecoration;
-  final PhotoViewHeroAttributes heroAttributes;
-  final ValueChanged<PhotoViewScaleState> scaleStateChangedCallback;
+  final PhotoViewHeroAttributes? heroAttributes;
+  final ValueChanged<PhotoViewScaleState>? scaleStateChangedCallback;
   final bool enableRotation;
 
   final PhotoViewControllerBase controller;
@@ -250,15 +248,15 @@ class CustomChildWrapper extends StatelessWidget {
   final dynamic minScale;
   final dynamic initialScale;
 
-  final Alignment basePosition;
-  final ScaleStateCycle scaleStateCycle;
-  final PhotoViewImageTapUpCallback onTapUp;
-  final PhotoViewImageTapDownCallback onTapDown;
+  final Alignment? basePosition;
+  final ScaleStateCycle? scaleStateCycle;
+  final PhotoViewImageTapUpCallback? onTapUp;
+  final PhotoViewImageTapDownCallback? onTapDown;
   final Size outerSize;
-  final HitTestBehavior gestureDetectorBehavior;
-  final bool tightMode;
-  final FilterQuality filterQuality;
-  final bool disableGestures;
+  final HitTestBehavior? gestureDetectorBehavior;
+  final bool? tightMode;
+  final FilterQuality? filterQuality;
+  final bool? disableGestures;
 
   @override
   Widget build(BuildContext context) {

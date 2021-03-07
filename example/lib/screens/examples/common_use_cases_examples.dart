@@ -153,7 +153,7 @@ class CommonUseCasesExamples extends StatelessWidget {
 
 class OneTapWrapper extends StatelessWidget {
   const OneTapWrapper({
-    this.imageProvider,
+    required this.imageProvider,
   });
 
   final ImageProvider imageProvider;

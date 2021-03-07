@@ -8,7 +8,8 @@ import 'package:flutter/foundation.dart';
 /// The common collection of listeners inherited from [ChangeNotifier] will be fired
 /// every time.
 class IgnorableChangeNotifier extends ChangeNotifier {
-  ObserverList<VoidCallback> _ignorableListeners = ObserverList<VoidCallback>();
+  ObserverList<VoidCallback>? _ignorableListeners =
+      ObserverList<VoidCallback>();
 
   bool _debugAssertNotDisposed() {
     assert(() {
@@ -25,17 +26,17 @@ class IgnorableChangeNotifier extends ChangeNotifier {
 
   @override
   bool get hasListeners {
-    return super.hasListeners || _ignorableListeners.isNotEmpty;
+    return super.hasListeners || (_ignorableListeners?.isNotEmpty ?? false);
   }
 
   void addIgnorableListener(listener) {
     assert(_debugAssertNotDisposed());
-    _ignorableListeners.add(listener);
+    _ignorableListeners!.add(listener);
   }
 
   void removeIgnorableListener(listener) {
     assert(_debugAssertNotDisposed());
-    _ignorableListeners.remove(listener);
+    _ignorableListeners!.remove(listener);
   }
 
   @override
@@ -51,10 +52,10 @@ class IgnorableChangeNotifier extends ChangeNotifier {
     super.notifyListeners();
     if (_ignorableListeners != null) {
       final List<VoidCallback> localListeners =
-          List<VoidCallback>.from(_ignorableListeners);
+          List<VoidCallback>.from(_ignorableListeners!);
       for (VoidCallback listener in localListeners) {
         try {
-          if (_ignorableListeners.contains(listener)) {
+          if (_ignorableListeners!.contains(listener)) {
             listener();
           }
         } catch (exception, stack) {
@@ -70,7 +71,7 @@ class IgnorableChangeNotifier extends ChangeNotifier {
     }
   }
 
-  /// Ignores the ignorables
+  /// Ignores the ignoreables
   @protected
   void notifySomeListeners() {
     super.notifyListeners();
