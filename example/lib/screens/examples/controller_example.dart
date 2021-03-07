@@ -24,8 +24,7 @@ class _ControllerExampleState extends State<ControllerExample> {
 
   @override
   void initState() {
-    controller = PhotoViewController()
-      ..scale = defScale
+    controller = PhotoViewController(initialScale: defScale)
       ..outputStateStream.listen(onController);
 
     scaleStateController = PhotoViewScaleStateController()
