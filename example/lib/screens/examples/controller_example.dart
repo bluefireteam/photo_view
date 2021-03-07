@@ -28,7 +28,8 @@ class _ControllerExampleState extends State<ControllerExample> {
       ..scale = defScale
       ..outputStateStream.listen(onController);
 
-    scaleStateController = PhotoViewScaleStateController()..outputScaleStateStream.listen(onScaleState);
+    scaleStateController = PhotoViewScaleStateController()
+      ..outputScaleStateStream.listen(onScaleState);
     super.initState();
   }
 
@@ -100,7 +101,10 @@ class _ControllerExampleState extends State<ControllerExample> {
           style: const TextStyle(color: Colors.white),
         ),
         SliderTheme(
-          data: SliderTheme.of(context).copyWith(activeTrackColor: Colors.orange, thumbColor: Colors.orange),
+          data: SliderTheme.of(context).copyWith(
+            activeTrackColor: Colors.orange,
+            thumbColor: Colors.orange,
+          ),
           child: Slider(
             value: value.rotation.clamp(min, max),
             min: min,

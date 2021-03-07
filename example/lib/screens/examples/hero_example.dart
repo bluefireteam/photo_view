@@ -28,7 +28,8 @@ class HeroExample extends StatelessWidget {
               child: Image.network(
                 "https://source.unsplash.com/4900x3600/?camera,paper",
                 width: 350.0,
-                loadingBuilder: (_, child, chunk) => chunk != null ? const Text("loading") : child,
+                loadingBuilder: (_, child, chunk) =>
+                    chunk != null ? const Text("loading") : child,
               ),
             ),
           ),

@@ -12,7 +12,8 @@ import 'package:photo_view/src/utils/photo_view_hero_attributes.dart';
 
 export 'src/controller/photo_view_controller.dart';
 export 'src/controller/photo_view_scalestate_controller.dart';
-export 'src/core/photo_view_gesture_detector.dart' show PhotoViewGestureDetectorScope;
+export 'src/core/photo_view_gesture_detector.dart'
+    show PhotoViewGestureDetectorScope;
 export 'src/photo_view_computed_scale.dart';
 export 'src/photo_view_scale_state.dart';
 export 'src/utils/photo_view_hero_attributes.dart';
@@ -472,7 +473,8 @@ class _PhotoViewState extends State<PhotoView> {
         BoxConstraints constraints,
       ) {
         final computedOuterSize = widget.customSize ?? constraints.biggest;
-        final backgroundDecoration = widget.backgroundDecoration ?? const BoxDecoration(color: Colors.black);
+        final backgroundDecoration = widget.backgroundDecoration ??
+            const BoxDecoration(color: Colors.black);
 
         return widget._isCustomChild
             ? CustomChildWrapper(
