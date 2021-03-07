@@ -1,15 +1,13 @@
 name: photo_view_example
 description: Example of how to use Photo View
-
 publish_to: "none"
-
-version: 1.0.1+1
+version: 1.0.1
 
 environment:
-  sdk: ">=2.12.0-0 <3.0.0"
+  sdk: ">=2.12.0"
 
 dependencies:
-  flutter_svg: ^0.20.0-nullsafety.3
+  flutter_svg: ^0.21.0-nullsafety.0
   photo_view:
     path: ../
   flutter:
