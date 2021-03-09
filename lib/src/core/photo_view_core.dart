@@ -340,7 +340,7 @@ class PhotoViewCoreState extends State<PhotoViewCore>
               onTapUp: widget.onTapUp != null
                   ? (details) => widget.onTapUp!(context, details, value)
                   : null,
-              onTapDown: widget.onTapUp != null
+              onTapDown: widget.onTapDown != null
                   ? (details) => widget.onTapDown!(context, details, value)
                   : null,
             );
