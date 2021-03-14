@@ -25,7 +25,7 @@ import 'package:photo_view/photo_view.dart';
 The [API Docs](https://pub.dartlang.org/documentation/photo_view/latest/photo_view/photo_view-library.html) some detailed information about how to use PhotoView.
 
 
-If you want to see it in practice, check the [example app](/example/lib) that explores most of Photo View's use cases or download the latest version apk on the [releases page](https://github.com/renancaraujo/photo_view/releases)
+If you want to see it in practice, check the [example app](https://github.com/fireslime/photo_view/tree/master/example/lib) that explores most of Photo View's use cases or download the latest version apk on the [releases page](https://github.com/renancaraujo/photo_view/releases)
  
 
 ## (Very) Basic usage
