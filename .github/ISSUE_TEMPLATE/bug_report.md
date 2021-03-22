@@ -8,13 +8,15 @@ assignees: ''
 ---
 
 <!--
-Attention: Before continuing, consider the following:
+Bug reports not following this template may be closed.
+
+⚠️ Attention: Before continuing, consider the following:
 - Check if this issue wasn't already reported.
 - This issue template is here to be used, it will be way easier to get into a solution with all this information.
 -->
 
 **Describe the bug**
-<!--A clear and concise description of what the bug is.-->
+<!--A clear and concise description of what the bug is. This will ease the process of fiding the cause and fixing it.-->
 
 **To Reproduce**
 <!--Steps to reproduce the behavior.-->
