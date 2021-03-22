@@ -1,30 +1,26 @@
 name: photo_view_example
 description: Example of how to use Photo View
+publish_to: "none"
+version: 1.0.1
+
+environment:
+  sdk: ">=2.12.0"
 
 dependencies:
-  flutter_svg:
+  flutter_svg: ^0.21.0-nullsafety.0
   photo_view:
     path: ../
   flutter:
     sdk: flutter
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^0.1.2
-
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-
-# For information on the generic Dart part of this file, see the
-# following page: https://www.dartlang.org/tools/pub/pubspec
-
-# The following section is specific to Flutter.
 flutter:
   uses-material-design: true
   assets:
-    - assets/peanut.gif
+    - assets/neat.gif
     - assets/large-image.jpg
     - assets/small-image.jpg
     - assets/gallery1.jpg
@@ -32,12 +28,9 @@ flutter:
     - assets/gallery3.jpg
     - assets/firefox.svg
 
-  fonts: 
-    - family: PTSans 
+  fonts:
+    - family: PTSans
       fonts:
         - asset: assets/fonts/ptasans-regular.ttf
         - asset: assets/fonts/ptasans-bold.ttf
           weight: 700
-  #
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.io/custom-fonts/#from-packages

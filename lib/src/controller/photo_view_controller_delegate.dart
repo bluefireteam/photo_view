@@ -28,12 +28,12 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
   ScaleStateCycle get scaleStateCycle => widget.scaleStateCycle;
 
   Alignment get basePosition => widget.basePosition;
-  Function(double prevScale, double nextScale) _animateScale;
+  Function(double prevScale, double nextScale)? _animateScale;
 
   /// Mark if scale need recalculation, useful for scale boundaries changes.
   bool markNeedsScaleRecalc = true;
 
-  void startListeners() {
+  void initDelegate() {
     controller.addIgnorableListener(_blindScaleListener);
     scaleStateController.addIgnorableListener(_blindScaleStateListener);
   }
@@ -57,11 +57,12 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
       scaleBoundaries,
     );
 
-    _animateScale(prevScale, nextScale);
+    _animateScale!(prevScale, nextScale);
   }
 
   void addAnimateOnScaleStateUpdate(
-      void animateScale(double prevScale, double nextScale)) {
+    void animateScale(double prevScale, double nextScale),
+  ) {
     _animateScale = animateScale;
   }
 
@@ -81,8 +82,10 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
   Offset get position => controller.position;
 
   double get scale {
+    // for figuring out initial scale
     final needsRecalc = markNeedsScaleRecalc &&
         !scaleStateController.scaleState.isScaleStateZooming;
+
     final scaleExistsOnController = controller.scale != null;
     if (needsRecalc || !scaleExistsOnController) {
       final newScale = getScaleForScaleState(
@@ -93,22 +96,23 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
       scale = newScale;
       return newScale;
     }
-    return controller.scale;
+    return controller.scale!;
   }
 
   set scale(double scale) => controller.setScaleInvisibly(scale);
 
   void updateMultiple({
-    Offset position,
-    double scale,
-    double rotation,
-    Offset rotationFocusPoint,
+    Offset? position,
+    double? scale,
+    double? rotation,
+    Offset? rotationFocusPoint,
   }) {
     controller.updateMultiple(
-        position: position,
-        scale: scale,
-        rotation: rotation,
-        rotationFocusPoint: rotationFocusPoint);
+      position: position,
+      scale: scale,
+      rotation: rotation,
+      rotationFocusPoint: rotationFocusPoint,
+    );
   }
 
   void updateScaleStateFromNewScale(double newScale) {
@@ -151,7 +155,7 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
     scaleStateController.scaleState = nextScaleState;
   }
 
-  CornersRange cornersX({double scale}) {
+  CornersRange cornersX({double? scale}) {
     final double _scale = scale ?? this.scale;
 
     final double computedWidth = scaleBoundaries.childSize.width * _scale;
@@ -165,7 +169,7 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
     return CornersRange(minX, maxX);
   }
 
-  CornersRange cornersY({double scale}) {
+  CornersRange cornersY({double? scale}) {
     final double _scale = scale ?? this.scale;
 
     final double computedHeight = scaleBoundaries.childSize.height * _scale;
@@ -179,7 +183,7 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
     return CornersRange(minY, maxY);
   }
 
-  Offset clampPosition({Offset position, double scale}) {
+  Offset clampPosition({Offset? position, double? scale}) {
     final double _scale = scale ?? this.scale;
     final Offset _position = position ?? this.position;
 

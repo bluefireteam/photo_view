@@ -1,3 +1,79 @@
+<a name="0.11.1"></a>
+# [0.11.1](https://github.com/renancaraujo/photo_view/releases/tag/0.11.1) - 09 Mar 2021
+
+## Fixed:
+- Wrong null check operator #399 #400 
+
+[Changes][0.11.1]
+
+
+<a name="0.11.0"></a>
+# [0.11.0](https://github.com/renancaraujo/photo_view/releases/tag/0.11.0) - 07 Mar 2021
+
+
+## Added
+- `initialScale` on controller #322 #289 
+- [Breaking] Sound null safety support thanks to @DevNico #375 
+
+## Removed
+- `loadFailedChild` in favor of `errorBuilder`. #320 #287
+
+[Changes][0.11.0]
+
+
+<a name="0.10.3"></a>
+# [0.10.3](https://github.com/renancaraujo/photo_view/releases/tag/0.10.3) - 15 Nov 2020
+
+## Fixed
+- Fix double and single tap on gallery #293 #271 #326
+
+[Changes][0.10.3]
+
+
+<a name="0.10.2"></a>
+# [0.10.2](https://github.com/renancaraujo/photo_view/releases/tag/0.10.2) - 22 Aug 2020
+
+## Added
+- `errorBuilder` option to show a widget when things go south when retrieving the image. #320 #287
+
+## Deprecated
+- `loadFailedChild` in favor of `errorBuilder`. #320 #287
+
+## Fixed
+- `loadFailedChild` doesn't show error widget #320 #316 
+- Hero animation should work in all situations #320 #303 
+
+[Changes][0.10.2]
+
+
+<a name="0.10.1"></a>
+# [0.10.1](https://github.com/renancaraujo/photo_view/releases/tag/0.10.1) - 18 Aug 2020
+
+## Added
+- Add ability to disable gestures #233 #234
+- Allow programmatic rotate when PhotoView enableRotation is disabled #259 #257
+
+[Changes][0.10.1]
+
+
+<a name="0.10.0"></a>
+# [0.10.0](https://github.com/renancaraujo/photo_view/releases/tag/0.10.0) - 12 Aug 2020
+
+## Removed [breaking]
+- `loadingChild` options in both `PhotoView` and `PhotoViewGallery` in favor of `loadingBuilder`.  Previously deprecated; #307 
+
+## Fixed
+- Unnecessary scale state controller value streamed #227 #267 
+- GestureDetector winning arena issue that made the gallery not work well #266 #212 
+- When the network goes down, photo_view would crash #275 #308 
+
+
+## Internal
+- Updatde example app #300 
+
+[Changes][0.10.0]
+
+
 <a name="0.9.2"></a>
 # [0.9.2](https://github.com/renancaraujo/photo_view/releases/tag/0.9.2) - 15 Feb 2020
 
@@ -296,129 +372,12 @@ Minor bugfixes
 [Changes][0.1.2]
 
 
-<a name="0.1.1"></a>
-# [0.1.1](https://github.com/renancaraujo/photo_view/releases/tag/0.1.1) - 29 Dec 2018
-
-Minor bug fix
-
-## Removed
-- **[BREAKING]** deprecated `PhotoViewInline` is no longer in the codebase, use `PhotoView` instead. #74 
-
-## Fixed
-- `PhotoViewScaleState` is stuck in zooming when clamping. Happens when `minScale` or `maxScale` has the same value as `initialScale`. #61 #62 #73 #76 
-
-[Changes][0.1.1]
-
-
-<a name="0.1.0"></a>
-# [0.1.0](https://github.com/renancaraujo/photo_view/releases/tag/0.1.0) - 27 Nov 2018
-
-Release stabilizing usage API.
-
-## Fixed
-- Warning when importing photo_view_scale_state #58 
-- Blank image when defining `heroTag` #57 #59 
-
-## Deprecated
-- **[BREAKING]** `PhotoViewInline` class has been deprecated in favor of `PhotoView` only. #54 #53 
-
-## Changed
-- **[BREAKING]**  `size` option has been renamed to `customSize` #54 
-- **[BREAKING]**  `backgroundColor` has been removed. Use `backgroundDecoration` instead. #56 
-
-## Removed
-- **[BREAKING]**  `PhotoViewGallery` is not exported by `PhotoView` anymore, import `package:photo_view/photo_view_gallery.dart`
-
-## Added
-- **Rotation gesture support**:  use the option `enableRotation` to rotate the content as the user rotates the fingers in the pinch gesture. #36 #32
-
-- **Custom child support**:  added the constructor `PhotoView.customChild` which enables the user to show any widget instead of an image. #51 #55 
-
-- `initialScale` option #52 #29 
-
-
-
-[Changes][0.1.0]
-
-
-<a name="0.0.11"></a>
-# [0.0.11](https://github.com/renancaraujo/photo_view/releases/tag/0.0.11) - 18 Nov 2018
-
-## Fixed 
-- Added `scaleStateChangedCallback` property to `PhotoViewGallery`constructor. #43 
-
-## Added 
-- An animation in `onScaleEnd` to make panning gestures more smoothly. #50 #8 
-- Initial scale option: customize initial scale with `initialScale` that can be either a double or a `PhotoViewComputedScale` as well. The new option is on in the `PhotoView`, `PhotoViewGalleryPageOptions` and `PhotoViewInline` constructors #29 #52 
-
-[Changes][0.0.11]
-
-
-<a name="0.0.10"></a>
-# [0.0.10](https://github.com/renancaraujo/photo_view/releases/tag/0.0.10) - 08 Oct 2018
-
-## Fixed 
-- Error when not specifying `gaplessPlayback` to `PhotoViewInline`s constructor. #38 #39 
-
-[Changes][0.0.10]
-
-
-<a name="0.0.9"></a>
-# [0.0.9](https://github.com/renancaraujo/photo_view/releases/tag/0.0.9) - 06 Oct 2018
-
-## Removed
-- **BREAKING:** Support to Dart 1 has been dropped in this version
-
-## Added
-- Analyzer option `unnecessary_new`
-- `PhotoViewGallery` widget
-
-```dart
-@override
-Widget build(BuildContext context) {
-  return Container(
-    child: PhotoViewGallery(
-      pageOptions: <PhotoViewGalleryPageOptions>[
-        PhotoViewGalleryPageOptions(
-          imageProvider: AssetImage("assets/gallery1.jpeg"),
-          heroTag: "tag1",
-        ),
-        PhotoViewGalleryPageOptions(
-          imageProvider: AssetImage("assets/gallery2.jpeg"),
-          heroTag: "tag2",
-          maxScale: PhotoViewComputedScale.contained * 0.3
-        ),
-        PhotoViewGalleryPageOptions(
-          imageProvider: AssetImage("assets/gallery3.jpeg"),
-          minScale: PhotoViewComputedScale.contained * 0.8,
-          maxScale: PhotoViewComputedScale.covered * 1.1,
-          heroTag: "tag3",
-        ),
-      ],
-      backgroundColor: Colors.black87,
-    );
-  );
-}
-```
-
-
-
-[Changes][0.0.9]
-
-
-<a name="0.0.8"></a>
-# [0.0.8](https://github.com/renancaraujo/photo_view/releases/tag/0.0.8) - 14 Sep 2018
-
-## Changed 
-- **BREAKING:** Renamed `PhotoViewScaleBoundary` to `PhotoViewComputedScale` in order to better describe what is the role of this class, that will represent more than boundaries in the future (`initialScale` for instance) #30 
-
-## Fixed 
-- Fixed weird behavior when either `maxScale` or `minscale` passed coincided with the computed value for any of the `PhotoViewScaleState` #30 
-- Missing `heroTag` param for `PhotoviewInline` #27  #26 
-
-[Changes][0.0.8]
-
-
+[0.11.1]: https://github.com/renancaraujo/photo_view/compare/0.11.0...0.11.1
+[0.11.0]: https://github.com/renancaraujo/photo_view/compare/0.10.3...0.11.0
+[0.10.3]: https://github.com/renancaraujo/photo_view/compare/0.10.2...0.10.3
+[0.10.2]: https://github.com/renancaraujo/photo_view/compare/0.10.1...0.10.2
+[0.10.1]: https://github.com/renancaraujo/photo_view/compare/0.10.0...0.10.1
+[0.10.0]: https://github.com/renancaraujo/photo_view/compare/0.9.2...0.10.0
 [0.9.2]: https://github.com/renancaraujo/photo_view/compare/0.9.1...0.9.2
 [0.9.1]: https://github.com/renancaraujo/photo_view/compare/0.9.0...0.9.1
 [0.9.0]: https://github.com/renancaraujo/photo_view/compare/0.8.2...0.9.0
@@ -442,12 +401,6 @@ Widget build(BuildContext context) {
 [0.2.1]: https://github.com/renancaraujo/photo_view/compare/0.2.0...0.2.1
 [0.2.0]: https://github.com/renancaraujo/photo_view/compare/0.1.3...0.2.0
 [0.1.3]: https://github.com/renancaraujo/photo_view/compare/0.1.2...0.1.3
-[0.1.2]: https://github.com/renancaraujo/photo_view/compare/0.1.1...0.1.2
-[0.1.1]: https://github.com/renancaraujo/photo_view/compare/0.1.0...0.1.1
-[0.1.0]: https://github.com/renancaraujo/photo_view/compare/0.0.11...0.1.0
-[0.0.11]: https://github.com/renancaraujo/photo_view/compare/0.0.10...0.0.11
-[0.0.10]: https://github.com/renancaraujo/photo_view/compare/0.0.9...0.0.10
-[0.0.9]: https://github.com/renancaraujo/photo_view/compare/0.0.8...0.0.9
-[0.0.8]: https://github.com/renancaraujo/photo_view/tree/0.0.8
+[0.1.2]: https://github.com/renancaraujo/photo_view/tree/0.1.2
 
  <!-- Generated by changelog-from-release -->

@@ -4,7 +4,7 @@ import 'package:photo_view/src/controller/photo_view_controller.dart';
 import 'package:test/test.dart';
 
 void main() {
-  PhotoViewController controller;
+  late PhotoViewController controller;
   setUp(() {
     controller = PhotoViewController();
   });

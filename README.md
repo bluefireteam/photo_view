@@ -1,6 +1,6 @@
 # Flutter Photo View 
 
-[![Tests status](https://img.shields.io/github/workflow/status/renancaraujo/photo_view/Test/master?label=tests)](https://github.com/renancaraujo/photo_view/actions) [![Pub](https://img.shields.io/pub/v/photo_view.svg?style=popout)](https://pub.dartlang.org/packages/photo_view) [![Chat](https://badges.gitter.im/photo_view/Lobby.svg)](https://gitter.im/photo_view/Lobby)
+[![Tests status](https://img.shields.io/github/workflow/status/renancaraujo/photo_view/Test/master?label=tests)](https://github.com/renancaraujo/photo_view/actions) [![Pub](https://img.shields.io/pub/v/photo_view.svg?style=popout)](https://pub.dartlang.org/packages/photo_view) [![Chat](https://img.shields.io/discord/509714518008528896)](https://discord.gg/pxrBmy4)
 
 A simple zoomable image/content widget for Flutter.
 
@@ -72,7 +72,7 @@ Widget build(BuildContext context) {
         return PhotoViewGalleryPageOptions(
           imageProvider: AssetImage(widget.galleryItems[index].image),
           initialScale: PhotoViewComputedScale.contained * 0.8,
-          heroAttributes: HeroAttributes(tag: galleryItems[index].id),
+          heroAttributes: PhotoViewHeroAttributes(tag: galleryItems[index].id),
         );
       },
       itemCount: galleryItems.length,
@@ -124,6 +124,10 @@ In the example app, we can see what can be achieved with controllers:
 | **Part of the screen** | **Custom child** |
 | ![In action](https://user-images.githubusercontent.com/6718144/56464215-d92a3680-63ba-11e9-9c37-d4796e992123.gif) | ![In action](https://user-images.githubusercontent.com/6718144/56464225-1b537800-63bb-11e9-9c5b-ea8632c99969.gif) |
 
+## Support us
 
+You can support us by becoming a patron on Patreon, any support is much appreciated.
+
+[![Patreon](https://c5.patreon.com/external/logo/become_a_patron_button.png)](https://www.patreon.com/fireslime)
 
 

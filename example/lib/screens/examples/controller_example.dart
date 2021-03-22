@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:photo_view_example/screens/app_bar.dart';
+import 'package:photo_view_example/screens/common/app_bar.dart';
 
 class ControllerExample extends StatefulWidget {
   @override
@@ -17,15 +17,14 @@ const double defScale = 0.1;
 const double maxScale = 0.6;
 
 class _ControllerExampleState extends State<ControllerExample> {
-  PhotoViewControllerBase controller;
-  PhotoViewScaleStateController scaleStateController;
+  late PhotoViewControllerBase controller;
+  late PhotoViewScaleStateController scaleStateController;
 
   int calls = 0;
 
   @override
   void initState() {
-    controller = PhotoViewController()
-      ..scale = defScale
+    controller = PhotoViewController(initialScale: defScale)
       ..outputStateStream.listen(onController);
 
     scaleStateController = PhotoViewScaleStateController()
@@ -52,51 +51,37 @@ class _ControllerExampleState extends State<ControllerExample> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+    return ExampleAppBarLayout(
+      title: "Controller",
+      showGoBack: true,
+      child: ClipRect(
+        child: Stack(
           children: <Widget>[
-            const ExampleAppBar(
-              title: "Controller Examples",
-              showGoBack: true,
-            ),
-            Flexible(
-              flex: 1,
-              child: ClipRect(
-                child: Stack(
-                  children: <Widget>[
-                    Positioned.fill(
-                      child: PhotoView(
-                        imageProvider:
-                            const AssetImage("assets/large-image.jpg"),
-                        controller: controller,
-                        scaleStateController: scaleStateController,
-                        enableRotation: true,
-                        initialScale: minScale,
-                        minScale: minScale,
-                        maxScale: maxScale,
-                      ),
-                    ),
-                    Positioned(
-                      bottom: 0,
-                      height: 290,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        padding: const EdgeInsets.all(30.0),
-                        child: StreamBuilder(
-                          stream: controller.outputStateStream,
-                          initialData: controller.value,
-                          builder: _streamBuild,
-                        ),
-                      ),
-                    )
-                  ],
-                ),
+            Positioned.fill(
+              child: PhotoView(
+                imageProvider: const AssetImage("assets/large-image.jpg"),
+                controller: controller,
+                scaleStateController: scaleStateController,
+                enableRotation: true,
+                initialScale: minScale * 1.5,
+                minScale: minScale,
+                maxScale: maxScale,
               ),
             ),
+            Positioned(
+              bottom: 0,
+              height: 290,
+              left: 0,
+              right: 0,
+              child: Container(
+                padding: const EdgeInsets.all(30.0),
+                child: StreamBuilder(
+                  stream: controller.outputStateStream,
+                  initialData: controller.value,
+                  builder: _streamBuild,
+                ),
+              ),
+            )
           ],
         ),
       ),
@@ -116,7 +101,9 @@ class _ControllerExampleState extends State<ControllerExample> {
         ),
         SliderTheme(
           data: SliderTheme.of(context).copyWith(
-              activeTrackColor: Colors.orange, thumbColor: Colors.orange),
+            activeTrackColor: Colors.orange,
+            thumbColor: Colors.orange,
+          ),
           child: Slider(
             value: value.rotation.clamp(min, max),
             min: min,
@@ -136,7 +123,7 @@ class _ControllerExampleState extends State<ControllerExample> {
             thumbColor: Colors.orange,
           ),
           child: Slider(
-            value: value.scale.clamp(minScale, maxScale),
+            value: value.scale!.clamp(minScale, maxScale),
             min: minScale,
             max: maxScale,
             onChanged: (double newScale) {

@@ -1,0 +1,7 @@
+daysUntilClose: 7
+
+responseRequiredLabel: awaiting-further-comments
+# Comment to post when closing an Issue for lack of response. Set to `false` to disable
+closeComment: >
+  Since we got no answer for a while, I am automatically closing this issue for the sake of organization.
+  If there is any news on that, feel free to retake the discussion.

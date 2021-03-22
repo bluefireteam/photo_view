@@ -4,9 +4,7 @@ import 'package:photo_view/src/controller/photo_view_controller_delegate.dart'
     show PhotoViewControllerDelegate;
 
 mixin HitCornersDetector on PhotoViewControllerDelegate {
-  HitAxis hitAxis() => HitAxis(hitCornersX(), hitCornersY());
-
-  HitCorners hitCornersX() {
+  HitCorners _hitCornersX() {
     final double childWidth = scaleBoundaries.childSize.width * scale;
     final double screenWidth = scaleBoundaries.outerSize.width;
     if (screenWidth >= childWidth) {
@@ -17,7 +15,7 @@ mixin HitCornersDetector on PhotoViewControllerDelegate {
     return HitCorners(x <= cornersX.min, x >= cornersX.max);
   }
 
-  HitCorners hitCornersY() {
+  HitCorners _hitCornersY() {
     final double childHeight = scaleBoundaries.childSize.height * scale;
     final double screenHeight = scaleBoundaries.outerSize.height;
     if (screenHeight >= childHeight) {
@@ -28,45 +26,44 @@ mixin HitCornersDetector on PhotoViewControllerDelegate {
     return HitCorners(y <= cornersY.min, y >= cornersY.max);
   }
 
-  bool shouldMoveX(Offset move) {
-    final hitCornersX = this.hitCornersX();
-
-    if (hitCornersX.hasHitAny && move != Offset.zero) {
-      if (hitCornersX.hasHitBoth) {
-        return false;
-      }
-      if (hitCornersX.hasHitMax) {
-        return move.dx < 0;
-      }
-      return move.dx > 0;
+  bool _shouldMoveAxis(
+      HitCorners hitCorners, double mainAxisMove, double crossAxisMove) {
+    if (mainAxisMove == 0) {
+      return false;
+    }
+    if (!hitCorners.hasHitAny) {
+      return true;
+    }
+    final axisBlocked = hitCorners.hasHitBoth ||
+        (hitCorners.hasHitMax ? mainAxisMove > 0 : mainAxisMove < 0);
+    if (axisBlocked) {
+      return false;
     }
     return true;
   }
 
-  bool shouldMoveY(Offset move) {
-    final hitCornersY = this.hitCornersY();
-    if (hitCornersY.hasHitAny && move != Offset.zero) {
-      if (hitCornersY.hasHitBoth) {
-        return false;
-      }
-      if (hitCornersY.hasHitMax) {
-        return move.dy < 0;
-      }
-      return move.dy > 0;
-    }
-    return true;
+  bool _shouldMoveX(Offset move) {
+    final hitCornersX = _hitCornersX();
+    final mainAxisMove = move.dx;
+    final crossAxisMove = move.dy;
+
+    return _shouldMoveAxis(hitCornersX, mainAxisMove, crossAxisMove);
   }
-}
 
-class HitAxis {
-  HitAxis(this.hasHitX, this.hasHitY);
+  bool _shouldMoveY(Offset move) {
+    final hitCornersY = _hitCornersY();
+    final mainAxisMove = move.dy;
+    final crossAxisMove = move.dx;
 
-  final HitCorners hasHitX;
-  final HitCorners hasHitY;
+    return _shouldMoveAxis(hitCornersY, mainAxisMove, crossAxisMove);
+  }
 
-  bool get hasHitAny => hasHitX.hasHitAny || hasHitY.hasHitAny;
-
-  bool get hasHitBoth => hasHitX.hasHitBoth && hasHitY.hasHitBoth;
+  bool shouldMove(Offset move, Axis mainAxis) {
+    if (mainAxis == Axis.vertical) {
+      return _shouldMoveY(move);
+    }
+    return _shouldMoveX(move);
+  }
 }
 
 class HitCorners {
