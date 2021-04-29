@@ -110,7 +110,9 @@ class PhotoViewGallery extends StatefulWidget {
     this.pageController,
     this.onPageChanged,
     this.scaleStateChangedCallback,
+    this.scrollFinishEdgeCallback,
     this.enableRotation = false,
+    this.enableMove = true,
     this.enableMoveOnMinScale = false,
     this.scrollPhysics,
     this.scrollDirection = Axis.horizontal,
@@ -135,7 +137,9 @@ class PhotoViewGallery extends StatefulWidget {
     this.pageController,
     this.onPageChanged,
     this.scaleStateChangedCallback,
+    this.scrollFinishEdgeCallback,
     this.enableRotation = false,
+    this.enableMove = true,
     this.enableMoveOnMinScale = false,
     this.scrollPhysics,
     this.scrollDirection = Axis.horizontal,
@@ -181,8 +185,14 @@ class PhotoViewGallery extends StatefulWidget {
   /// Mirror to [PhotoView.scaleStateChangedCallback]
   final ValueChanged<PhotoViewScaleState> scaleStateChangedCallback;
 
+  /// Mirror to [PhotoView.scrollFinishEdgeCallback]
+  final Function scrollFinishEdgeCallback;
+
   /// Mirror to [PhotoView.enableRotation]
   final bool enableRotation;
+
+  /// Mirror to [PhotoView.enableMove]
+  final bool enableMove;
 
   /// Mirror to [PhotoView.enableMoveOnMinScale]
   final bool enableMoveOnMinScale;
@@ -259,7 +269,9 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             customSize: widget.customSize,
             heroAttributes: pageOption.heroAttributes,
             scaleStateChangedCallback: scaleStateChangedCallback,
+            scrollFinishEdgeCallback: widget.scrollFinishEdgeCallback,
             enableRotation: widget.enableRotation,
+            enableMove: widget.enableMove,
             enableMoveOnMinScale: widget.enableMoveOnMinScale,
             enableDoubleTap: pageOption.enableDoubleTap,
             initialScale: pageOption.initialScale,
@@ -270,6 +282,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             onTapDown: pageOption.onTapDown,
             gestureDetectorBehavior: pageOption.gestureDetectorBehavior,
             tightMode: pageOption.tightMode,
+            bouncing: pageOption.bouncing,
             filterQuality: pageOption.filterQuality,
             basePosition: pageOption.basePosition,
             disableGestures: pageOption.disableGestures,
@@ -286,7 +299,9 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             gaplessPlayback: widget.gaplessPlayback,
             heroAttributes: pageOption.heroAttributes,
             scaleStateChangedCallback: scaleStateChangedCallback,
+            scrollFinishEdgeCallback: widget.scrollFinishEdgeCallback,
             enableRotation: widget.enableRotation,
+            enableMove: widget.enableMove,
             enableMoveOnMinScale: widget.enableMoveOnMinScale,
             enableDoubleTap: pageOption.enableDoubleTap,
             initialScale: pageOption.initialScale,
@@ -297,6 +312,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             onTapDown: pageOption.onTapDown,
             gestureDetectorBehavior: pageOption.gestureDetectorBehavior,
             tightMode: pageOption.tightMode,
+            bouncing: pageOption.bouncing,
             filterQuality: pageOption.filterQuality,
             basePosition: pageOption.basePosition,
             disableGestures: pageOption.disableGestures,
@@ -337,6 +353,7 @@ class PhotoViewGalleryPageOptions {
     this.onTapDown,
     this.gestureDetectorBehavior,
     this.tightMode,
+    this.bouncing,
     this.filterQuality,
     this.disableGestures,
     this.enableDoubleTap,
@@ -360,6 +377,7 @@ class PhotoViewGalleryPageOptions {
     this.onTapDown,
     this.gestureDetectorBehavior,
     this.tightMode,
+    this.bouncing,
     this.filterQuality,
     this.disableGestures,
     this.enableDoubleTap,
@@ -411,6 +429,9 @@ class PhotoViewGalleryPageOptions {
 
   /// Mirror to [PhotoView.tightMode]
   final bool tightMode;
+
+  /// Mirror to [PhotoView.bouncing]
+  final bool bouncing;
 
   /// Mirror to [PhotoView.disableGestures]
   final bool disableGestures;

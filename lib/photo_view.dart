@@ -45,7 +45,6 @@ export 'src/utils/photo_view_hero_attributes.dart';
 ///   transitionOnUserGestures: true,
 ///  ),
 ///  scaleStateChangedCallback: this.onScaleStateChanged,
-///  enableRotation: true,
 ///  controller:  controller,
 ///  minScale: PhotoViewComputedScale.contained * 0.8,
 ///  maxScale: PhotoViewComputedScale.covered * 1.8,
@@ -75,7 +74,6 @@ export 'src/utils/photo_view_hero_attributes.dart';
 ///   transitionOnUserGestures: true,
 ///  ),
 ///  scaleStateChangedCallback: this.onScaleStateChanged,
-///  enableRotation: true,
 ///  controller:  controller,
 ///  minScale: PhotoViewComputedScale.contained * 0.8,
 ///  maxScale: PhotoViewComputedScale.covered * 1.8,
@@ -241,7 +239,9 @@ class PhotoView extends StatefulWidget {
     this.gaplessPlayback = false,
     this.heroAttributes,
     this.scaleStateChangedCallback,
+    this.scrollFinishEdgeCallback,
     this.enableRotation = false,
+    this.enableMove = true,
     this.enableMoveOnMinScale = false,
     this.enableDoubleTap,
     this.controller,
@@ -256,6 +256,7 @@ class PhotoView extends StatefulWidget {
     this.customSize,
     this.gestureDetectorBehavior,
     this.tightMode,
+    this.bouncing,
     this.filterQuality,
     this.disableGestures,
     this.errorBuilder,
@@ -276,7 +277,9 @@ class PhotoView extends StatefulWidget {
     this.backgroundDecoration,
     this.heroAttributes,
     this.scaleStateChangedCallback,
+    this.scrollFinishEdgeCallback,
     this.enableRotation = false,
+    this.enableMove = true,
     this.enableMoveOnMinScale = false,
     this.enableDoubleTap,
     this.controller,
@@ -291,6 +294,7 @@ class PhotoView extends StatefulWidget {
     this.customSize,
     this.gestureDetectorBehavior,
     this.tightMode,
+    this.bouncing,
     this.filterQuality,
     this.disableGestures,
   })  : loadFailedChild = null,
@@ -334,8 +338,14 @@ class PhotoView extends StatefulWidget {
   /// A [Function] to be called whenever the scaleState changes, this happens when the user double taps the content ou start to pinch-in.
   final ValueChanged<PhotoViewScaleState> scaleStateChangedCallback;
 
+  /// A [Function] to be called whenever the photo scrolls from screen edges away by 25%.
+  final Function scrollFinishEdgeCallback;
+
   /// A flag that enables the rotation gesture support
   final bool enableRotation;
+
+  /// A flag that enables the move gesture support
+  final bool enableMove;
 
   /// A flag that enables the move on minScale
   final bool enableMoveOnMinScale;
@@ -390,6 +400,9 @@ class PhotoView extends StatefulWidget {
   /// Enables tight mode, making background container assume the size of the image/child.
   /// Useful when inside a [Dialog]
   final bool tightMode;
+
+  /// Enables bouncing, making image bouncing from edge.
+  final bool bouncing;
 
   /// Quality levels for image filters.
   final FilterQuality filterQuality;
@@ -497,7 +510,9 @@ class _PhotoViewState extends State<PhotoView> {
                 backgroundDecoration: widget.backgroundDecoration,
                 heroAttributes: widget.heroAttributes,
                 scaleStateChangedCallback: widget.scaleStateChangedCallback,
+                scrollFinishEdgeCallback: widget.scrollFinishEdgeCallback,
                 enableRotation: widget.enableRotation,
+                enableMove: widget.enableMove,
                 enableMoveOnMinScale: widget.enableMoveOnMinScale,
                 enableDoubleTap: widget.enableDoubleTap,
                 controller: _controller,
@@ -512,6 +527,7 @@ class _PhotoViewState extends State<PhotoView> {
                 outerSize: computedOuterSize,
                 gestureDetectorBehavior: widget.gestureDetectorBehavior,
                 tightMode: widget.tightMode,
+                bouncing: widget.bouncing,
                 filterQuality: widget.filterQuality,
                 disableGestures: widget.disableGestures,
               )
@@ -523,7 +539,9 @@ class _PhotoViewState extends State<PhotoView> {
                 gaplessPlayback: widget.gaplessPlayback,
                 heroAttributes: widget.heroAttributes,
                 scaleStateChangedCallback: widget.scaleStateChangedCallback,
+                scrollFinishEdgeCallback: widget.scrollFinishEdgeCallback,
                 enableRotation: widget.enableRotation,
+                enableMove: widget.enableMove,
                 enableMoveOnMinScale: widget.enableMoveOnMinScale,
                 enableDoubleTap: widget.enableDoubleTap,
                 controller: _controller,
@@ -538,6 +556,7 @@ class _PhotoViewState extends State<PhotoView> {
                 outerSize: computedOuterSize,
                 gestureDetectorBehavior: widget.gestureDetectorBehavior,
                 tightMode: widget.tightMode,
+                bouncing: widget.bouncing,
                 filterQuality: widget.filterQuality,
                 disableGestures: widget.disableGestures,
                 errorBuilder: widget.errorBuilder,

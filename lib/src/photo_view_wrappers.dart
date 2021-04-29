@@ -15,7 +15,9 @@ class ImageWrapper extends StatefulWidget {
     @required this.gaplessPlayback,
     @required this.heroAttributes,
     @required this.scaleStateChangedCallback,
+    @required this.scrollFinishEdgeCallback,
     @required this.enableRotation,
+    @required this.enableMove,
     @required this.enableMoveOnMinScale,
     @required this.enableDoubleTap,
     @required this.controller,
@@ -30,6 +32,7 @@ class ImageWrapper extends StatefulWidget {
     @required this.outerSize,
     @required this.gestureDetectorBehavior,
     @required this.tightMode,
+    @required this.bouncing,
     @required this.filterQuality,
     @required this.disableGestures,
     @required this.errorBuilder,
@@ -43,7 +46,9 @@ class ImageWrapper extends StatefulWidget {
   final bool gaplessPlayback;
   final PhotoViewHeroAttributes heroAttributes;
   final ValueChanged<PhotoViewScaleState> scaleStateChangedCallback;
+  final Function scrollFinishEdgeCallback;
   final bool enableRotation;
+  final bool enableMove;
   final bool enableMoveOnMinScale;
   final dynamic maxScale;
   final dynamic minScale;
@@ -59,6 +64,7 @@ class ImageWrapper extends StatefulWidget {
   final Size outerSize;
   final HitTestBehavior gestureDetectorBehavior;
   final bool tightMode;
+  final bool bouncing;
   final FilterQuality filterQuality;
   final bool disableGestures;
   final bool enableDoubleTap;
@@ -180,8 +186,10 @@ class _ImageWrapperState extends State<ImageWrapper> {
     return PhotoViewCore(
       imageProvider: widget.imageProvider,
       backgroundDecoration: widget.backgroundDecoration,
+      scrollFinishEdgeCallback: widget.scrollFinishEdgeCallback,
       gaplessPlayback: widget.gaplessPlayback ?? false,
       enableRotation: widget.enableRotation ?? false,
+      enableMove: widget.enableMove ?? true,
       enableMoveOnMinScale: widget.enableMoveOnMinScale ?? false,
       heroAttributes: widget.heroAttributes,
       basePosition: widget.basePosition ?? Alignment.center,
@@ -193,6 +201,7 @@ class _ImageWrapperState extends State<ImageWrapper> {
       onTapDown: widget.onTapDown,
       gestureDetectorBehavior: widget.gestureDetectorBehavior,
       tightMode: widget.tightMode ?? false,
+      bouncing: widget.bouncing ?? false,
       filterQuality: widget.filterQuality ?? FilterQuality.none,
       disableGestures: widget.disableGestures ?? false,
       enableDoubleTap: widget.enableDoubleTap ?? true,
@@ -232,7 +241,9 @@ class CustomChildWrapper extends StatefulWidget {
     @required this.backgroundDecoration,
     @required this.heroAttributes,
     @required this.scaleStateChangedCallback,
+    @required this.scrollFinishEdgeCallback,
     @required this.enableRotation,
+    @required this.enableMove,
     @required this.enableMoveOnMinScale,
     @required this.controller,
     @required this.scaleStateController,
@@ -246,6 +257,7 @@ class CustomChildWrapper extends StatefulWidget {
     @required this.outerSize,
     @required this.gestureDetectorBehavior,
     @required this.tightMode,
+    @required this.bouncing,
     @required this.filterQuality,
     @required this.disableGestures,
     @required this.enableDoubleTap,
@@ -256,7 +268,9 @@ class CustomChildWrapper extends StatefulWidget {
   final Decoration backgroundDecoration;
   final PhotoViewHeroAttributes heroAttributes;
   final ValueChanged<PhotoViewScaleState> scaleStateChangedCallback;
+  final Function scrollFinishEdgeCallback;
   final bool enableRotation;
+  final bool enableMove;
   final bool enableMoveOnMinScale;
 
   final PhotoViewControllerBase controller;
@@ -273,6 +287,7 @@ class CustomChildWrapper extends StatefulWidget {
   final Size outerSize;
   final HitTestBehavior gestureDetectorBehavior;
   final bool tightMode;
+  final bool bouncing;
   final FilterQuality filterQuality;
   final bool disableGestures;
   final bool enableDoubleTap;
@@ -295,7 +310,9 @@ class _CustomChildWrapperState extends State<CustomChildWrapper> {
     return PhotoViewCore.customChild(
       customChild: widget.child,
       backgroundDecoration: widget.backgroundDecoration,
+      scrollFinishEdgeCallback: widget.scrollFinishEdgeCallback,
       enableRotation: widget.enableRotation ?? false,
+      enableMove: widget.enableMove ?? true,
       enableMoveOnMinScale: widget.enableMoveOnMinScale ?? false,
       heroAttributes: widget.heroAttributes,
       controller: widget.controller,
@@ -307,6 +324,7 @@ class _CustomChildWrapperState extends State<CustomChildWrapper> {
       onTapDown: widget.onTapDown,
       gestureDetectorBehavior: widget.gestureDetectorBehavior,
       tightMode: widget.tightMode ?? false,
+      bouncing: widget.bouncing ?? false,
       filterQuality: widget.filterQuality ?? FilterQuality.none,
       disableGestures: widget.disableGestures ?? false,
       enableDoubleTap: widget.enableDoubleTap ?? true,
