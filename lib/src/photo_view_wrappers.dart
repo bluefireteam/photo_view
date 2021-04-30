@@ -46,7 +46,7 @@ class ImageWrapper extends StatefulWidget {
   final bool gaplessPlayback;
   final PhotoViewHeroAttributes heroAttributes;
   final ValueChanged<PhotoViewScaleState> scaleStateChangedCallback;
-  final Function scrollFinishEdgeCallback;
+  final ScrollFinishEdgeCallback scrollFinishEdgeCallback;
   final bool enableRotation;
   final bool enableMove;
   final bool enableMoveOnMinScale;
@@ -268,7 +268,7 @@ class CustomChildWrapper extends StatefulWidget {
   final Decoration backgroundDecoration;
   final PhotoViewHeroAttributes heroAttributes;
   final ValueChanged<PhotoViewScaleState> scaleStateChangedCallback;
-  final Function scrollFinishEdgeCallback;
+  final ScrollFinishEdgeCallback scrollFinishEdgeCallback;
   final bool enableRotation;
   final bool enableMove;
   final bool enableMoveOnMinScale;

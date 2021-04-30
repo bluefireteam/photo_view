@@ -7,6 +7,7 @@ import 'package:photo_view/photo_view.dart'
         PhotoView,
         PhotoViewImageTapDownCallback,
         PhotoViewImageTapUpCallback,
+        ScrollFinishEdgeCallback,
         ScaleStateCycle;
 
 import 'package:photo_view/src/controller/photo_view_controller.dart';
@@ -186,7 +187,7 @@ class PhotoViewGallery extends StatefulWidget {
   final ValueChanged<PhotoViewScaleState> scaleStateChangedCallback;
 
   /// Mirror to [PhotoView.scrollFinishEdgeCallback]
-  final Function scrollFinishEdgeCallback;
+  final ScrollFinishEdgeCallback scrollFinishEdgeCallback;
 
   /// Mirror to [PhotoView.enableRotation]
   final bool enableRotation;

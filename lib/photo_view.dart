@@ -338,8 +338,8 @@ class PhotoView extends StatefulWidget {
   /// A [Function] to be called whenever the scaleState changes, this happens when the user double taps the content ou start to pinch-in.
   final ValueChanged<PhotoViewScaleState> scaleStateChangedCallback;
 
-  /// A [Function] to be called whenever the photo scrolls from screen edges away by 25%.
-  final Function scrollFinishEdgeCallback;
+  /// A [Function] to be called whenever the photo scrolls from screen edges.
+  final ScrollFinishEdgeCallback scrollFinishEdgeCallback;
 
   /// A flag that enables the rotation gesture support
   final bool enableRotation;
@@ -583,6 +583,8 @@ PhotoViewScaleState defaultScaleStateCycle(PhotoViewScaleState actual) {
   }
 }
 
+enum ScrollEdge { left, right, top, bottom }
+
 /// A type definition for a [Function] that receives the actual [PhotoViewScaleState] and returns the next one
 /// It is used internally to walk in the "doubletap gesture cycle".
 /// It is passed to [PhotoView.scaleStateCycle]
@@ -609,3 +611,6 @@ typedef LoadingBuilder = Widget Function(
   BuildContext context,
   ImageChunkEvent event,
 );
+
+typedef ScrollFinishEdgeCallback = Function(ScrollEdge edge, double percent);
+

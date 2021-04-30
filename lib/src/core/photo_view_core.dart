@@ -6,6 +6,8 @@ import 'package:photo_view/photo_view.dart'
         PhotoViewHeroAttributes,
         PhotoViewImageTapDownCallback,
         PhotoViewImageTapUpCallback,
+        ScrollFinishEdgeCallback,
+        ScrollEdge,
         ScaleStateCycle;
 import 'package:photo_view/src/controller/photo_view_controller.dart';
 import 'package:photo_view/src/controller/photo_view_controller_delegate.dart';
@@ -77,7 +79,7 @@ class PhotoViewCore extends StatefulWidget {
   final ImageProvider imageProvider;
   final bool gaplessPlayback;
   final PhotoViewHeroAttributes heroAttributes;
-  final Function scrollFinishEdgeCallback;
+  final ScrollFinishEdgeCallback scrollFinishEdgeCallback;
   final bool enableRotation;
   final bool enableMove;
   final bool enableMoveOnMinScale;
@@ -146,24 +148,26 @@ class PhotoViewCoreState extends State<PhotoViewCore>
   }
 
   void handleVeritcalScrollListener() {
-    double percent25 = scaleBoundaries.childSize.height * 25.0 / 100.0;
     double scrollPosition = _verticalScrollController.position.pixels * scale;
+    double percent =
+        scrollPosition.abs() * 100.0 / scaleBoundaries.childSize.height;
 
-    if (scrollPosition.abs() > percent25) {
-      if (widget.scrollFinishEdgeCallback != null) {
-        widget.scrollFinishEdgeCallback();
-      }
+    ScrollEdge edge = scrollPosition > 0 ? ScrollEdge.bottom : ScrollEdge.top;
+
+    if (widget.scrollFinishEdgeCallback != null) {
+      widget.scrollFinishEdgeCallback(edge, percent);
     }
   }
 
   void handleHorizontalScrollListener() {
-    double percent25 = scaleBoundaries.childSize.width * 25.0 / 100.0;
     double scrollPosition = _horizontalScrollController.position.pixels * scale;
+    double percent =
+        scrollPosition.abs() * 100.0 / scaleBoundaries.childSize.width;
 
-    if (scrollPosition.abs() > percent25) {
-      if (widget.scrollFinishEdgeCallback != null) {
-        widget.scrollFinishEdgeCallback();
-      }
+    ScrollEdge edge = scrollPosition > 0 ? ScrollEdge.right : ScrollEdge.left;
+
+    if (widget.scrollFinishEdgeCallback != null) {
+      widget.scrollFinishEdgeCallback(edge, percent);
     }
   }
 
