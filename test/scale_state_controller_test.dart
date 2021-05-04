@@ -2,7 +2,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:test/test.dart';
 
 void main() {
-  PhotoViewScaleStateController controller;
+  late PhotoViewScaleStateController controller;
   setUp(() {
     controller = PhotoViewScaleStateController();
   });
@@ -52,7 +52,7 @@ void main() {
       count++;
     };
 
-    controller.addIgnorableListener(callback);
+    controller.addIgnorableListener(callback as void Function());
 
     expect(count, 0);
 

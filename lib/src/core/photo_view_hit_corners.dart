@@ -6,23 +6,23 @@ import 'package:photo_view/src/controller/photo_view_controller_delegate.dart'
 
 mixin HitCornersDetector on PhotoViewControllerDelegate {
   HitCorners _hitCornersX() {
-    final double childWidth = scaleBoundaries.childSize.width * scale;
+    final double childWidth = scaleBoundaries.childSize!.width * scale!;
     final double screenWidth = scaleBoundaries.outerSize.width;
     if (screenWidth >= childWidth) {
       return const HitCorners(true, true);
     }
-    final x = -position.dx;
+    final x = -position!.dx;
     final cornersX = this.cornersX();
     return HitCorners(x <= cornersX.min, x >= cornersX.max);
   }
 
   HitCorners _hitCornersY() {
-    final double childHeight = scaleBoundaries.childSize.height * scale;
+    final double childHeight = scaleBoundaries.childSize!.height * scale!;
     final double screenHeight = scaleBoundaries.outerSize.height;
     if (screenHeight >= childHeight) {
       return const HitCorners(true, true);
     }
-    final y = -position.dy;
+    final y = -position!.dy;
     final cornersY = this.cornersY();
     return HitCorners(y <= cornersY.min, y >= cornersY.max);
   }

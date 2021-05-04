@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 class PhotoViewDefaultError extends StatelessWidget {
-  const PhotoViewDefaultError({Key key, @required this.decoration})
+  const PhotoViewDefaultError({Key? key, required this.decoration})
       : super(key: key);
 
-  final BoxDecoration decoration;
+  final BoxDecoration? decoration;
 
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
-      decoration: decoration,
+      decoration: decoration!,
       child: Center(
         child: Icon(
           Icons.broken_image,
@@ -22,15 +22,15 @@ class PhotoViewDefaultError extends StatelessWidget {
 }
 
 class PhotoViewDefaultLoading extends StatelessWidget {
-  const PhotoViewDefaultLoading({Key key, this.event}) : super(key: key);
+  const PhotoViewDefaultLoading({Key? key, this.event}) : super(key: key);
 
-  final ImageChunkEvent event;
+  final ImageChunkEvent? event;
 
   @override
   Widget build(BuildContext context) {
     final value = event == null
         ? 0.0
-        : event.cumulativeBytesLoaded / event.expectedTotalBytes;
+        : event!.cumulativeBytesLoaded / event!.expectedTotalBytes!;
     return Center(
       child: Container(
         width: 20.0,

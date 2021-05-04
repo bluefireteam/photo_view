@@ -3,8 +3,8 @@ import 'package:flutter/widgets.dart';
 
 class OnlyOnePointerRecognizer extends ScaleGestureRecognizer {
   OnlyOnePointerRecognizer({
-    Object debugOwner,
-    PointerDeviceKind kind,
+    Object? debugOwner,
+    PointerDeviceKind? kind,
   }) : super(debugOwner: debugOwner, kind: kind);
 
   int _p = 0;

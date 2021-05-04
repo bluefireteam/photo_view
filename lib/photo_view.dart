@@ -231,8 +231,8 @@ class PhotoView extends StatefulWidget {
   ///
   /// Internally, the image is rendered within an [Image] widget.
   PhotoView({
-    Key key,
-    @required this.imageProvider,
+    Key? key,
+    required this.imageProvider,
     this.loadingBuilder,
     this.loadFailedChild,
     this.backgroundDecoration,
@@ -271,8 +271,8 @@ class PhotoView extends StatefulWidget {
   /// Instead of a [imageProvider], this constructor will receive a [child] and a [childSize].
   ///
   PhotoView.customChild({
-    Key key,
-    @required this.child,
+    Key? key,
+    required this.child,
     this.childSize,
     this.backgroundDecoration,
     this.heroAttributes,
@@ -306,21 +306,21 @@ class PhotoView extends StatefulWidget {
 
   /// Given a [imageProvider] it resolves into an zoomable image widget using. It
   /// is required
-  final ImageProvider imageProvider;
+  final ImageProvider? imageProvider;
 
   /// While [imageProvider] is not resolved, [loadingBuilder] is called by [PhotoView]
   /// into the screen, by default it is a centered [CircularProgressIndicator]
-  final LoadingBuilder loadingBuilder;
+  final LoadingBuilder? loadingBuilder;
 
   /// Show loadFailedChild when the image failed to load
-  final ImageErrorWidgetBuilder errorBuilder;
+  final ImageErrorWidgetBuilder? errorBuilder;
 
   /// Show loadFailedChild when the image failed to load
   @Deprecated("Use errorBuilder instead")
-  final Widget loadFailedChild;
+  final Widget? loadFailedChild;
 
   /// Changes the background behind image, defaults to `Colors.black`.
-  final Decoration backgroundDecoration;
+  final Decoration? backgroundDecoration;
 
   /// This is used to continue showing the old image (`true`), or briefly show
   /// nothing (`false`), when the `imageProvider` changes. By default it's set
@@ -329,17 +329,17 @@ class PhotoView extends StatefulWidget {
 
   /// Attributes that are going to be passed to [PhotoViewCore]'s
   /// [Hero]. Leave this property undefined if you don't want a hero animation.
-  final PhotoViewHeroAttributes heroAttributes;
+  final PhotoViewHeroAttributes? heroAttributes;
 
   /// Defines the size of the scaling base of the image inside [PhotoView],
   /// by default it is `MediaQuery.of(context).size`.
-  final Size customSize;
+  final Size? customSize;
 
   /// A [Function] to be called whenever the scaleState changes, this happens when the user double taps the content ou start to pinch-in.
-  final ValueChanged<PhotoViewScaleState> scaleStateChangedCallback;
+  final ValueChanged<PhotoViewScaleState>? scaleStateChangedCallback;
 
   /// A [Function] to be called whenever the photo scrolls from screen edges.
-  final ScrollFinishEdgeCallback scrollFinishEdgeCallback;
+  final ScrollFinishEdgeCallback? scrollFinishEdgeCallback;
 
   /// A flag that enables the rotation gesture support
   final bool enableRotation;
@@ -351,13 +351,13 @@ class PhotoView extends StatefulWidget {
   final bool enableMoveOnMinScale;
 
   /// A flag that enables the double tap
-  final bool enableDoubleTap;
+  final bool? enableDoubleTap;
 
   /// The specified custom child to be shown instead of a image
-  final Widget child;
+  final Widget? child;
 
   /// The size of the custom [child]. [PhotoView] uses this value to compute the relation between the child and the container's size to calculate the scale value.
-  final Size childSize;
+  final Size? childSize;
 
   /// Defines the maximum size in which the image will be allowed to assume, it
   /// is proportional to the original image size. Can be either a double (absolute value) or a
@@ -375,41 +375,41 @@ class PhotoView extends StatefulWidget {
   final dynamic initialScale;
 
   /// A way to control PhotoView transformation factors externally and listen to its updates
-  final PhotoViewControllerBase controller;
+  final PhotoViewControllerBase? controller;
 
   /// A way to control PhotoViewScaleState value externally and listen to its updates
-  final PhotoViewScaleStateController scaleStateController;
+  final PhotoViewScaleStateController? scaleStateController;
 
   /// The alignment of the scale origin in relation to the widget size. Default is [Alignment.center]
-  final Alignment basePosition;
+  final Alignment? basePosition;
 
   /// Defines de next [PhotoViewScaleState] given the actual one. Default is [defaultScaleStateCycle]
-  final ScaleStateCycle scaleStateCycle;
+  final ScaleStateCycle? scaleStateCycle;
 
   /// A pointer that will trigger a tap has stopped contacting the screen at a
   /// particular location.
-  final PhotoViewImageTapUpCallback onTapUp;
+  final PhotoViewImageTapUpCallback? onTapUp;
 
   /// A pointer that might cause a tap has contacted the screen at a particular
   /// location.
-  final PhotoViewImageTapDownCallback onTapDown;
+  final PhotoViewImageTapDownCallback? onTapDown;
 
   /// [HitTestBehavior] to be passed to the internal gesture detector.
-  final HitTestBehavior gestureDetectorBehavior;
+  final HitTestBehavior? gestureDetectorBehavior;
 
   /// Enables tight mode, making background container assume the size of the image/child.
   /// Useful when inside a [Dialog]
-  final bool tightMode;
+  final bool? tightMode;
 
   /// Enables bouncing, making image bouncing from edge.
-  final bool bouncing;
+  final bool? bouncing;
 
   /// Quality levels for image filters.
-  final FilterQuality filterQuality;
+  final FilterQuality? filterQuality;
 
   // Removes gesture detector if `true`.
   // Useful when custom gesture detector is used in child widget.
-  final bool disableGestures;
+  final bool? disableGestures;
 
   bool get _isCustomChild {
     return child != null;
@@ -425,10 +425,10 @@ class _PhotoViewState extends State<PhotoView> {
   // image retrieval
 
   // controller
-  bool _controlledController;
-  PhotoViewControllerBase _controller;
-  bool _controlledScaleStateController;
-  PhotoViewScaleStateController _scaleStateController;
+  late bool _controlledController;
+  PhotoViewControllerBase? _controller;
+  late bool _controlledScaleStateController;
+  PhotoViewScaleStateController? _scaleStateController;
 
   @override
   void initState() {
@@ -450,7 +450,7 @@ class _PhotoViewState extends State<PhotoView> {
       _scaleStateController = widget.scaleStateController;
     }
 
-    _scaleStateController.outputScaleStateStream.listen(scaleStateListener);
+    _scaleStateController!.outputScaleStateStream.listen(scaleStateListener);
   }
 
   @override
@@ -480,17 +480,17 @@ class _PhotoViewState extends State<PhotoView> {
   @override
   void dispose() {
     if (_controlledController) {
-      _controller.dispose();
+      _controller!.dispose();
     }
     if (_controlledScaleStateController) {
-      _scaleStateController.dispose();
+      _scaleStateController!.dispose();
     }
     super.dispose();
   }
 
   void scaleStateListener(PhotoViewScaleState scaleState) {
     if (widget.scaleStateChangedCallback != null) {
-      widget.scaleStateChangedCallback(_scaleStateController.scaleState);
+      widget.scaleStateChangedCallback!(_scaleStateController!.scaleState);
     }
   }
 
@@ -596,20 +596,20 @@ typedef ScaleStateCycle = PhotoViewScaleState Function(
 typedef PhotoViewImageTapUpCallback = Function(
   BuildContext context,
   TapUpDetails details,
-  PhotoViewControllerValue controllerValue,
+  PhotoViewControllerValue? controllerValue,
 );
 
 /// A type definition for a callback when the user taps down the photoview region
 typedef PhotoViewImageTapDownCallback = Function(
   BuildContext context,
   TapDownDetails details,
-  PhotoViewControllerValue controllerValue,
+  PhotoViewControllerValue? controllerValue,
 );
 
 /// A type definition for a callback to show a widget while the image is loading, a [ImageChunkEvent] is passed to inform progress
 typedef LoadingBuilder = Widget Function(
   BuildContext context,
-  ImageChunkEvent event,
+  ImageChunkEvent? event,
 );
 
 typedef ScrollFinishEdgeCallback = Function(ScrollEdge edge, double percent);

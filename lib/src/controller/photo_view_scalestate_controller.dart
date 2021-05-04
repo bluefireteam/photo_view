@@ -29,15 +29,15 @@ class PhotoViewScaleStateController {
     prevScaleState = PhotoViewScaleState.initial;
   }
 
-  IgnorableValueNotifier<PhotoViewScaleState> _scaleStateNotifier;
-  StreamController<PhotoViewScaleState> _outputScaleStateCtrl;
+  late IgnorableValueNotifier<PhotoViewScaleState> _scaleStateNotifier;
+  late StreamController<PhotoViewScaleState> _outputScaleStateCtrl;
 
   /// The output for state/value updates
   Stream<PhotoViewScaleState> get outputScaleStateStream =>
       _outputScaleStateCtrl.stream;
 
   /// The state value before the last change or the initial state if the state has not been changed.
-  PhotoViewScaleState prevScaleState;
+  PhotoViewScaleState? prevScaleState;
 
   /// The actual state value
   PhotoViewScaleState get scaleState => _scaleStateNotifier.value;
