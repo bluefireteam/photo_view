@@ -287,7 +287,10 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
           );
 
     return ClipRect(
-      child: photoView,
+      child: Padding(
+        padding: pageOption.padding,
+        child: photoView,
+      ),
     );
   }
 
@@ -324,6 +327,7 @@ class PhotoViewGalleryPageOptions {
     this.filterQuality,
     this.disableGestures,
     this.errorBuilder,
+    this.padding = EdgeInsets.zero,
   })  : child = null,
         childSize = null,
         assert(imageProvider != null);
@@ -346,6 +350,7 @@ class PhotoViewGalleryPageOptions {
     this.tightMode,
     this.filterQuality,
     this.disableGestures,
+    this.padding = EdgeInsets.zero,
   })  : errorBuilder = null,
         imageProvider = null;
 
@@ -405,4 +410,7 @@ class PhotoViewGalleryPageOptions {
 
   /// Mirror to [PhotoView.errorBuilder]
   final ImageErrorWidgetBuilder? errorBuilder;
+
+  /// Padding for each page
+  final EdgeInsetsGeometry padding;
 }
