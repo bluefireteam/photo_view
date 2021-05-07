@@ -372,7 +372,7 @@ class PhotoView extends StatefulWidget {
 
   /// A pointer that will trigger a scale has stopped contacting the screen at a
   /// particular location.
-  final PhotoViewImageScaleEndCallback onScaleEnd;
+  final PhotoViewImageScaleEndCallback? onScaleEnd;
 
   /// [HitTestBehavior] to be passed to the internal gesture detector.
   final HitTestBehavior? gestureDetectorBehavior;

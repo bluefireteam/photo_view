@@ -31,7 +31,7 @@ class PhotoViewCore extends StatefulWidget {
     required this.enableRotation,
     required this.onTapUp,
     required this.onTapDown,
-    @required this.onScaleEnd,
+    required this.onScaleEnd,
     required this.gestureDetectorBehavior,
     required this.controller,
     required this.scaleBoundaries,
@@ -81,7 +81,7 @@ class PhotoViewCore extends StatefulWidget {
 
   final PhotoViewImageTapUpCallback? onTapUp;
   final PhotoViewImageTapDownCallback? onTapDown;
-  final PhotoViewImageScaleEndCallback onScaleEnd;
+  final PhotoViewImageScaleEndCallback? onScaleEnd;
 
   final HitTestBehavior? gestureDetectorBehavior;
   final bool tightMode;
