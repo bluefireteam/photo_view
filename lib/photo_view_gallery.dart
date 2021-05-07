@@ -389,7 +389,7 @@ class PhotoViewGalleryPageOptions {
   final PhotoViewImageTapDownCallback? onTapDown;
 
   /// Mirror to [PhotoView.onScaleEnd]
-  final PhotoViewImageScaleEndCallback onScaleEnd;
+  final PhotoViewImageScaleEndCallback? onScaleEnd;
 
   /// Mirror to [PhotoView.gestureDetectorBehavior]
   final HitTestBehavior? gestureDetectorBehavior;
