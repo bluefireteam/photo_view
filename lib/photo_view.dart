@@ -574,7 +574,6 @@ typedef PhotoViewImageTapDownCallback = Function(
   PhotoViewControllerValue controllerValue,
 );
 
-
 /// A type definition for a callback when a user finished scale
 typedef PhotoViewImageScaleEndCallback = Function(
   BuildContext context,

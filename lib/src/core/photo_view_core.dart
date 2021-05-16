@@ -41,7 +41,7 @@ class PhotoViewCore extends StatefulWidget {
     required this.tightMode,
     required this.filterQuality,
     required this.disableGestures,
-  })   : customChild = null,
+  })  : customChild = null,
         super(key: key);
 
   const PhotoViewCore.customChild({
@@ -62,7 +62,7 @@ class PhotoViewCore extends StatefulWidget {
     required this.tightMode,
     required this.filterQuality,
     required this.disableGestures,
-  })   : imageProvider = null,
+  })  : imageProvider = null,
         gaplessPlayback = false,
         super(key: key);
 
