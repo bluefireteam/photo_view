@@ -27,8 +27,10 @@ class NetworkExamples extends StatelessWidget {
                           child: Text("Loading"),
                         );
                       }
+
                       final value = event.cumulativeBytesLoaded /
-                          event.expectedTotalBytes;
+                          (event.expectedTotalBytes ??
+                              event.cumulativeBytesLoaded);
 
                       final percentage = (100 * value).floor();
                       return Center(

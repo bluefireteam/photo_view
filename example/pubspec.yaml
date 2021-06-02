@@ -1,15 +1,13 @@
 name: photo_view_example
 description: Example of how to use Photo View
-
-publish_to: 'none'
-
-version: 1.0.0+1
+publish_to: "none"
+version: 1.0.1
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
+  sdk: ">=2.12.0"
 
 dependencies:
-  flutter_svg:
+  flutter_svg: ^0.21.0-nullsafety.0
   photo_view:
     path: ../
   flutter:
@@ -18,7 +16,6 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
 
 flutter:
   uses-material-design: true

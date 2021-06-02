@@ -41,14 +41,14 @@ class HeroExample extends StatelessWidget {
 
 class HeroPhotoViewRouteWrapper extends StatelessWidget {
   const HeroPhotoViewRouteWrapper({
-    this.imageProvider,
+    required this.imageProvider,
     this.backgroundDecoration,
     this.minScale,
     this.maxScale,
   });
 
   final ImageProvider imageProvider;
-  final Decoration backgroundDecoration;
+  final BoxDecoration? backgroundDecoration;
   final dynamic minScale;
   final dynamic maxScale;
 

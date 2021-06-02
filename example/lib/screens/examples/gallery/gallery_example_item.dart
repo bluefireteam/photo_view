@@ -1,7 +1,11 @@
 import 'package:flutter/widgets.dart';
 
 class GalleryExampleItem {
-  GalleryExampleItem({this.id, this.resource, this.isSvg = false});
+  GalleryExampleItem({
+    required this.id,
+    required this.resource,
+    this.isSvg = false,
+  });
 
   final String id;
   final String resource;
@@ -9,9 +13,11 @@ class GalleryExampleItem {
 }
 
 class GalleryExampleItemThumbnail extends StatelessWidget {
-  const GalleryExampleItemThumbnail(
-      {Key key, this.galleryExampleItem, this.onTap})
-      : super(key: key);
+  const GalleryExampleItemThumbnail({
+    Key? key,
+    required this.galleryExampleItem,
+    required this.onTap,
+  }) : super(key: key);
 
   final GalleryExampleItem galleryExampleItem;
 

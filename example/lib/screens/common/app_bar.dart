@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ExampleAppBar extends StatelessWidget {
-  const ExampleAppBar({this.title, this.showGoBack = false}) : super();
+  const ExampleAppBar({required this.title, this.showGoBack = false}) : super();
 
   final String title;
   final bool showGoBack;
@@ -52,10 +52,10 @@ class ExampleAppBar extends StatelessWidget {
 
 class ExampleAppBarLayout extends StatelessWidget {
   const ExampleAppBarLayout({
-    Key key,
-    @required this.title,
-    this.showGoBack,
-    this.child,
+    Key? key,
+    required this.title,
+    this.showGoBack = false,
+    required this.child,
   }) : super(key: key);
 
   final String title;

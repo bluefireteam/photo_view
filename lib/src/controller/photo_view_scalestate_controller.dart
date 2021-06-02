@@ -19,25 +19,19 @@ typedef ScaleStateListener = void Function(double prevScale, double nextScale);
 /// The updates should be done via [scaleState] setter and the updated listened via [outputScaleStateStream]
 ///
 class PhotoViewScaleStateController {
-  PhotoViewScaleStateController() {
-    _scaleStateNotifier = IgnorableValueNotifier(PhotoViewScaleState.initial);
-
-    _scaleStateNotifier.addListener(_scaleStateChangeListener);
-    _outputScaleStateCtrl = StreamController<PhotoViewScaleState>.broadcast();
-    _outputScaleStateCtrl.sink.add(PhotoViewScaleState.initial);
-
-    prevScaleState = PhotoViewScaleState.initial;
-  }
-
-  IgnorableValueNotifier<PhotoViewScaleState> _scaleStateNotifier;
-  StreamController<PhotoViewScaleState> _outputScaleStateCtrl;
+  late final IgnorableValueNotifier<PhotoViewScaleState> _scaleStateNotifier =
+      IgnorableValueNotifier(PhotoViewScaleState.initial)
+        ..addListener(_scaleStateChangeListener);
+  final StreamController<PhotoViewScaleState> _outputScaleStateCtrl =
+      StreamController<PhotoViewScaleState>.broadcast()
+        ..sink.add(PhotoViewScaleState.initial);
 
   /// The output for state/value updates
   Stream<PhotoViewScaleState> get outputScaleStateStream =>
       _outputScaleStateCtrl.stream;
 
   /// The state value before the last change or the initial state if the state has not been changed.
-  PhotoViewScaleState prevScaleState;
+  PhotoViewScaleState prevScaleState = PhotoViewScaleState.initial;
 
   /// The actual state value
   PhotoViewScaleState get scaleState => _scaleStateNotifier.value;

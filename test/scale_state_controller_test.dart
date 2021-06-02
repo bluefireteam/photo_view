@@ -2,7 +2,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:test/test.dart';
 
 void main() {
-  PhotoViewScaleStateController controller;
+  late PhotoViewScaleStateController controller;
   setUp(() {
     controller = PhotoViewScaleStateController();
   });
@@ -48,7 +48,7 @@ void main() {
 
   test('controller invisible update', () {
     int count = 0;
-    final Function callback = () {
+    final void Function() callback = () {
       count++;
     };
 
