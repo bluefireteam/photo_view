@@ -31,6 +31,7 @@ class ImageWrapper extends StatefulWidget {
     required this.filterQuality,
     required this.disableGestures,
     required this.errorBuilder,
+    required this.enablePanAlways,
   }) : super(key: key);
 
   final ImageProvider imageProvider;
@@ -56,6 +57,7 @@ class ImageWrapper extends StatefulWidget {
   final bool? tightMode;
   final FilterQuality? filterQuality;
   final bool? disableGestures;
+  final bool? enablePanAlways;
 
   @override
   _ImageWrapperState createState() => _ImageWrapperState();
@@ -187,6 +189,7 @@ class _ImageWrapperState extends State<ImageWrapper> {
       tightMode: widget.tightMode ?? false,
       filterQuality: widget.filterQuality ?? FilterQuality.none,
       disableGestures: widget.disableGestures ?? false,
+      enablePanAlways: widget.enablePanAlways ?? false,
     );
   }
 
@@ -236,6 +239,7 @@ class CustomChildWrapper extends StatelessWidget {
     required this.tightMode,
     required this.filterQuality,
     required this.disableGestures,
+    required this.enablePanAlways,
   }) : super(key: key);
 
   final Widget? child;
@@ -262,6 +266,7 @@ class CustomChildWrapper extends StatelessWidget {
   final bool? tightMode;
   final FilterQuality? filterQuality;
   final bool? disableGestures;
+  final bool? enablePanAlways;
 
   @override
   Widget build(BuildContext context) {
@@ -290,6 +295,7 @@ class CustomChildWrapper extends StatelessWidget {
       tightMode: tightMode ?? false,
       filterQuality: filterQuality ?? FilterQuality.none,
       disableGestures: disableGestures ?? false,
+      enablePanAlways: enablePanAlways ?? false,
     );
   }
 }

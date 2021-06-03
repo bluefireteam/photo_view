@@ -41,7 +41,8 @@ class PhotoViewCore extends StatefulWidget {
     required this.tightMode,
     required this.filterQuality,
     required this.disableGestures,
-  })  : customChild = null,
+    required this.enablePanAlways,
+  })   : customChild = null,
         super(key: key);
 
   const PhotoViewCore.customChild({
@@ -62,7 +63,8 @@ class PhotoViewCore extends StatefulWidget {
     required this.tightMode,
     required this.filterQuality,
     required this.disableGestures,
-  })  : imageProvider = null,
+    required this.enablePanAlways,
+  })   : imageProvider = null,
         gaplessPlayback = false,
         super(key: key);
 
@@ -86,6 +88,7 @@ class PhotoViewCore extends StatefulWidget {
   final HitTestBehavior? gestureDetectorBehavior;
   final bool tightMode;
   final bool disableGestures;
+  final bool enablePanAlways;
 
   final FilterQuality filterQuality;
 
@@ -151,10 +154,11 @@ class PhotoViewCoreState extends State<PhotoViewCore>
 
     updateScaleStateFromNewScale(newScale);
 
-    //
     updateMultiple(
       scale: newScale,
-      position: clampPosition(position: delta * details.scale),
+      position: widget.enablePanAlways
+          ? delta
+          : clampPosition(position: delta * details.scale),
       rotation:
           widget.enableRotation ? _rotationBefore! + details.rotation : null,
       rotationFocusPoint: widget.enableRotation ? details.focalPoint : null,

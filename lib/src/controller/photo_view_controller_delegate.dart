@@ -67,7 +67,9 @@ mixin PhotoViewControllerDelegate on State<PhotoViewCore> {
   }
 
   void _blindScaleListener() {
-    controller.position = clampPosition();
+    if (!widget.enablePanAlways) {
+      controller.position = clampPosition();
+    }
     if (controller.scale == controller.prevValue.scale) {
       return;
     }

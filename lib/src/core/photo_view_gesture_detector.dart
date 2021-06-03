@@ -98,7 +98,7 @@ class PhotoViewGestureRecognizer extends ScaleGestureRecognizer {
   bool ready = true;
 
   @override
-  void addAllowedPointer(PointerDownEvent event) {
+  void addAllowedPointer(PointerEvent event) {
     if (ready) {
       ready = false;
       _pointerLocations = <int, Offset>{};
