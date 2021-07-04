@@ -224,7 +224,7 @@ class PhotoViewGestureDetectorScope extends InheritedWidget {
 
   final Axis? axis;
 
-  // in [0, 1[
+  // in [0, 1]
   // 0: most reactive but will not let tap recognizers accept gestures
   // <1: less reactive but gives the most leeway to other recognizers
   // 1: will not be able to compete with a `HorizontalDragGestureRecognizer` up the widget tree
