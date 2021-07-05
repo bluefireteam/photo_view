@@ -212,7 +212,7 @@ class PhotoViewGestureRecognizer extends ScaleGestureRecognizer {
 class PhotoViewGestureDetectorScope extends InheritedWidget {
   PhotoViewGestureDetectorScope({
     this.axis,
-    this.touchSlopFactor = 0.8,
+    this.touchSlopFactor = 0.2,
     required Widget child,
   }) : super(child: child);
 
