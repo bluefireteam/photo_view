@@ -115,6 +115,7 @@ class PhotoViewGallery extends StatefulWidget {
     this.scrollPhysics,
     this.scrollDirection = Axis.horizontal,
     this.customSize,
+    this.allowImplicitScrolling = false,
   })  : itemCount = null,
         builder = null,
         super(key: key);
@@ -137,6 +138,7 @@ class PhotoViewGallery extends StatefulWidget {
     this.scrollPhysics,
     this.scrollDirection = Axis.horizontal,
     this.customSize,
+    this.allowImplicitScrolling = false,
   })  : pageOptions = null,
         assert(itemCount != null),
         assert(builder != null),
@@ -184,6 +186,9 @@ class PhotoViewGallery extends StatefulWidget {
   /// The axis along which the [PageView] scrolls. Mirror to [PageView.scrollDirection]
   final Axis scrollDirection;
 
+  /// When user attempts to move it to the next element, focus will traverse to the next page in the page view.
+  final bool allowImplicitScrolling;
+
   bool get _isBuilder => builder != null;
 
   @override
@@ -226,6 +231,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
         itemBuilder: _buildItem,
         scrollDirection: widget.scrollDirection,
         physics: widget.scrollPhysics,
+        allowImplicitScrolling: widget.allowImplicitScrolling,
       ),
     );
   }
