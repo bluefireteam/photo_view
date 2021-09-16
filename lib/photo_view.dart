@@ -404,7 +404,8 @@ class PhotoView extends StatefulWidget {
   }
 }
 
-class _PhotoViewState extends State<PhotoView> with AutomaticKeepAliveClientMixin{
+class _PhotoViewState extends State<PhotoView>
+    with AutomaticKeepAliveClientMixin {
   // image retrieval
 
   // controller
