@@ -1,0 +1,26 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install flutter
+        uses: subosito/flutter-action@v1
+        with:
+          channel: stable
+      - name: Install packages
+        run: flutter pub get
+      - name: Check format
+        run: ./scripts/format.sh .
+      - name: Test
+        run: flutter test
