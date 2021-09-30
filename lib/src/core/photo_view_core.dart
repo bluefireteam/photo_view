@@ -154,7 +154,7 @@ class PhotoViewCoreState extends State<PhotoViewCore>
     updateScaleStateFromNewScale(newScale);
 
     updateMultiple(
-      scale: newScale,
+      // scale: newScale,
       position: widget.enablePanAlways
           ? delta
           : clampPosition(position: delta * details.scale),
