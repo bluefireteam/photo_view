@@ -28,9 +28,12 @@ class PhotoViewDefaultLoading extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final value = event == null || event?.expectedTotalBytes != null
-        ? 0.0
-        : event!.cumulativeBytesLoaded / event!.expectedTotalBytes!;
+    final expectedBytes = event?.expectedTotalBytes;
+    final loadedBytes = event?.cumulativeBytesLoaded;
+    final value = loadedBytes != null && expectedBytes != null
+        ? loadedBytes / expectedBytes
+        : null;
+
     return Center(
       child: Container(
         width: 20.0,
