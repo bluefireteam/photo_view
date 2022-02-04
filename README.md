@@ -1,6 +1,6 @@
 # Flutter Photo View 
 
-[![Tests status](https://img.shields.io/github/workflow/status/renancaraujo/photo_view/Test/master?label=tests)](https://github.com/renancaraujo/photo_view/actions) [![Pub](https://img.shields.io/pub/v/photo_view.svg?style=popout)](https://pub.dartlang.org/packages/photo_view) [![Chat](https://img.shields.io/discord/509714518008528896)](https://discord.gg/pxrBmy4)
+[![Tests status](https://img.shields.io/github/workflow/status/bluefireteam/photo_view/Test/master?label=tests)](https://github.com/bluefireteam/photo_view/actions) [![Pub](https://img.shields.io/pub/v/photo_view.svg?style=popout)](https://pub.dartlang.org/packages/photo_view) [![Chat](https://img.shields.io/discord/509714518008528896)](https://discord.gg/pxrBmy4)
 
 A simple zoomable image/content widget for Flutter.
 
@@ -25,7 +25,7 @@ import 'package:photo_view/photo_view.dart';
 The [API Docs](https://pub.dartlang.org/documentation/photo_view/latest/photo_view/photo_view-library.html) some detailed information about how to use PhotoView.
 
 
-If you want to see it in practice, check the [example app](/example/lib) that explores most of Photo View's use cases or download the latest version apk on the [releases page](https://github.com/renancaraujo/photo_view/releases)
+If you want to see it in practice, check the [example app](https://github.com/bluefireteam/photo_view/tree/master/example/lib) that explores most of Photo View's use cases or download the latest version apk on the [releases page](https://github.com/bluefireteam/photo_view/releases)
  
 
 ## (Very) Basic usage
@@ -99,7 +99,7 @@ Gallery sample in the example app:
 
 ![In action](https://user-images.githubusercontent.com/6718144/56463769-e93d1880-63b0-11e9-8586-55827c95b89c.gif)
 
-See the code [here](https://github.com/renancaraujo/photo_view/blob/master/example/lib/screens/examples/gallery/gallery_example.dart).
+See the code [here](https://github.com/bluefireteam/photo_view/blob/master/example/lib/screens/examples/gallery/gallery_example.dart).
 
 
 
