@@ -108,14 +108,10 @@ class PhotoViewCoreState extends State<PhotoViewCore>
   double? _scaleBefore;
   double? _rotationBefore;
 
-  late final AnimationController _scaleAnimationController =
-      AnimationController(vsync: this)
-        ..addListener(handleScaleAnimation)
-        ..addStatusListener(onAnimationStatus);
+  late final AnimationController _scaleAnimationController;
   Animation<double>? _scaleAnimation;
 
-  late final AnimationController _positionAnimationController =
-      AnimationController(vsync: this)..addListener(handlePositionAnimate);
+  late final AnimationController _positionAnimationController;
   Animation<Offset>? _positionAnimation;
 
   late final AnimationController _rotationAnimationController =
@@ -261,6 +257,12 @@ class PhotoViewCoreState extends State<PhotoViewCore>
     addAnimateOnScaleStateUpdate(animateOnScaleStateUpdate);
 
     cachedScaleBoundaries = widget.scaleBoundaries;
+
+    _scaleAnimationController = AnimationController(vsync: this)
+      ..addListener(handleScaleAnimation)
+      ..addStatusListener(onAnimationStatus);
+    _positionAnimationController = AnimationController(vsync: this)
+      ..addListener(handlePositionAnimate);
   }
 
   void animateOnScaleStateUpdate(double prevScale, double nextScale) {
