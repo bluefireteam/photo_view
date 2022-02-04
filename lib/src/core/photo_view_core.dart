@@ -258,7 +258,7 @@ class PhotoViewCoreState extends State<PhotoViewCore>
 
     cachedScaleBoundaries = widget.scaleBoundaries;
 
-    _scaleAnimation = AnimationController(vsync: this)
+    _scaleAnimationController = AnimationController(vsync: this)
       ..addListener(handleScaleAnimation)
       ..addStatusListener(onAnimationStatus);
     _positionAnimationController = AnimationController(vsync: this)
