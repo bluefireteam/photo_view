@@ -116,6 +116,7 @@ class PhotoViewGallery extends StatefulWidget {
     this.scrollDirection = Axis.horizontal,
     this.customSize,
     this.allowImplicitScrolling = false,
+    this.padEnds = true,
   })  : itemCount = null,
         builder = null,
         super(key: key);
@@ -139,6 +140,7 @@ class PhotoViewGallery extends StatefulWidget {
     this.scrollDirection = Axis.horizontal,
     this.customSize,
     this.allowImplicitScrolling = false,
+    this.padEnds = true,
   })  : pageOptions = null,
         assert(itemCount != null),
         assert(builder != null),
@@ -189,6 +191,9 @@ class PhotoViewGallery extends StatefulWidget {
   /// When user attempts to move it to the next element, focus will traverse to the next page in the page view.
   final bool allowImplicitScrolling;
 
+  // Whether to add padding to both ends of the list. Mirror to [PageView.padEnds]
+  final bool padEnds;
+
   bool get _isBuilder => builder != null;
 
   @override
@@ -232,6 +237,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
         scrollDirection: widget.scrollDirection,
         physics: widget.scrollPhysics,
         allowImplicitScrolling: widget.allowImplicitScrolling,
+        padEnds: widget.padEnds,
       ),
     );
   }
