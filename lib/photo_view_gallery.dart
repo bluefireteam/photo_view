@@ -106,6 +106,7 @@ class PhotoViewGallery extends StatefulWidget {
     required this.pageOptions,
     this.loadingBuilder,
     this.backgroundDecoration,
+    this.wantKeepAlive = false,
     this.gaplessPlayback = false,
     this.reverse = false,
     this.pageController,
@@ -129,6 +130,7 @@ class PhotoViewGallery extends StatefulWidget {
     required this.builder,
     this.loadingBuilder,
     this.backgroundDecoration,
+    this.wantKeepAlive = false,
     this.gaplessPlayback = false,
     this.reverse = false,
     this.pageController,
@@ -161,6 +163,9 @@ class PhotoViewGallery extends StatefulWidget {
 
   /// Mirror to [PhotoView.backgroundDecoration]
   final BoxDecoration? backgroundDecoration;
+
+  /// Mirror to [PhotoView.wantKeepAlive]
+  final bool wantKeepAlive;
 
   /// Mirror to [PhotoView.gaplessPlayback]
   final bool gaplessPlayback;
@@ -246,6 +251,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             child: pageOption.child,
             childSize: pageOption.childSize,
             backgroundDecoration: widget.backgroundDecoration,
+            wantKeepAlive: widget.wantKeepAlive,
             controller: pageOption.controller,
             scaleStateController: pageOption.scaleStateController,
             customSize: widget.customSize,
@@ -270,6 +276,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             imageProvider: pageOption.imageProvider,
             loadingBuilder: widget.loadingBuilder,
             backgroundDecoration: widget.backgroundDecoration,
+            wantKeepAlive: widget.wantKeepAlive,
             controller: pageOption.controller,
             scaleStateController: pageOption.scaleStateController,
             customSize: widget.customSize,
