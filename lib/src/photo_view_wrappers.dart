@@ -132,7 +132,9 @@ class _ImageWrapperState extends State<ImageWrapper> {
         _lastStack = stackTrace;
       });
       assert(() {
-        if (widget.errorBuilder == null) throw error;
+        if (widget.errorBuilder == null) {
+          throw error;
+        }
         return true;
       }());
     }
