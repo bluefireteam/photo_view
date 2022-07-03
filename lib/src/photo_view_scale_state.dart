@@ -4,6 +4,7 @@ enum PhotoViewScaleState {
   covering,
   originalSize,
   zoomedIn,
+  zoomedInOnHalf,
   zoomedOut,
 }
 

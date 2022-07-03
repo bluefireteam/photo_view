@@ -1,7 +1,6 @@
 library photo_view;
 
 import 'package:flutter/material.dart';
-
 import 'package:photo_view/src/controller/photo_view_controller.dart';
 import 'package:photo_view/src/controller/photo_view_scalestate_controller.dart';
 import 'package:photo_view/src/core/photo_view_core.dart';
@@ -560,7 +559,9 @@ class _PhotoViewState extends State<PhotoView>
 PhotoViewScaleState defaultScaleStateCycle(PhotoViewScaleState actual) {
   switch (actual) {
     case PhotoViewScaleState.initial:
-      return PhotoViewScaleState.covering;
+      return PhotoViewScaleState.zoomedInOnHalf;
+    case PhotoViewScaleState.zoomedInOnHalf:
+      return PhotoViewScaleState.initial;
     case PhotoViewScaleState.covering:
       return PhotoViewScaleState.originalSize;
     case PhotoViewScaleState.originalSize:
