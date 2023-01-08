@@ -1,7 +1,6 @@
 library photo_view;
 
 import 'package:flutter/material.dart';
-
 import 'package:photo_view/src/controller/photo_view_controller.dart';
 import 'package:photo_view/src/controller/photo_view_scalestate_controller.dart';
 import 'package:photo_view/src/core/photo_view_core.dart';
@@ -252,6 +251,7 @@ class PhotoView extends StatefulWidget {
     this.onTapUp,
     this.onTapDown,
     this.onScaleEnd,
+    this.onDragEnd,
     this.customSize,
     this.gestureDetectorBehavior,
     this.tightMode,
@@ -288,6 +288,7 @@ class PhotoView extends StatefulWidget {
     this.onTapUp,
     this.onTapDown,
     this.onScaleEnd,
+    this.onDragEnd,
     this.customSize,
     this.gestureDetectorBehavior,
     this.tightMode,
@@ -382,6 +383,10 @@ class PhotoView extends StatefulWidget {
   /// A pointer that will trigger a scale has stopped contacting the screen at a
   /// particular location.
   final PhotoViewImageScaleEndCallback? onScaleEnd;
+
+  /// A pointer that will trigger a drag has stopped contacting the screen at a
+  /// particular location.
+  final PhotoViewImageDragEndCallback? onDragEnd;
 
   /// [HitTestBehavior] to be passed to the internal gesture detector.
   final HitTestBehavior? gestureDetectorBehavior;
@@ -540,6 +545,7 @@ class _PhotoViewState extends State<PhotoView>
                 onTapUp: widget.onTapUp,
                 onTapDown: widget.onTapDown,
                 onScaleEnd: widget.onScaleEnd,
+                onDragEnd: widget.onDragEnd,
                 outerSize: computedOuterSize,
                 gestureDetectorBehavior: widget.gestureDetectorBehavior,
                 tightMode: widget.tightMode,
@@ -598,6 +604,13 @@ typedef PhotoViewImageTapDownCallback = Function(
 typedef PhotoViewImageScaleEndCallback = Function(
   BuildContext context,
   ScaleEndDetails details,
+  PhotoViewControllerValue controllerValue,
+);
+
+/// A type definition for a callback when a user finished vertical drag
+typedef PhotoViewImageDragEndCallback = Function(
+  BuildContext context,
+  DragEndDetails details,
   PhotoViewControllerValue controllerValue,
 );
 

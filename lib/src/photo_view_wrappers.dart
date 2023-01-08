@@ -25,6 +25,7 @@ class ImageWrapper extends StatefulWidget {
     required this.onTapUp,
     required this.onTapDown,
     required this.onScaleEnd,
+    required this.onDragEnd,
     required this.outerSize,
     required this.gestureDetectorBehavior,
     required this.tightMode,
@@ -52,6 +53,7 @@ class ImageWrapper extends StatefulWidget {
   final PhotoViewImageTapUpCallback? onTapUp;
   final PhotoViewImageTapDownCallback? onTapDown;
   final PhotoViewImageScaleEndCallback? onScaleEnd;
+  final PhotoViewImageDragEndCallback? onDragEnd;
   final Size outerSize;
   final HitTestBehavior? gestureDetectorBehavior;
   final bool? tightMode;
@@ -193,6 +195,7 @@ class _ImageWrapperState extends State<ImageWrapper> {
       onTapUp: widget.onTapUp,
       onTapDown: widget.onTapDown,
       onScaleEnd: widget.onScaleEnd,
+      onDragEnd: widget.onDragEnd,
       gestureDetectorBehavior: widget.gestureDetectorBehavior,
       tightMode: widget.tightMode ?? false,
       filterQuality: widget.filterQuality ?? FilterQuality.none,
