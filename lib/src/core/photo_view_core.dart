@@ -420,6 +420,9 @@ class PhotoViewCoreState extends State<PhotoViewCore>
               onScaleStart: onScaleStart,
               onScaleUpdate: onScaleUpdate,
               onScaleEnd: onScaleEnd,
+              onDragStart: onDragStart,
+              onDragUpdate: onDragUpdate,
+              onDragEnd: onDragEnd,
               hitDetector: this,
               onTapUp: widget.onTapUp != null
                   ? (details) => widget.onTapUp!(context, details, value)
