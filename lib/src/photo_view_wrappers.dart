@@ -11,6 +11,7 @@ class ImageWrapper extends StatefulWidget {
     required this.imageProvider,
     required this.loadingBuilder,
     required this.backgroundDecoration,
+    required this.semanticLabel,
     required this.gaplessPlayback,
     required this.heroAttributes,
     required this.scaleStateChangedCallback,
@@ -38,6 +39,7 @@ class ImageWrapper extends StatefulWidget {
   final LoadingBuilder? loadingBuilder;
   final ImageErrorWidgetBuilder? errorBuilder;
   final BoxDecoration backgroundDecoration;
+  final String? semanticLabel;
   final bool gaplessPlayback;
   final PhotoViewHeroAttributes? heroAttributes;
   final ValueChanged<PhotoViewScaleState>? scaleStateChangedCallback;
@@ -182,6 +184,7 @@ class _ImageWrapperState extends State<ImageWrapper> {
     return PhotoViewCore(
       imageProvider: widget.imageProvider,
       backgroundDecoration: widget.backgroundDecoration,
+      semanticLabel: widget.semanticLabel,
       gaplessPlayback: widget.gaplessPlayback,
       enableRotation: widget.enableRotation,
       heroAttributes: widget.heroAttributes,
