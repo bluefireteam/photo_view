@@ -280,6 +280,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             controller: pageOption.controller,
             scaleStateController: pageOption.scaleStateController,
             customSize: widget.customSize,
+            semanticLabel: pageOption.semanticLabel,
             gaplessPlayback: widget.gaplessPlayback,
             heroAttributes: pageOption.heroAttributes,
             scaleStateChangedCallback: scaleStateChangedCallback,
@@ -322,6 +323,7 @@ class PhotoViewGalleryPageOptions {
     Key? key,
     required this.imageProvider,
     this.heroAttributes,
+    this.semanticLabel,
     this.minScale,
     this.maxScale,
     this.initialScale,
@@ -343,6 +345,7 @@ class PhotoViewGalleryPageOptions {
 
   PhotoViewGalleryPageOptions.customChild({
     required this.child,
+    this.semanticLabel,
     this.childSize,
     this.heroAttributes,
     this.minScale,
@@ -367,6 +370,9 @@ class PhotoViewGalleryPageOptions {
 
   /// Mirror to [PhotoView.heroAttributes]
   final PhotoViewHeroAttributes? heroAttributes;
+
+  /// Mirror to [PhotoView.semanticLabel]
+  final String? semanticLabel;
 
   /// Mirror to [PhotoView.minScale]
   final dynamic minScale;

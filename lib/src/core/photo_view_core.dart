@@ -25,6 +25,7 @@ class PhotoViewCore extends StatefulWidget {
     Key? key,
     required this.imageProvider,
     required this.backgroundDecoration,
+    required this.semanticLabel,
     required this.gaplessPlayback,
     required this.heroAttributes,
     required this.enableRotation,
@@ -64,11 +65,13 @@ class PhotoViewCore extends StatefulWidget {
     required this.disableGestures,
     required this.enablePanAlways,
   })  : imageProvider = null,
+        semanticLabel = null,
         gaplessPlayback = false,
         super(key: key);
 
   final Decoration? backgroundDecoration;
   final ImageProvider? imageProvider;
+  final String? semanticLabel;
   final bool? gaplessPlayback;
   final PhotoViewHeroAttributes? heroAttributes;
   final bool enableRotation;
@@ -379,6 +382,7 @@ class PhotoViewCoreState extends State<PhotoViewCore>
         ? widget.customChild!
         : Image(
             image: widget.imageProvider!,
+            semanticLabel: widget.semanticLabel,
             gaplessPlayback: widget.gaplessPlayback ?? false,
             filterQuality: widget.filterQuality,
             width: scaleBoundaries.childSize.width * scale,
