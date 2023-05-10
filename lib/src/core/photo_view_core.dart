@@ -42,6 +42,7 @@ class PhotoViewCore extends StatefulWidget {
     required this.filterQuality,
     required this.disableGestures,
     required this.enablePanAlways,
+    required this.strictScale,
   })  : customChild = null,
         super(key: key);
 
@@ -64,6 +65,7 @@ class PhotoViewCore extends StatefulWidget {
     required this.filterQuality,
     required this.disableGestures,
     required this.enablePanAlways,
+    required this.strictScale,
   })  : imageProvider = null,
         semanticLabel = null,
         gaplessPlayback = false,
@@ -91,6 +93,7 @@ class PhotoViewCore extends StatefulWidget {
   final bool tightMode;
   final bool disableGestures;
   final bool enablePanAlways;
+  final bool strictScale;
 
   final FilterQuality filterQuality;
 
@@ -149,6 +152,11 @@ class PhotoViewCoreState extends State<PhotoViewCore>
   void onScaleUpdate(ScaleUpdateDetails details) {
     final double newScale = _scaleBefore! * details.scale;
     final Offset delta = details.focalPoint - _normalizedPosition!;
+
+    if (widget.strictScale && (newScale > widget.scaleBoundaries.maxScale ||
+        newScale < widget.scaleBoundaries.minScale)) {
+      return;
+    }
 
     updateScaleStateFromNewScale(newScale);
 
