@@ -262,6 +262,7 @@ class PhotoView extends StatefulWidget {
     this.disableGestures,
     this.errorBuilder,
     this.enablePanAlways,
+    this.strictScale,
   })  : child = null,
         childSize = null,
         super(key: key);
@@ -297,6 +298,7 @@ class PhotoView extends StatefulWidget {
     this.filterQuality,
     this.disableGestures,
     this.enablePanAlways,
+    this.strictScale,
   })  : errorBuilder = null,
         imageProvider = null,
         semanticLabel = null,
@@ -409,6 +411,9 @@ class PhotoView extends StatefulWidget {
   /// Enable pan the widget even if it's smaller than the hole parent widget.
   /// Useful when you want to drag a widget without restrictions.
   final bool? enablePanAlways;
+
+  /// Enable strictScale will restrict user scale gesture to the maxScale and minScale values.
+  final bool? strictScale;
 
   bool get _isCustomChild {
     return child != null;
@@ -530,6 +535,7 @@ class _PhotoViewState extends State<PhotoView>
                 filterQuality: widget.filterQuality,
                 disableGestures: widget.disableGestures,
                 enablePanAlways: widget.enablePanAlways,
+                strictScale: widget.strictScale,
               )
             : ImageWrapper(
                 imageProvider: widget.imageProvider!,
@@ -557,6 +563,7 @@ class _PhotoViewState extends State<PhotoView>
                 disableGestures: widget.disableGestures,
                 errorBuilder: widget.errorBuilder,
                 enablePanAlways: widget.enablePanAlways,
+                strictScale: widget.strictScale,
               );
       },
     );
