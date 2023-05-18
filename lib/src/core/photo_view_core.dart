@@ -111,6 +111,9 @@ class PhotoViewCoreState extends State<PhotoViewCore>
         PhotoViewControllerDelegate,
         HitCornersDetector {
   Offset? _normalizedPosition;
+  Offset? _lastPosition;
+  double? _lastScale;
+
   double? _scaleBefore;
   double? _rotationBefore;
 
@@ -144,6 +147,8 @@ class PhotoViewCoreState extends State<PhotoViewCore>
     _rotationBefore = controller.rotation;
     _scaleBefore = scale;
     _normalizedPosition = details.focalPoint - controller.position;
+    _lastScale = scale;
+    _lastPosition = details.focalPoint;
     _scaleAnimationController.stop();
     _positionAnimationController.stop();
     _rotationAnimationController.stop();
@@ -151,7 +156,16 @@ class PhotoViewCoreState extends State<PhotoViewCore>
 
   void onScaleUpdate(ScaleUpdateDetails details) {
     final double newScale = _scaleBefore! * details.scale;
-    final Offset delta = details.focalPoint - _normalizedPosition!;
+    
+    final Offset screenCenter = MediaQuery.of(context).size.center(Offset.zero);
+    final Offset scaleCenter = details.focalPoint;
+    final Offset centerDelta = scaleCenter - screenCenter;
+
+    final Offset delta = details.focalPoint - _lastPosition! + position;
+    final Offset scaleDelta =
+        centerDelta + (delta - centerDelta) * newScale / _lastScale!;
+    _lastScale = newScale;
+    _lastPosition = details.focalPoint;
 
     if (widget.strictScale && (newScale > widget.scaleBoundaries.maxScale ||
         newScale < widget.scaleBoundaries.minScale)) {
@@ -163,7 +177,7 @@ class PhotoViewCoreState extends State<PhotoViewCore>
     updateMultiple(
       scale: newScale,
       position: widget.enablePanAlways
-          ? delta
+          ? scaleDelta
           : clampPosition(position: delta * details.scale),
       rotation:
           widget.enableRotation ? _rotationBefore! + details.rotation : null,
