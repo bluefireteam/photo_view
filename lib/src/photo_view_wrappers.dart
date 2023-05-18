@@ -99,6 +99,11 @@ class _ImageWrapperState extends State<ImageWrapper> {
 
   // retrieve image from the provider
   void _resolveImage() {
+    if (!_loading) {
+      setState(() {
+        _loading = true;
+      });
+    }
     final ImageStream newStream = widget.imageProvider.resolve(
       const ImageConfiguration(),
     );
