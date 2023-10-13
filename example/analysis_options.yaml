@@ -5,7 +5,6 @@ linter:
   rules:
     - always_declare_return_types
     - always_put_control_body_on_new_line
-    - always_require_non_null_named_parameters
     - annotate_overrides
     - avoid_classes_with_only_static_members
     - avoid_empty_else
@@ -27,10 +26,8 @@ linter:
     - empty_statements
     - hash_and_equals
     - implementation_imports
-    - iterable_contains_unrelated_type
     - library_names
     - library_prefixes
-    - list_remove_unrelated_type
     - no_adjacent_strings_in_list
     - no_duplicate_case_values
     - non_constant_identifier_names
@@ -46,7 +43,6 @@ linter:
     - prefer_const_declarations
     - prefer_const_literals_to_create_immutables
     - prefer_contains
-    - prefer_equal_for_default_values
     - prefer_final_fields
     - prefer_final_locals
     - prefer_foreach
