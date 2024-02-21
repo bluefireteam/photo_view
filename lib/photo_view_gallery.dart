@@ -15,6 +15,7 @@ import 'package:photo_view/src/controller/photo_view_controller.dart';
 import 'package:photo_view/src/controller/photo_view_scalestate_controller.dart';
 import 'package:photo_view/src/core/photo_view_gesture_detector.dart';
 import 'package:photo_view/src/photo_view_scale_state.dart';
+import 'package:photo_view/src/photo_view_wrappers.dart';
 import 'package:photo_view/src/utils/photo_view_hero_attributes.dart';
 
 /// A type definition for a [Function] that receives a index after a page change in [PhotoViewGallery]
@@ -23,6 +24,11 @@ typedef PhotoViewGalleryPageChangedCallback = void Function(int index);
 /// A type definition for a [Function] that defines a page in [PhotoViewGallery.build]
 typedef PhotoViewGalleryBuilder = PhotoViewGalleryPageOptions Function(
     BuildContext context, int index);
+
+/// A type definition for a [Function] that wraps the [child] in an other
+/// [Widget]. Used to apply an overlay to the items.
+typedef PhotoViewGalleryChildWrapper = Widget Function(
+    BuildContext context, int index, Widget child);
 
 /// A [StatefulWidget] that shows multiple [PhotoView] widgets in a [PageView]
 ///
@@ -117,6 +123,7 @@ class PhotoViewGallery extends StatefulWidget {
     this.scrollDirection = Axis.horizontal,
     this.customSize,
     this.allowImplicitScrolling = false,
+    this.childWrapper = defaultChildWrapper,
   })  : itemCount = null,
         builder = null,
         super(key: key);
@@ -141,10 +148,16 @@ class PhotoViewGallery extends StatefulWidget {
     this.scrollDirection = Axis.horizontal,
     this.customSize,
     this.allowImplicitScrolling = false,
+    this.childWrapper = defaultChildWrapper,
   })  : pageOptions = null,
         assert(itemCount != null),
         assert(builder != null),
         super(key: key);
+
+  static Widget defaultChildWrapper(
+      BuildContext context, int index, Widget child) {
+    return child;
+  }
 
   /// A list of options to describe the items in the gallery
   final List<PhotoViewGalleryPageOptions>? pageOptions;
@@ -154,6 +167,9 @@ class PhotoViewGallery extends StatefulWidget {
 
   /// Called to build items for the gallery when using [PhotoViewGallery.builder]
   final PhotoViewGalleryBuilder? builder;
+
+  /// Wraps each item. Useful for applying an overlay to all pictures.
+  final PhotoViewGalleryChildWrapper childWrapper;
 
   /// [ScrollPhysics] for the internal [PageView]
   final ScrollPhysics? scrollPhysics;
@@ -300,8 +316,12 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             errorBuilder: pageOption.errorBuilder,
           );
 
-    return ClipRect(
-      child: photoView,
+    return widget.childWrapper(
+      context,
+      index,
+      ClipRect(
+        child: photoView,
+      ),
     );
   }
 
