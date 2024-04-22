@@ -1,3 +1,16 @@
+<a name="0.15.0"></a>
+# [0.15.0](https://github.com/bluefireteam/photo_view/releases/tag/0.15.0) - 17 Apr 2024
+
+## Added
+- Added pageSnapping option #542
+- make scale more smoothly #450
+- Add possibility to restrict user scale #537
+- Pass through semanticLabel #530
+
+[Changes][0.15.0]
+
+
+
 <a name="0.14.0"></a>
 # [0.14.0](https://github.com/bluefireteam/photo_view/releases/tag/0.14.0) - 24 May 2022
 
@@ -373,6 +386,7 @@ With this version, Photo view is stable compatible. It means that every new rele
 [Changes][0.2.1]
 
 
+[0.15.0]: https://github.com/bluefireteam/photo_view/compare/0.14.0...0.15.0
 [0.14.0]: https://github.com/bluefireteam/photo_view/compare/0.13.0...0.14.0
 [0.13.0]: https://github.com/bluefireteam/photo_view/compare/0.12.0...0.13.0
 [0.12.0]: https://github.com/bluefireteam/photo_view/compare/0.11.1...0.12.0
