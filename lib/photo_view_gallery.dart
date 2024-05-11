@@ -266,6 +266,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             initialScale: pageOption.initialScale,
             minScale: pageOption.minScale,
             maxScale: pageOption.maxScale,
+            strictScale: pageOption.strictScale,
             scaleStateCycle: pageOption.scaleStateCycle,
             onTapUp: pageOption.onTapUp,
             onTapDown: pageOption.onTapDown,
@@ -293,6 +294,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             initialScale: pageOption.initialScale,
             minScale: pageOption.minScale,
             maxScale: pageOption.maxScale,
+            strictScale: pageOption.strictScale,
             scaleStateCycle: pageOption.scaleStateCycle,
             onTapUp: pageOption.onTapUp,
             onTapDown: pageOption.onTapDown,
@@ -331,6 +333,7 @@ class PhotoViewGalleryPageOptions {
     this.semanticLabel,
     this.minScale,
     this.maxScale,
+    this.strictScale,
     this.initialScale,
     this.controller,
     this.scaleStateController,
@@ -355,6 +358,7 @@ class PhotoViewGalleryPageOptions {
     this.heroAttributes,
     this.minScale,
     this.maxScale,
+    this.strictScale,
     this.initialScale,
     this.controller,
     this.scaleStateController,
@@ -429,4 +433,7 @@ class PhotoViewGalleryPageOptions {
 
   /// Mirror to [PhotoView.errorBuilder]
   final ImageErrorWidgetBuilder? errorBuilder;
+
+  /// Mirror to [PhotoView.strictScale]
+  final bool? strictScale;
 }
