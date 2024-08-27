@@ -21,9 +21,6 @@ double getScaleForScaleState(
           scaleBoundaries);
     case PhotoViewScaleState.originalSize:
       return _clampSize(1.0, scaleBoundaries);
-    // Will never be reached
-    default:
-      return 0;
   }
 }
 
