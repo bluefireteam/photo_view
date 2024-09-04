@@ -1,11 +1,12 @@
 import 'package:flutter/widgets.dart';
 import 'package:photo_view/photo_view.dart'
     show
-        PhotoViewScaleState,
         PhotoViewHeroAttributes,
+        PhotoViewImageDragEndCallback,
+        PhotoViewImageScaleEndCallback,
         PhotoViewImageTapDownCallback,
         PhotoViewImageTapUpCallback,
-        PhotoViewImageScaleEndCallback,
+        PhotoViewScaleState,
         ScaleStateCycle;
 import 'package:photo_view/src/controller/photo_view_controller.dart';
 import 'package:photo_view/src/controller/photo_view_controller_delegate.dart';
@@ -32,6 +33,7 @@ class PhotoViewCore extends StatefulWidget {
     required this.onTapUp,
     required this.onTapDown,
     required this.onScaleEnd,
+    required this.onDragEnd,
     required this.gestureDetectorBehavior,
     required this.controller,
     required this.scaleBoundaries,
@@ -55,6 +57,7 @@ class PhotoViewCore extends StatefulWidget {
     this.onTapUp,
     this.onTapDown,
     this.onScaleEnd,
+    this.onDragEnd,
     this.gestureDetectorBehavior,
     required this.controller,
     required this.scaleBoundaries,
@@ -88,6 +91,8 @@ class PhotoViewCore extends StatefulWidget {
   final PhotoViewImageTapUpCallback? onTapUp;
   final PhotoViewImageTapDownCallback? onTapDown;
   final PhotoViewImageScaleEndCallback? onScaleEnd;
+
+  final PhotoViewImageDragEndCallback? onDragEnd;
 
   final HitTestBehavior? gestureDetectorBehavior;
   final bool tightMode;
@@ -149,6 +154,15 @@ class PhotoViewCoreState extends State<PhotoViewCore>
     _rotationAnimationController.stop();
   }
 
+  void onDragStart(DragStartDetails details) {
+    _rotationBefore = controller.rotation;
+    _scaleBefore = scale;
+    _normalizedPosition = details.globalPosition - controller.position;
+    _scaleAnimationController.stop();
+    _positionAnimationController.stop();
+    _rotationAnimationController.stop();
+  }
+
   void onScaleUpdate(ScaleUpdateDetails details) {
     final double newScale = _scaleBefore! * details.scale;
     final Offset delta = details.focalPoint - _normalizedPosition!;
@@ -172,6 +186,19 @@ class PhotoViewCoreState extends State<PhotoViewCore>
     );
   }
 
+  void onDragUpdate(DragUpdateDetails details) {
+    final double newScale = _scaleBefore! * 1;
+    final Offset delta = details.globalPosition - _normalizedPosition!;
+
+    updateScaleStateFromNewScale(newScale);
+
+    updateMultiple(
+      scale: newScale,
+      position:
+          widget.enablePanAlways ? delta : clampPosition(position: delta * 1),
+    );
+  }
+
   void onScaleEnd(ScaleEndDetails details) {
     final double _scale = scale;
     final Offset _position = controller.position;
@@ -179,6 +206,52 @@ class PhotoViewCoreState extends State<PhotoViewCore>
     final double minScale = scaleBoundaries.minScale;
 
     widget.onScaleEnd?.call(context, details, controller.value);
+
+    //animate back to maxScale if gesture exceeded the maxScale specified
+    if (_scale > maxScale) {
+      final double scaleComebackRatio = maxScale / _scale;
+      animateScale(_scale, maxScale);
+      final Offset clampedPosition = clampPosition(
+        position: _position * scaleComebackRatio,
+        scale: maxScale,
+      );
+      animatePosition(_position, clampedPosition);
+      return;
+    }
+
+    //animate back to minScale if gesture fell smaller than the minScale specified
+    if (_scale < minScale) {
+      final double scaleComebackRatio = minScale / _scale;
+      animateScale(_scale, minScale);
+      animatePosition(
+        _position,
+        clampPosition(
+          position: _position * scaleComebackRatio,
+          scale: minScale,
+        ),
+      );
+      return;
+    }
+    // get magnitude from gesture velocity
+    final double magnitude = details.velocity.pixelsPerSecond.distance;
+
+    // animate velocity only if there is no scale change and a significant magnitude
+    if (_scaleBefore! / _scale == 1.0 && magnitude >= 400.0) {
+      final Offset direction = details.velocity.pixelsPerSecond / magnitude;
+      animatePosition(
+        _position,
+        clampPosition(position: _position + direction * 100.0),
+      );
+    }
+  }
+
+  void onDragEnd(DragEndDetails details) {
+    final double _scale = scale;
+    final Offset _position = controller.position;
+    final double maxScale = scaleBoundaries.maxScale;
+    final double minScale = scaleBoundaries.minScale;
+
+    widget.onDragEnd?.call(context, details, controller.value);
 
     //animate back to maxScale if gesture exceeded the maxScale specified
     if (_scale > maxScale) {
@@ -359,6 +432,9 @@ class PhotoViewCoreState extends State<PhotoViewCore>
               onScaleStart: onScaleStart,
               onScaleUpdate: onScaleUpdate,
               onScaleEnd: onScaleEnd,
+              onDragStart: onDragStart,
+              onDragUpdate: onDragUpdate,
+              onDragEnd: onDragEnd,
               hitDetector: this,
               onTapUp: widget.onTapUp != null
                   ? (details) => widget.onTapUp!(context, details, value)
