@@ -10,7 +10,6 @@ import 'package:photo_view/photo_view.dart'
         PhotoViewImageTapUpCallback,
         PhotoViewImageScaleEndCallback,
         ScaleStateCycle;
-
 import 'package:photo_view/src/controller/photo_view_controller.dart';
 import 'package:photo_view/src/controller/photo_view_scalestate_controller.dart';
 import 'package:photo_view/src/core/photo_view_gesture_detector.dart';
@@ -127,8 +126,8 @@ class PhotoViewGallery extends StatefulWidget {
   /// The builder must return a [PhotoViewGalleryPageOptions].
   const PhotoViewGallery.builder({
     Key? key,
-    required this.itemCount,
-    required this.builder,
+    required PhotoViewGalleryBuilder this.builder,
+    this.itemCount,
     this.loadingBuilder,
     this.backgroundDecoration,
     this.wantKeepAlive = false,
@@ -144,8 +143,6 @@ class PhotoViewGallery extends StatefulWidget {
     this.allowImplicitScrolling = false,
     this.pageSnapping = true,
   })  : pageOptions = null,
-        assert(itemCount != null),
-        assert(builder != null),
         super(key: key);
 
   /// A list of options to describe the items in the gallery
@@ -220,11 +217,11 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
     return _controller.hasClients ? _controller.page!.floor() : 0;
   }
 
-  int get itemCount {
+  int? get itemCount {
     if (widget._isBuilder) {
-      return widget.itemCount!;
+      return widget.itemCount;
     }
-    return widget.pageOptions!.length;
+    return widget.pageOptions?.length;
   }
 
   @override
