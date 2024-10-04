@@ -164,7 +164,7 @@ class PhotoViewCoreState extends State<PhotoViewCore>
     updateMultiple(
       scale: newScale,
       position: widget.enablePanAlways
-          ? delta
+          ? delta * details.scale
           : clampPosition(position: delta * details.scale),
       rotation:
           widget.enableRotation ? _rotationBefore! + details.rotation : null,
