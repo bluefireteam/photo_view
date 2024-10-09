@@ -114,6 +114,12 @@ class _ImageWrapperState extends State<ImageWrapper> {
     }
 
     void handleImageFrame(ImageInfo info, bool synchronousCall) {
+      if (_imageSize != null && _imageStream == null) {
+        _stopImageStream();
+        _imageStream = null;
+        return;
+      }
+
       final setupCB = () {
         _imageSize = Size(
           info.image.width.toDouble(),
@@ -125,6 +131,9 @@ class _ImageWrapperState extends State<ImageWrapper> {
         _loadingProgress = null;
         _lastException = null;
         _lastStack = null;
+
+        _stopImageStream();
+        _imageStream = null;
       };
       synchronousCall ? setupCB() : setState(setupCB);
     }
