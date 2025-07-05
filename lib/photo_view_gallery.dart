@@ -279,7 +279,7 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
         : PhotoView(
             key: ObjectKey(index),
             imageProvider: pageOption.imageProvider,
-            loadingBuilder: widget.loadingBuilder,
+            loadingBuilder: pageOption.loadingBuilder ?? widget.loadingBuilder,
             backgroundDecoration: widget.backgroundDecoration,
             wantKeepAlive: widget.wantKeepAlive,
             controller: pageOption.controller,
@@ -343,6 +343,7 @@ class PhotoViewGalleryPageOptions {
     this.tightMode,
     this.filterQuality,
     this.disableGestures,
+    this.loadingBuilder,
     this.errorBuilder,
   })  : child = null,
         childSize = null,
@@ -367,7 +368,8 @@ class PhotoViewGalleryPageOptions {
     this.tightMode,
     this.filterQuality,
     this.disableGestures,
-  })  : errorBuilder = null,
+  })  : loadingBuilder = null,
+        errorBuilder = null,
         imageProvider = null;
 
   /// Mirror to [PhotoView.imageProvider]
@@ -426,6 +428,8 @@ class PhotoViewGalleryPageOptions {
 
   /// Quality levels for image filters.
   final FilterQuality? filterQuality;
+
+  final LoadingBuilder? loadingBuilder;
 
   /// Mirror to [PhotoView.errorBuilder]
   final ImageErrorWidgetBuilder? errorBuilder;
