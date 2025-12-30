@@ -1,115 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
+import 'package:photo_view/src/controller/photo_view_controller_base.dart';
+import 'package:photo_view/src/controller/photo_view_controller_delegate.dart';
 import 'package:photo_view/src/utils/ignorable_change_notifier.dart';
-
-/// The interface in which controllers will be implemented.
-///
-/// It concerns storing the state ([PhotoViewControllerValue]) and streaming its updates.
-/// [PhotoViewImageWrapper] will respond to user gestures setting thew fields in the instance of a controller.
-///
-/// Any instance of a controller must be disposed after unmount. So if you instantiate a [PhotoViewController] or your custom implementation, do not forget to dispose it when not using it anymore.
-///
-/// The controller exposes value fields like [scale] or [rotationFocus]. Usually those fields will be only getters and setters serving as hooks to the internal [PhotoViewControllerValue].
-///
-/// The default implementation used by [PhotoView] is [PhotoViewController].
-///
-/// This was created to allow customization (you can create your own controller class)
-///
-/// Previously it controlled `scaleState` as well, but duw to some [concerns](https://github.com/renancaraujo/photo_view/issues/127)
-/// [ScaleStateListener is responsible for tat value now
-///
-/// As it is a controller, whoever instantiates it, should [dispose] it afterwards.
-///
-abstract class PhotoViewControllerBase<T extends PhotoViewControllerValue> {
-  /// The output for state/value updates. Usually a broadcast [Stream]
-  Stream<T> get outputStateStream;
-
-  /// The state value before the last change or the initial state if the state has not been changed.
-  late T prevValue;
-
-  /// The actual state value
-  late T value;
-
-  /// Resets the state to the initial value;
-  void reset();
-
-  /// Closes streams and removes eventual listeners.
-  void dispose();
-
-  /// Add a listener that will ignore updates made internally
-  ///
-  /// Since it is made for internal use, it is not performatic to use more than one
-  /// listener. Prefer [outputStateStream]
-  void addIgnorableListener(VoidCallback callback);
-
-  /// Remove a listener that will ignore updates made internally
-  ///
-  /// Since it is made for internal use, it is not performatic to use more than one
-  /// listener. Prefer [outputStateStream]
-  void removeIgnorableListener(VoidCallback callback);
-
-  /// The position of the image in the screen given its offset after pan gestures.
-  late Offset position;
-
-  /// The scale factor to transform the child (image or a customChild).
-  late double? scale;
-
-  /// Nevermind this method :D, look away
-  void setScaleInvisibly(double? scale);
-
-  /// The rotation factor to transform the child (image or a customChild).
-  late double rotation;
-
-  /// The center of the rotation transformation. It is a coordinate referring to the absolute dimensions of the image.
-  Offset? rotationFocusPoint;
-
-  /// Update multiple fields of the state with only one update streamed.
-  void updateMultiple({
-    Offset? position,
-    double? scale,
-    double? rotation,
-    Offset? rotationFocusPoint,
-  });
-}
-
-/// The state value stored and streamed by [PhotoViewController].
-@immutable
-class PhotoViewControllerValue {
-  const PhotoViewControllerValue({
-    required this.position,
-    required this.scale,
-    required this.rotation,
-    required this.rotationFocusPoint,
-  });
-
-  final Offset position;
-  final double? scale;
-  final double rotation;
-  final Offset? rotationFocusPoint;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is PhotoViewControllerValue &&
-          runtimeType == other.runtimeType &&
-          position == other.position &&
-          scale == other.scale &&
-          rotation == other.rotation &&
-          rotationFocusPoint == other.rotationFocusPoint;
-
-  @override
-  int get hashCode =>
-      position.hashCode ^
-      scale.hashCode ^
-      rotation.hashCode ^
-      rotationFocusPoint.hashCode;
-
-  @override
-  String toString() {
-    return 'PhotoViewControllerValue{position: $position, scale: $scale, rotation: $rotation, rotationFocusPoint: $rotationFocusPoint}';
-  }
-}
 
 /// The default implementation of [PhotoViewControllerBase].
 ///
@@ -147,6 +41,11 @@ class PhotoViewController
 
   late StreamController<PhotoViewControllerValue> _outputCtrl;
 
+  PhotoViewAnimationDelegate? _delegate;
+
+  /// Queue for commands triggered before the controller is attached
+  final List<_ControllerCommand> _pendingCommands = [];
+
   @override
   Stream<PhotoViewControllerValue> get outputStateStream => _outputCtrl.stream;
 
@@ -156,6 +55,7 @@ class PhotoViewController
   @override
   void reset() {
     value = initial;
+    _pendingCommands.clear();
   }
 
   void _changeListener() {
@@ -287,5 +187,74 @@ class PhotoViewController
       return;
     }
     _valueNotifier.value = newValue;
+  }
+
+  @override
+  void attach(PhotoViewAnimationDelegate delegate) {
+    _delegate = delegate;
+    // Execute any pending commands now that we are attached
+    for (final command in _pendingCommands) {
+      command.execute(delegate);
+    }
+    _pendingCommands.clear();
+  }
+
+  @override
+  void detach() {
+    _delegate = null;
+  }
+
+  /// Triggers a smooth, physics-based zoom by the given [factor].
+  ///
+  /// If the controller is not yet attached to a [PhotoView], the command
+  /// is queued and executed immediately upon attachment.
+  void animateScaleBy({required double factor, Offset? focalPoint}) {
+    final delegate = _delegate;
+    if (delegate != null) {
+      delegate.animateScaleBy(factor: factor, focalPoint: focalPoint);
+    } else {
+      _pendingCommands.add(_ScaleByCommand(factor, focalPoint));
+    }
+  }
+
+  /// Triggers a smooth, physics-based pan by the given [delta].
+  ///
+  /// If the controller is not yet attached to a [PhotoView], the command
+  /// is queued and executed immediately upon attachment.
+  void animatePositionBy({required Offset delta}) {
+    final delegate = _delegate;
+    if (delegate != null) {
+      delegate.animatePositionBy(delta: delta);
+    } else {
+      _pendingCommands.add(_PositionByCommand(delta));
+    }
+  }
+}
+
+/// A command object to store pending animation requests
+abstract class _ControllerCommand {
+  void execute(PhotoViewAnimationDelegate delegate);
+}
+
+class _ScaleByCommand implements _ControllerCommand {
+  const _ScaleByCommand(this.factor, this.focalPoint);
+
+  final double factor;
+  final Offset? focalPoint;
+
+  @override
+  void execute(PhotoViewAnimationDelegate delegate) {
+    delegate.animateScaleBy(factor: factor, focalPoint: focalPoint);
+  }
+}
+
+class _PositionByCommand implements _ControllerCommand {
+  const _PositionByCommand(this.delta);
+
+  final Offset delta;
+
+  @override
+  void execute(PhotoViewAnimationDelegate delegate) {
+    delegate.animatePositionBy(delta: delta);
   }
 }

@@ -7,11 +7,14 @@ import 'package:photo_view/photo_view.dart'
         PhotoViewImageTapUpCallback,
         PhotoViewImageScaleEndCallback,
         ScaleStateCycle;
-import 'package:photo_view/src/controller/photo_view_controller.dart';
+import 'package:photo_view/src/controller/photo_view_controller_base.dart';
 import 'package:photo_view/src/controller/photo_view_controller_delegate.dart';
 import 'package:photo_view/src/controller/photo_view_scalestate_controller.dart';
+import 'package:photo_view/src/core/photo_view_animation_engine.dart';
 import 'package:photo_view/src/core/photo_view_gesture_detector.dart';
 import 'package:photo_view/src/core/photo_view_hit_corners.dart';
+import 'package:photo_view/src/core/photo_view_mouse_region.dart';
+import 'package:photo_view/src/core/photo_view_scroll_handler.dart';
 import 'package:photo_view/src/utils/photo_view_utils.dart';
 
 const _defaultDecoration = const BoxDecoration(
@@ -109,44 +112,36 @@ class PhotoViewCoreState extends State<PhotoViewCore>
     with
         TickerProviderStateMixin,
         PhotoViewControllerDelegate,
-        HitCornersDetector {
+        HitCornersDetector
+    implements PhotoViewAnimationDelegate {
+  late final PhotoViewAnimationEngine _animationEngine;
+  PhotoViewControllerBase? _attachedController;
+
+  // -- Scaling Calculation Helper State --
   Offset? _normalizedPosition;
   double? _scaleBefore;
   double? _rotationBefore;
-
-  late final AnimationController _scaleAnimationController;
-  Animation<double>? _scaleAnimation;
-
-  late final AnimationController _positionAnimationController;
-  Animation<Offset>? _positionAnimation;
-
-  late final AnimationController _rotationAnimationController =
-      AnimationController(vsync: this)..addListener(handleRotationAnimation);
-  Animation<double>? _rotationAnimation;
 
   PhotoViewHeroAttributes? get heroAttributes => widget.heroAttributes;
 
   late ScaleBoundaries cachedScaleBoundaries = widget.scaleBoundaries;
 
-  void handleScaleAnimation() {
-    scale = _scaleAnimation!.value;
+  @override
+  void animateScaleBy({required double factor, Offset? focalPoint}) {
+    _animationEngine.animateScaleBy(factor: factor, focalPoint: focalPoint);
   }
 
-  void handlePositionAnimate() {
-    controller.position = _positionAnimation!.value;
-  }
-
-  void handleRotationAnimation() {
-    controller.rotation = _rotationAnimation!.value;
+  @override
+  void animatePositionBy({required Offset delta}) {
+    _animationEngine.animatePositionBy(delta: delta);
   }
 
   void onScaleStart(ScaleStartDetails details) {
+    _animationEngine.stop(); // Stop any running animations when user touches
+
     _rotationBefore = controller.rotation;
     _scaleBefore = scale;
     _normalizedPosition = details.focalPoint - controller.position;
-    _scaleAnimationController.stop();
-    _positionAnimationController.stop();
-    _rotationAnimationController.stop();
   }
 
   void onScaleUpdate(ScaleUpdateDetails details) {
@@ -183,35 +178,34 @@ class PhotoViewCoreState extends State<PhotoViewCore>
     //animate back to maxScale if gesture exceeded the maxScale specified
     if (_scale > maxScale) {
       final double scaleComebackRatio = maxScale / _scale;
-      animateScale(_scale, maxScale);
+      _animationEngine.animateScale(_scale, maxScale);
       final Offset clampedPosition = clampPosition(
         position: _position * scaleComebackRatio,
         scale: maxScale,
       );
-      animatePosition(_position, clampedPosition);
+      _animationEngine.animatePosition(_position, clampedPosition);
       return;
     }
 
     //animate back to minScale if gesture fell smaller than the minScale specified
     if (_scale < minScale) {
       final double scaleComebackRatio = minScale / _scale;
-      animateScale(_scale, minScale);
-      animatePosition(
-        _position,
-        clampPosition(
-          position: _position * scaleComebackRatio,
-          scale: minScale,
-        ),
+      _animationEngine.animateScale(_scale, minScale);
+      final Offset clampedPosition = clampPosition(
+        position: _position * scaleComebackRatio,
+        scale: minScale,
       );
+      _animationEngine.animatePosition(_position, clampedPosition);
       return;
     }
+
     // get magnitude from gesture velocity
     final double magnitude = details.velocity.pixelsPerSecond.distance;
 
     // animate velocity only if there is no scale change and a significant magnitude
     if (_scaleBefore! / _scale == 1.0 && magnitude >= 400.0) {
       final Offset direction = details.velocity.pixelsPerSecond / magnitude;
-      animatePosition(
+      _animationEngine.animatePosition(
         _position,
         clampPosition(position: _position + direction * 100.0),
       );
@@ -220,32 +214,6 @@ class PhotoViewCoreState extends State<PhotoViewCore>
 
   void onDoubleTap() {
     nextScaleState();
-  }
-
-  void animateScale(double from, double to) {
-    _scaleAnimation = Tween<double>(
-      begin: from,
-      end: to,
-    ).animate(_scaleAnimationController);
-    _scaleAnimationController
-      ..value = 0.0
-      ..fling(velocity: 0.4);
-  }
-
-  void animatePosition(Offset from, Offset to) {
-    _positionAnimation = Tween<Offset>(begin: from, end: to)
-        .animate(_positionAnimationController);
-    _positionAnimationController
-      ..value = 0.0
-      ..fling(velocity: 0.4);
-  }
-
-  void animateRotation(double from, double to) {
-    _rotationAnimation = Tween<double>(begin: from, end: to)
-        .animate(_rotationAnimationController);
-    _rotationAnimationController
-      ..value = 0.0
-      ..fling(velocity: 0.4);
   }
 
   void onAnimationStatus(AnimationStatus status) {
@@ -265,30 +233,59 @@ class PhotoViewCoreState extends State<PhotoViewCore>
   @override
   void initState() {
     super.initState();
+
+    //  Initialize Engine
+    _animationEngine = PhotoViewAnimationEngine(
+      controller: widget.controller,
+      vsync: this,
+      onBoundaries: () => widget.scaleBoundaries,
+      onScaleAnimationStatus: onAnimationStatus,
+    );
+
+    // Attach Controller
+    final attachedController = widget.controller;
+    attachedController.attach(this);
+    _attachedController = attachedController;
+
+    // Delegate Init
     initDelegate();
     addAnimateOnScaleStateUpdate(animateOnScaleStateUpdate);
 
     cachedScaleBoundaries = widget.scaleBoundaries;
+  }
 
-    _scaleAnimationController = AnimationController(vsync: this)
-      ..addListener(handleScaleAnimation)
-      ..addStatusListener(onAnimationStatus);
-    _positionAnimationController = AnimationController(vsync: this)
-      ..addListener(handlePositionAnimate);
+  @override
+  void didUpdateWidget(covariant PhotoViewCore oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    final newAttachedController = widget.controller;
+    if (newAttachedController != _attachedController) {
+      _attachedController?.detach();
+      newAttachedController.attach(this);
+      _attachedController = newAttachedController;
+    }
+
+    if (widget.scaleBoundaries != cachedScaleBoundaries) {
+      markNeedsScaleRecalc = true;
+      cachedScaleBoundaries = widget.scaleBoundaries;
+    }
   }
 
   void animateOnScaleStateUpdate(double prevScale, double nextScale) {
-    animateScale(prevScale, nextScale);
-    animatePosition(controller.position, Offset.zero);
-    animateRotation(controller.rotation, 0.0);
+    _animationEngine.animateStateChange(
+      scaleFrom: prevScale,
+      scaleTo: nextScale,
+      positionFrom: controller.position,
+      positionTo: Offset.zero,
+      rotationFrom: controller.rotation,
+      rotationTo: 0.0,
+    );
   }
 
   @override
   void dispose() {
-    _scaleAnimationController.removeStatusListener(onAnimationStatus);
-    _scaleAnimationController.dispose();
-    _positionAnimationController.dispose();
-    _rotationAnimationController.dispose();
+    _attachedController?.detach();
+    _animationEngine.dispose();
     super.dispose();
   }
 
@@ -316,14 +313,19 @@ class PhotoViewCoreState extends State<PhotoViewCore>
           AsyncSnapshot<PhotoViewControllerValue> snapshot,
         ) {
           if (snapshot.hasData) {
-            final PhotoViewControllerValue value = snapshot.data!;
+            // We need to grab the latest value here, otherwise we're one frame behind.
+            // This is especially important with AnimationControllers setting the scale/position/rotation.
+            // (But we still have to consider if the value is available, otherwise we crash with late initialization)
+            final PhotoViewControllerValue value = controller.value;
+
             final useImageScale = widget.filterQuality != FilterQuality.none;
 
             final computedScale = useImageScale ? 1.0 : scale;
 
             final matrix = Matrix4.identity()
-              ..translate(value.position.dx, value.position.dy)
-              ..scale(computedScale)
+              ..translateByDouble(
+                  value.position.dx, value.position.dy, 0.0, 1.0)
+              ..scaleByDouble(computedScale, computedScale, computedScale, 1.0)
               ..rotateZ(value.rotation);
 
             final Widget customChildLayout = CustomSingleChildLayout(
@@ -335,7 +337,7 @@ class PhotoViewCoreState extends State<PhotoViewCore>
               child: _buildHero(),
             );
 
-            final child = Container(
+            Widget child = Container(
               constraints: widget.tightMode
                   ? BoxConstraints.tight(scaleBoundaries.childSize * scale)
                   : null,
@@ -353,7 +355,7 @@ class PhotoViewCoreState extends State<PhotoViewCore>
               return child;
             }
 
-            return PhotoViewGestureDetector(
+            child = PhotoViewGestureDetector(
               child: child,
               onDoubleTap: nextScaleState,
               onScaleStart: onScaleStart,
@@ -367,6 +369,23 @@ class PhotoViewCoreState extends State<PhotoViewCore>
                   ? (details) => widget.onTapDown!(context, details, value)
                   : null,
             );
+
+            child = PhotoViewScrollHandler(
+              animationDelegate: this,
+              child: child,
+            );
+
+            child = PhotoViewMouseRegion(
+              controllerScale: scale,
+              controllerPosition: value.position,
+              controllerRotation: value.rotation,
+              basePosition: basePosition,
+              childSize: scaleBoundaries.childSize,
+              viewportSize: scaleBoundaries.outerSize,
+              child: child,
+            );
+
+            return child;
           } else {
             return Container();
           }

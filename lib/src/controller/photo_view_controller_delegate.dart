@@ -9,6 +9,22 @@ import 'package:photo_view/src/core/photo_view_core.dart';
 import 'package:photo_view/src/photo_view_scale_state.dart';
 import 'package:photo_view/src/utils/photo_view_utils.dart';
 
+/// An interface used by the Controller to delegate animation requests to the Core.
+///
+/// This allows the controller to trigger complex, physics-based animations
+/// (like smooth zooming or panning) that require knowledge of the layout/ticker,
+/// which resides in the [PhotoViewCore].
+abstract class PhotoViewAnimationDelegate {
+  /// Smoothly zooms the content by a specific [factor] (e.g. 1.1 for +10%).
+  ///
+  /// [focalPoint] is the pixel location on the screen that remains stationary
+  /// during the zoom. If null, the center of the viewport is used.
+  void animateScaleBy({required double factor, Offset? focalPoint});
+
+  /// Smoothly pans the content by a specific [delta] offset.
+  void animatePositionBy({required Offset delta});
+}
+
 /// A  class to hold internal layout logic to sync both controller states
 ///
 /// It reacts to layout changes (eg: enter landscape or widget resize) and syncs the two controllers.

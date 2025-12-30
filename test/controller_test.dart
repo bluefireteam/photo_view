@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:photo_view/src/controller/photo_view_controller.dart';
+import 'package:photo_view/src/controller/photo_view_controller_base.dart';
 import 'package:test/test.dart';
 
 void main() {
