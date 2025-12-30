@@ -143,7 +143,16 @@ class PhotoViewCoreState extends State<PhotoViewCore>
   void onScaleStart(ScaleStartDetails details) {
     _rotationBefore = controller.rotation;
     _scaleBefore = scale;
-    _normalizedPosition = details.focalPoint - controller.position;
+
+    // Determine the pivot point (transform origin) based on the widget's base position.
+    final Offset transformOrigin =
+        widget.basePosition.alongSize(widget.scaleBoundaries.outerSize);
+
+    // Store the vector from the image's current position to the focal point.
+    // This allows us to maintain the focal point relative to the image content during scaling.
+    _normalizedPosition =
+        details.focalPoint - transformOrigin - controller.position;
+
     _scaleAnimationController.stop();
     _positionAnimationController.stop();
     _rotationAnimationController.stop();
@@ -151,7 +160,15 @@ class PhotoViewCoreState extends State<PhotoViewCore>
 
   void onScaleUpdate(ScaleUpdateDetails details) {
     final double newScale = _scaleBefore! * details.scale;
-    final Offset delta = details.focalPoint - _normalizedPosition!;
+
+    final Offset transformOrigin =
+        widget.basePosition.alongSize(widget.scaleBoundaries.outerSize);
+
+    // Apply the current scale delta to the relative focal vector.
+    final Offset delta = _normalizedPosition! * details.scale;
+
+    // Calculate the new position so that the focal point remains fixed relative to the image.
+    final Offset newPosition = details.focalPoint - transformOrigin - delta;
 
     if (widget.strictScale &&
         (newScale > widget.scaleBoundaries.maxScale ||
@@ -164,8 +181,8 @@ class PhotoViewCoreState extends State<PhotoViewCore>
     updateMultiple(
       scale: newScale,
       position: widget.enablePanAlways
-          ? delta
-          : clampPosition(position: delta * details.scale),
+          ? newPosition
+          : clampPosition(position: newPosition),
       rotation:
           widget.enableRotation ? _rotationBefore! + details.rotation : null,
       rotationFocusPoint: widget.enableRotation ? details.focalPoint : null,
