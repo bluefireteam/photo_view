@@ -108,6 +108,7 @@ class PhotoViewGallery extends StatefulWidget {
     this.backgroundDecoration,
     this.wantKeepAlive = false,
     this.gaplessPlayback = false,
+    this.pageGap = 0.0,
     this.reverse = false,
     this.pageController,
     this.onPageChanged,
@@ -133,6 +134,7 @@ class PhotoViewGallery extends StatefulWidget {
     this.backgroundDecoration,
     this.wantKeepAlive = false,
     this.gaplessPlayback = false,
+    this.pageGap = 0.0,
     this.reverse = false,
     this.pageController,
     this.onPageChanged,
@@ -171,6 +173,9 @@ class PhotoViewGallery extends StatefulWidget {
 
   /// Mirror to [PhotoView.gaplessPlayback]
   final bool gaplessPlayback;
+
+  /// Horizontal gap between gallery pages.
+  final double pageGap;
 
   /// Mirror to [PageView.reverse]
   final bool reverse;
@@ -305,8 +310,28 @@ class _PhotoViewGalleryState extends State<PhotoViewGallery> {
             errorBuilder: pageOption.errorBuilder,
           );
 
-    return ClipRect(
-      child: photoView,
+    return AnimatedBuilder(
+      animation: _controller,
+      child: ClipRect(child: photoView),
+      builder: (context, child) {
+        if (widget.pageGap == 0.0 || !_controller.hasClients) {
+          return child!;
+        }
+
+        final page = _controller.page ?? actualPage.toDouble();
+        final pageDelta = page - page.roundToDouble();
+        if (pageDelta.abs() < 0.001) {
+          return child!;
+        }
+
+        final delta = (page - index).clamp(-1.0, 1.0);
+        final shift = -delta * widget.pageGap;
+
+        return Transform.translate(
+          offset: Offset(shift, 0),
+          child: child,
+        );
+      },
     );
   }
 
