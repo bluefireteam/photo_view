@@ -158,6 +158,17 @@ class _ImageWrapperState extends State<ImageWrapper> {
     }
     _imageStream?.removeListener(_imageStreamListener!);
     _imageStream = newStream;
+
+    // Drop the state of the previous image, unless gaplessPlayback asks to
+    // keep showing it until the new one is ready.
+    if (!widget.gaplessPlayback || _imageSize == null) {
+      _loading = true;
+      _imageSize = null;
+    }
+    _loadingProgress = null;
+    _lastException = null;
+    _lastStack = null;
+
     _imageStream!.addListener(_getOrCreateListener());
   }
 
